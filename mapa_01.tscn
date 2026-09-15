@@ -53,8 +53,10 @@ environment = SubResource("Environment_escuro")
 position = Vector2(-135.34245, 58.904106)
 
 [node name="DeathMenu" parent="." unique_id=411104660 instance=ExtResource("21_deathmenu")]
+visible = false
 
 [node name="HealthBar" parent="." unique_id=551189738 instance=ExtResource("22_healthbar")]
+visible = false
 
 [node name="IntroCamera" type="Camera2D" parent="." unique_id=473829105]
 position = Vector2(1.9178145, -1.9178042)
@@ -102,7 +104,7 @@ z_as_relative = false
 [node name="BrilhoFundo" type="Sprite2D" parent="Cenario" unique_id=1800000002]
 z_index = 1
 material = SubResource("CanvasItemMaterial_brilho")
-position = Vector2(-3.6986086, -10.684929)
+position = Vector2(-6.84931, -77.26027)
 scale = Vector2(1.6, 1.6)
 texture = SubResource("GradientTexture2D_brilho")
 
@@ -116,7 +118,7 @@ position = Vector2(31.78082, -105.75342)
 next_scene = "res://mapa_02.tscn"
 
 [node name="Vagalume" parent="." unique_id=761002183 instance=ExtResource("14_vagalume")]
-position = Vector2(20, -20)
+position = Vector2(20, 10.684931)
 raio_voo = 55.0
 
 [node name="Vagalume2" parent="." unique_id=407815065 instance=ExtResource("14_vagalume")]
@@ -124,5 +126,5 @@ position = Vector2(100, 10)
 raio_voo = 45.0
 
 [node name="Vagalume3" parent="." unique_id=2087891669 instance=ExtResource("14_vagalume")]
-position = Vector2(-115.61644, -69.04109)
+position = Vector2(-141.36986, -72.05479)
 raio_voo = 40.0

@@ -1,73 +1,52 @@
 extends Area2D
-## Portal de fim de fase, discreto mas visível. Basta o player encostar: o portal
-## se fecha suave e troca de cena. A lógica de save é a mesma do LevelExitPortal.
-##
-## O visual (um anel fino girando devagar + um vão escuro + um respiro de luz) é
-## montado por código a partir do `raio` e da `cor`.
+## Portal de fim de fase, disfarçado de vagalume de luz azul. Basta o player
+## encostar: ele murcha suave e troca de cena. A lógica de save é a mesma de
+## antes -- só o visual é o mesmo bicho do `Vagalume.tscn` (asas + halo/core),
+## mas azul e sempre visível, pra dar pra distinguir dos vagalumes amarelos
+## de ambientação/guia.
 
 @export_file("*.tscn") var next_scene: String = ""
-## Cor base do portal (anel, brilho e luz que ele projeta no cenário).
-@export var cor: Color = Color(0.42, 0.44, 0.6)
-## Raio do portal em pixels. A área andável (CollisionShape2D) é independente.
-@export var raio: float = 15.0
-## Energia máxima da luz que o portal projeta (antes da pulsação).
-@export var energia_luz: float = 1.5
+## Cor da luz do portal-vagalume (halo e núcleo).
+@export var cor: Color = Color("#3DA9FC")
+## Energia base do halo (luz grande e suave).
+@export var energia_halo: float = 1.1
+## Energia base do núcleo (luz pequena e forte).
+@export var energia_core: float = 2.4
+## Amplitude da flutuação em lemniscata, em pixels.
+@export var raio_voo: float = 10.0
+## Velocidade angular da flutuação.
+@export var velocidade_voo: float = 0.5
 
 var _ativando := false
 var _t := 0.0
-var _anel: Line2D
-var _glow: Line2D
-var _nucleo: Polygon2D
+var _origem := Vector2.ZERO
+var _offset := Vector2.ZERO
 
 @onready var particulas: CPUParticles2D = $Particulas
-@onready var _luz: PointLight2D = $Luz
+@onready var _corpo: AnimatedSprite2D = $Corpo
+@onready var _halo: PointLight2D = $Halo
+@onready var _core: PointLight2D = $Core
 
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)
-	_montar_visual()
-	_luz.color = cor
-
-func _montar_visual() -> void:
-	# Vão escuro translúcido no meio.
-	_nucleo = Polygon2D.new()
-	_nucleo.polygon = _circulo(raio * 0.85, 28)
-	_nucleo.color = Color(0.05, 0.05, 0.09, 0.4)
-	_nucleo.z_index = -1
-	add_child(_nucleo)
-	# Respiro de luz difuso atrás.
-	_glow = _criar_anel(raio * 1.05, 5.0, 36, Color(cor.r, cor.g, cor.b, 0.1))
-	_glow.z_index = -2
-	add_child(_glow)
-	# Um anel fino só, girando devagar.
-	_anel = _criar_anel(raio, 1.5, 40, Color(cor.r, cor.g, cor.b, 0.85))
-	add_child(_anel)
-
-func _circulo(r: float, n: int) -> PackedVector2Array:
-	var pts := PackedVector2Array()
-	for i in n:
-		var a := TAU * float(i) / float(n)
-		pts.append(Vector2(cos(a), sin(a)) * r)
-	return pts
-
-func _criar_anel(r: float, w: float, n: int, c: Color) -> Line2D:
-	var l := Line2D.new()
-	l.closed = true
-	l.width = w
-	l.default_color = c
-	l.joint_mode = Line2D.LINE_JOINT_ROUND
-	l.antialiased = true
-	l.points = _circulo(r, n)
-	return l
+	_origem = position
+	_corpo.play("voar")
+	_halo.color = cor
 
 func _process(delta: float) -> void:
 	if _ativando:
 		return
 	_t += delta
-	_anel.rotation += delta * 0.35
-	var pulso := 1.0 + sin(_t * 1.6) * 0.02
-	_nucleo.scale = Vector2(pulso, pulso)
-	_glow.modulate.a = 0.6 + sin(_t * 1.6) * 0.25
-	_luz.energy = energia_luz * (0.8 + sin(_t * 1.6) * 0.2)
+	# Flutuação tipo lemniscata, igual o Vagalume decorativo -- ainda dentro
+	# do alcance do CollisionShape2D, então continua tocável o tempo todo.
+	var voo := _t * velocidade_voo
+	_offset.x = sin(voo) * raio_voo
+	_offset.y = sin(voo * 2.0) * raio_voo * 0.5
+	position = _origem + _offset
+	_corpo.flip_h = cos(voo) < 0.0
+	var pulso := 0.85 + 0.15 * sin(_t * 2.0)
+	_halo.energy = energia_halo * pulso
+	_core.energy = energia_core * pulso
 
 func _on_body_entered(body: Node) -> void:
 	if _ativando or not body.is_in_group("player"):
@@ -80,14 +59,13 @@ func _on_body_entered(body: Node) -> void:
 func _ativar() -> void:
 	_ativando = true
 	particulas.emitting = true
-	# Fecha suave: o anel encolhe pro centro e tudo apaga, sem flash.
+	# Fecha suave: o vagalume encolhe e apaga, sem flash.
 	var tw := create_tween()
 	tw.set_parallel(true).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
-	tw.tween_property(_anel, "scale", Vector2(0.15, 0.15), 0.4)
-	tw.tween_property(_anel, "modulate:a", 0.0, 0.4)
-	tw.tween_property(_glow, "modulate:a", 0.0, 0.4)
-	tw.tween_property(_nucleo, "scale", Vector2(0.1, 0.1), 0.4)
-	tw.tween_property(_luz, "energy", 0.0, 0.4)
+	tw.tween_property(_corpo, "scale", Vector2(0.15, 0.15), 0.4)
+	tw.tween_property(_corpo, "modulate:a", 0.0, 0.4)
+	tw.tween_property(_halo, "energy", 0.0, 0.4)
+	tw.tween_property(_core, "energy", 0.0, 0.4)
 	tw.set_parallel(false)
 	tw.tween_interval(0.1)
 	tw.tween_callback(_trocar_cena)
