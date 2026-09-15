@@ -1,0 +1,88 @@
+[gd_resource type="TileSet" format=3 uid="uid://bkjw6ewvpf5t0"]
+
+[ext_resource type="Texture2D" uid="uid://c77usjcjob4p7" path="res://assets/blocos1.png" id="1_bloc1"]
+[ext_resource type="Texture2D" uid="uid://du42byysl7wsu" path="res://assets/blocos2.png" id="2_bloc2"]
+[ext_resource type="Texture2D" uid="uid://wu858ddftr35" path="res://assets/blocos3.png" id="3_bloc3"]
+[ext_resource type="Texture2D" uid="uid://bolayg21sb2lr" path="res://assets/blocos4.png" id="4_bloc4"]
+[ext_resource type="Texture2D" uid="uid://lxmpbtag0wfh" path="res://assets/blocos5.png" id="5_bloc5"]
+[ext_resource type="Texture2D" uid="uid://d2a228h7hhcfj" path="res://assets/blocos6.png" id="6_bloc6"]
+[ext_resource type="Texture2D" uid="uid://c2wejf8ve0rda" path="res://assets/blocos7.png" id="7_bloc7"]
+[ext_resource type="Texture2D" uid="uid://bbcvnpj8ndedw" path="res://assets/blocos8.png" id="8_bloc8"]
+[ext_resource type="Texture2D" uid="uid://cuqpfw0wpfmq3" path="res://assets/blocoss2.png" id="10_bloc10"]
+[ext_resource type="Texture2D" uid="uid://cmktjtnwwi6jd" path="res://assets/blocoss3.png" id="11_bloc11"]
+[ext_resource type="Texture2D" uid="uid://c8dt1g5ckeadi" path="res://assets/espinho.png" id="12_spikeup"]
+[ext_resource type="Texture2D" uid="uid://c8dt1g4tjawdj" path="res://assets/espinho_baixo.png" id="13_spikedown"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bloc1"]
+texture = ExtResource("1_bloc1")
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bloc2"]
+texture = ExtResource("2_bloc2")
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bloc11"]
+texture = ExtResource("11_bloc11")
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_spikeup"]
+texture = ExtResource("12_spikeup")
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_spikedown"]
+texture = ExtResource("13_spikedown")
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bloc3"]
+texture = ExtResource("3_bloc3")
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bloc4"]
+texture = ExtResource("4_bloc4")
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bloc5"]
+texture = ExtResource("5_bloc5")
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bloc6"]
+texture = ExtResource("6_bloc6")
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bloc7"]
+texture = ExtResource("7_bloc7")
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bloc8"]
+texture = ExtResource("8_bloc8")
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bloc10"]
+texture = ExtResource("10_bloc10")
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+
+[resource]
+physics_layer_0/collision_layer = 3
+physics_layer_0/collision_mask = 3
+sources/0 = SubResource("TileSetAtlasSource_bloc1")
+sources/1 = SubResource("TileSetAtlasSource_bloc2")
+sources/2 = SubResource("TileSetAtlasSource_bloc3")
+sources/3 = SubResource("TileSetAtlasSource_bloc4")
+sources/4 = SubResource("TileSetAtlasSource_bloc5")
+sources/5 = SubResource("TileSetAtlasSource_bloc6")
+sources/6 = SubResource("TileSetAtlasSource_bloc7")
+sources/7 = SubResource("TileSetAtlasSource_bloc8")
+sources/9 = SubResource("TileSetAtlasSource_bloc10")
+sources/10 = SubResource("TileSetAtlasSource_bloc11")
+sources/11 = SubResource("TileSetAtlasSource_spikeup")
+sources/12 = SubResource("TileSetAtlasSource_spikedown")

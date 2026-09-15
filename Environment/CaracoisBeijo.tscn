@@ -1,0 +1,23 @@
+[gd_scene format=3 uid="uid://d2hxr0f4qk0e1"]
+
+[ext_resource type="Texture2D" uid="uid://bk5ekoglg22cl" path="res://assets/caracol.png" id="1_sheet"]
+[ext_resource type="Script" path="res://Environment/caracois_beijo.gd" id="2_script"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_esquerda"]
+atlas = ExtResource("1_sheet")
+region = Rect2(64, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_direita"]
+atlas = ExtResource("1_sheet")
+region = Rect2(0, 0, 16, 16)
+
+[node name="CaracoisBeijo" type="Node2D" unique_id=2848017701]
+script = ExtResource("2_script")
+
+[node name="CaracolEsquerda" type="Sprite2D" parent="." unique_id=2848017702]
+position = Vector2(-6, 0)
+texture = SubResource("AtlasTexture_esquerda")
+
+[node name="CaracolDireita" type="Sprite2D" parent="." unique_id=2848017703]
+position = Vector2(6, 0)
+texture = SubResource("AtlasTexture_direita")

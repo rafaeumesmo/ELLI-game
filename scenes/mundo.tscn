@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://dcm5bjmd8xcrw"]
+
+[ext_resource type="Script" path="res://scenes/mundo.gd" id="1_script"]
+[ext_resource type="PackedScene" uid="uid://ck4l3vm43pipc" path="res://Player/Player.tscn" id="2_player"]
+[ext_resource type="PackedScene" uid="uid://de8utfkx51gq2" path="res://UI/DeathMenu.tscn" id="3_deathmenu"]
+[ext_resource type="PackedScene" path="res://UI/HealthBar.tscn" id="4_healthbar"]
+[ext_resource type="PackedScene" uid="uid://ctuusr11vxel6" path="res://tutorial.tscn" id="5_tutorial"]
+
+[node name="Mundo" type="Node2D"]
+script = ExtResource("1_script")
+tela_inicial = ExtResource("5_tutorial")
+
+[node name="Telas" type="Node2D" parent="."]
+
+[node name="Elisio" parent="." instance=ExtResource("2_player")]
+
+[node name="Camera" type="Camera2D" parent="."]
+position_smoothing_enabled = false
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="HealthBar" parent="UI" instance=ExtResource("4_healthbar")]
+
+[node name="DeathMenu" parent="UI" instance=ExtResource("3_deathmenu")]

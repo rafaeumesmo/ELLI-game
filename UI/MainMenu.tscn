@@ -1,0 +1,271 @@
+[gd_scene format=3 uid="uid://c0ljqpruxtjbh"]
+
+[ext_resource type="Script" uid="uid://cwd0l0wglghgc" path="res://UI/main_menu.gd" id="1_uahxu"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_disabled"]
+content_margin_left = 16.0
+content_margin_top = 10.0
+content_margin_right = 16.0
+content_margin_bottom = 10.0
+bg_color = Color(0.098, 0.082, 0.067, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_focus"]
+content_margin_left = 16.0
+content_margin_top = 10.0
+content_margin_right = 16.0
+content_margin_bottom = 10.0
+bg_color = Color(0.22, 0.2, 0.153, 1)
+border_width_left = 3
+border_color = Color(0.451, 0.58, 0.325, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_hover"]
+content_margin_left = 16.0
+content_margin_top = 10.0
+content_margin_right = 16.0
+content_margin_bottom = 10.0
+bg_color = Color(0.204, 0.173, 0.141, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_normal"]
+content_margin_left = 16.0
+content_margin_top = 10.0
+content_margin_right = 16.0
+content_margin_bottom = 10.0
+bg_color = Color(0.157, 0.129, 0.106, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_pressed"]
+content_margin_left = 16.0
+content_margin_top = 10.0
+content_margin_right = 16.0
+content_margin_bottom = 10.0
+bg_color = Color(0.129, 0.106, 0.086, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="Theme" id="Theme_menu"]
+Button/colors/font_color = Color(0.88, 0.84, 0.75, 1)
+Button/colors/font_disabled_color = Color(0.5, 0.46, 0.4, 0.6)
+Button/colors/font_focus_color = Color(0.72, 0.82, 0.55, 1)
+Button/colors/font_hover_color = Color(0.72, 0.82, 0.55, 1)
+Button/colors/font_pressed_color = Color(0.78, 0.86, 0.62, 1)
+Button/styles/disabled = SubResource("StyleBoxFlat_btn_disabled")
+Button/styles/focus = SubResource("StyleBoxFlat_btn_focus")
+Button/styles/hover = SubResource("StyleBoxFlat_btn_hover")
+Button/styles/normal = SubResource("StyleBoxFlat_btn_normal")
+Button/styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel_bg"]
+bg_color = Color(0.114, 0.098, 0.082, 0.96)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[node name="MainMenu" type="Control" unique_id=2094308596]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_menu")
+script = ExtResource("1_uahxu")
+
+[node name="Background" type="ColorRect" parent="." unique_id=1782022002]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.075, 0.06, 0.05, 1)
+
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=1055456625]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ContentBox" type="VBoxContainer" parent="CenterContainer" unique_id=276095566]
+layout_mode = 2
+
+[node name="TitleBlock" type="VBoxContainer" parent="CenterContainer/ContentBox" unique_id=198020330]
+layout_mode = 2
+theme_override_constants/separation = 6
+alignment = 1
+
+[node name="TitleLabel" type="Label" parent="CenterContainer/ContentBox/TitleBlock" unique_id=1989359071]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0.92, 0.88, 0.78, 1)
+theme_override_font_sizes/font_size = 40
+text = "ELÍSIO"
+horizontal_alignment = 1
+
+[node name="SubtitleLabel" type="Label" parent="CenterContainer/ContentBox/TitleBlock" unique_id=247042161]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0.5, 0.46, 0.38, 1)
+theme_override_font_sizes/font_size = 14
+text = "U N D E R S T O R Y"
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="CenterContainer/ContentBox" unique_id=475946638]
+custom_minimum_size = Vector2(0, 48)
+layout_mode = 2
+
+[node name="ButtonList" type="VBoxContainer" parent="CenterContainer/ContentBox" unique_id=186884757]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="ContinueButton" type="Button" parent="CenterContainer/ContentBox/ButtonList" unique_id=1407466193]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(240, 46)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Continue"
+
+[node name="NewGameButton" type="Button" parent="CenterContainer/ContentBox/ButtonList" unique_id=73819422]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(240, 46)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "New game"
+
+[node name="OptionsButton" type="Button" parent="CenterContainer/ContentBox/ButtonList" unique_id=1645460119]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(240, 46)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Options"
+
+[node name="QuitButton" type="Button" parent="CenterContainer/ContentBox/ButtonList" unique_id=1690201384]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(240, 46)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Quit"
+
+[node name="FooterLabel" type="Label" parent="." unique_id=1622226361]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 16.0
+offset_top = -28.0
+offset_right = 320.0
+offset_bottom = -8.0
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.4, 0.37, 0.32, 1)
+theme_override_font_sizes/font_size = 12
+text = "v0.1.0   @rafaeumesmo"
+
+[node name="OptionsPanel" type="Panel" parent="." unique_id=462219373]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel_bg")
+
+[node name="OptionsCenter" type="CenterContainer" parent="OptionsPanel" unique_id=901017303]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="OptionsBox" type="VBoxContainer" parent="OptionsPanel/OptionsCenter" unique_id=778049482]
+layout_mode = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="OptionsTitle" type="Label" parent="OptionsPanel/OptionsCenter/OptionsBox" unique_id=2000110428]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0.92, 0.88, 0.78, 1)
+theme_override_font_sizes/font_size = 24
+text = "Options"
+horizontal_alignment = 1
+
+[node name="VolumeRow" type="HBoxContainer" parent="OptionsPanel/OptionsCenter/OptionsBox" unique_id=370297941]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="VolumeLabel" type="Label" parent="OptionsPanel/OptionsCenter/OptionsBox/VolumeRow" unique_id=285410806]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.88, 0.84, 0.75, 1)
+text = "Volume"
+
+[node name="VolumeSlider" type="HSlider" parent="OptionsPanel/OptionsCenter/OptionsBox/VolumeRow" unique_id=574690233]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_vertical = 4
+max_value = 1.0
+step = 0.01
+value = 1.0
+
+[node name="FullscreenRow" type="HBoxContainer" parent="OptionsPanel/OptionsCenter/OptionsBox" unique_id=152497100]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="FullscreenLabel" type="Label" parent="OptionsPanel/OptionsCenter/OptionsBox/FullscreenRow" unique_id=971548127]
+custom_minimum_size = Vector2(120, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.88, 0.84, 0.75, 1)
+text = "Fullscreen"
+
+[node name="FullscreenToggle" type="CheckButton" parent="OptionsPanel/OptionsCenter/OptionsBox/FullscreenRow" unique_id=1731130376]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="OptionsBackButton" type="Button" parent="OptionsPanel/OptionsCenter/OptionsBox" unique_id=254452855]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(240, 46)
+layout_mode = 2
+size_flags_horizontal = 4
+text = "Back"
+
+[node name="ConfirmDialog" type="ConfirmationDialog" parent="." unique_id=674431364]
+unique_name_in_owner = true
+title = "New game"
+size = Vector2i(420, 150)
+ok_button_text = "Erase and continue"
+dialog_text = "This will erase your saved progress. Continue anyway?"
+
+[node name="FadeOverlay" type="ColorRect" parent="." unique_id=1896996494]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0)

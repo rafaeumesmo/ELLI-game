@@ -1,0 +1,80 @@
+[gd_scene format=3 uid="uid://dfcde777bahu8"]
+
+[ext_resource type="Script" uid="uid://cloqwssoorlyf" path="res://Environment/spike_trap.gd" id="1_trap"]
+[ext_resource type="Texture2D" uid="uid://c2wejf8ve0rda" path="res://assets/blocos7.png" id="2_tex"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_trigger"]
+size = Vector2(57, 40)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
+size = Vector2(48, 32)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hitbox"]
+size = Vector2(49, 21)
+
+[node name="SpikeTrap" type="Node2D" unique_id=1893502678]
+script = ExtResource("1_trap")
+
+[node name="DamageTimer" type="Timer" parent="." unique_id=1893502679]
+one_shot = true
+
+[node name="Trigger" type="Area2D" parent="." unique_id=1073493410]
+collision_layer = 0
+collision_mask = 5
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Trigger" unique_id=1785087199]
+position = Vector2(-3.5, -16)
+shape = SubResource("RectangleShape2D_trigger")
+
+[node name="Riser" type="AnimatableBody2D" parent="." unique_id=1927289909]
+position = Vector2(0, 24)
+collision_layer = 3
+collision_mask = 3
+
+[node name="Block1" type="Sprite2D" parent="Riser" unique_id=996993695]
+position = Vector2(-16, 8)
+texture = ExtResource("2_tex")
+
+[node name="Block2" type="Sprite2D" parent="Riser" unique_id=1504775815]
+position = Vector2(0, 8)
+texture = ExtResource("2_tex")
+
+[node name="Block3" type="Sprite2D" parent="Riser" unique_id=349122852]
+position = Vector2(16, 8)
+texture = ExtResource("2_tex")
+
+[node name="Block1" type="Sprite2D" parent="Riser/Block3" unique_id=52249864]
+position = Vector2(-32, 16)
+texture = ExtResource("2_tex")
+
+[node name="Block2" type="Sprite2D" parent="Riser/Block3" unique_id=605386894]
+position = Vector2(-16, 16)
+texture = ExtResource("2_tex")
+
+[node name="Block3" type="Sprite2D" parent="Riser/Block3" unique_id=2104094126]
+position = Vector2(0, 16)
+texture = ExtResource("2_tex")
+
+[node name="FloorCollision" type="CollisionShape2D" parent="Riser" unique_id=2001214067]
+position = Vector2(0, 16)
+shape = SubResource("RectangleShape2D_floor")
+
+[node name="Tooth1" type="Polygon2D" parent="Riser" unique_id=452581490]
+color = Color(0.13333334, 0.1254902, 0.20392157, 1)
+polygon = PackedVector2Array(-24, 0, -8, 0, -16, -12)
+
+[node name="Tooth2" type="Polygon2D" parent="Riser" unique_id=594944351]
+color = Color(0.13333334, 0.1254902, 0.20392157, 1)
+polygon = PackedVector2Array(-8, 0, 8, 0, 0, -12)
+
+[node name="Tooth3" type="Polygon2D" parent="Riser" unique_id=263288860]
+color = Color(0.13333334, 0.1254902, 0.20392157, 1)
+polygon = PackedVector2Array(8, 0, 24, 0, 16, -12)
+
+[node name="Hitbox" type="Area2D" parent="Riser" unique_id=1765204413]
+collision_layer = 0
+collision_mask = 5
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Riser/Hitbox" unique_id=1512112565]
+position = Vector2(-0.5, -1.5)
+shape = SubResource("RectangleShape2D_hitbox")

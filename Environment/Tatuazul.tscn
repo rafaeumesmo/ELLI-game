@@ -1,0 +1,117 @@
+[gd_scene format=3 uid="uid://wultk8a2v00e"]
+
+[ext_resource type="Script" uid="uid://dsjyvu7uuk2b7" path="res://Environment/tatuazul.gd" id="1_tatuazul"]
+[ext_resource type="Texture2D" uid="uid://br2qp21ryfbia" path="res://assets/tatuazul.png" id="2_sheet"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_idle_a"]
+atlas = ExtResource("2_sheet")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_idle_d"]
+atlas = ExtResource("2_sheet")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_roll_a1"]
+atlas = ExtResource("2_sheet")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_roll_a2"]
+atlas = ExtResource("2_sheet")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_roll_d1"]
+atlas = ExtResource("2_sheet")
+region = Rect2(128, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_roll_d2"]
+atlas = ExtResource("2_sheet")
+region = Rect2(160, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_tatuazul"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_idle_a")
+}],
+"loop": 1,
+"name": &"idle_A",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_idle_d")
+}],
+"loop": 1,
+"name": &"idle_D",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_roll_a1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_roll_a2")
+}],
+"loop": 1,
+"name": &"roll_A",
+"speed": 10.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_roll_d1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_roll_d2")
+}],
+"loop": 1,
+"name": &"roll_D",
+"speed": 10.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_te6ix"]
+radius = 11.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_pt1ey"]
+radius = 11.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_zone"]
+size = Vector2(260, 30)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_head"]
+size = Vector2(24, 10)
+
+[node name="Tatuazul" type="CharacterBody2D" unique_id=1776952377]
+collision_layer = 4
+collision_mask = 2
+script = ExtResource("1_tatuazul")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=776143796]
+sprite_frames = SubResource("SpriteFrames_tatuazul")
+animation = &"roll_A"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1446482168]
+position = Vector2(0, 5)
+shape = SubResource("CircleShape2D_te6ix")
+
+[node name="Killzone" type="Area2D" parent="." unique_id=1670005817]
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Killzone" unique_id=1610799850]
+position = Vector2(0, 5)
+shape = SubResource("CircleShape2D_pt1ey")
+
+[node name="ActivationZone" type="Area2D" parent="." unique_id=183414994]
+position = Vector2(6, -25)
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ActivationZone" unique_id=663742593]
+position = Vector2(-5, 27)
+shape = SubResource("RectangleShape2D_zone")
+
+[node name="Head" type="Area2D" parent="." unique_id=841433857]
+position = Vector2(0, 3)
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Head" unique_id=934374214]
+position = Vector2(0, 2)
+shape = SubResource("RectangleShape2D_head")

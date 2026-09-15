@@ -1,0 +1,51 @@
+[gd_scene format=3 uid="uid://dn0q0yek12h2c"]
+
+[ext_resource type="Script" uid="uid://4hoxq6by583m" path="res://Environment/moving_platform_pair.gd" id="1_pair"]
+[ext_resource type="Texture2D" uid="uid://crnah0t52rf3i" path="res://assets/blocoss1.png" id="2_tex"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_platform"]
+size = Vector2(16, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_trigger"]
+size = Vector2(16, 6)
+
+[node name="MovingPlatformPair" type="Node2D" unique_id=991776625]
+script = ExtResource("1_pair")
+
+[node name="PlatformA" type="AnimatableBody2D" parent="." unique_id=818190178]
+position = Vector2(-16, 0)
+collision_layer = 3
+collision_mask = 3
+
+[node name="Sprite2D" type="Sprite2D" parent="PlatformA" unique_id=434055145]
+position = Vector2(16, 0)
+texture = ExtResource("2_tex")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlatformA" unique_id=1053713528]
+position = Vector2(16, 0)
+shape = SubResource("RectangleShape2D_platform")
+
+[node name="Trigger" type="Area2D" parent="PlatformA" unique_id=1891196438]
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlatformA/Trigger" unique_id=564859094]
+position = Vector2(16, -9)
+shape = SubResource("RectangleShape2D_trigger")
+
+[node name="PlatformB" type="AnimatableBody2D" parent="." unique_id=788320765]
+position = Vector2(16, 0)
+collision_layer = 3
+collision_mask = 3
+
+[node name="Sprite2D" type="Sprite2D" parent="PlatformB" unique_id=870154027]
+texture = ExtResource("2_tex")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlatformB" unique_id=976610661]
+shape = SubResource("RectangleShape2D_platform")
+
+[node name="Trigger" type="Area2D" parent="PlatformB" unique_id=404436785]
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlatformB/Trigger" unique_id=1863714889]
+position = Vector2(0, -9)
+shape = SubResource("RectangleShape2D_trigger")

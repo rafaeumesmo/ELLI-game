@@ -1,0 +1,43 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://UI/vitoria_menu.gd" id="1_vit"]
+
+[node name="VitoriaMenu" type="CanvasLayer"]
+layer = 10
+script = ExtResource("1_vit")
+
+[node name="Fundo" type="ColorRect" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.7)
+
+[node name="Caixa" type="VBoxContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="TituloLabel" type="Label" parent="Caixa"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_font_sizes/font_size = 32
+text = "VITÓRIA"
+horizontal_alignment = 1
+
+[node name="JogarDeNovoButton" type="Button" parent="Caixa"]
+layout_mode = 2
+size_flags_horizontal = 4
+custom_minimum_size = Vector2(220, 44)
+text = "Jogar novamente"
+
+[node name="MenuPrincipalButton" type="Button" parent="Caixa"]
+layout_mode = 2
+size_flags_horizontal = 4
+custom_minimum_size = Vector2(220, 44)
+text = "Menu principal"

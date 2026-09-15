@@ -1,0 +1,58 @@
+[gd_scene format=3 uid="uid://dckagv21t0gko"]
+
+[ext_resource type="Script" uid="uid://bavfoxmcxdqb7" path="res://Environment/rolling_boulder.gd" id="1_boulder"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_body"]
+radius = 15.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_zone"]
+size = Vector2(24, 500)
+
+[node name="RollingBoulder" type="CharacterBody2D" unique_id=918945612]
+collision_layer = 4
+collision_mask = 2
+script = ExtResource("1_boulder")
+
+[node name="Visual" type="Polygon2D" parent="." unique_id=951677773]
+color = Color(0.42, 0.36, 0.3, 1)
+polygon = PackedVector2Array(16, 0, 13.856, 8, 8, 13.856, 0, 16, -8, 13.856, -13.856, 8, -16, 0, -13.856, -8, -8, -13.856, 0, -16, 8, -13.856, 13.856, -8)
+
+[node name="Spike1" type="Polygon2D" parent="Visual" unique_id=1155985781]
+color = Color(0.8, 0.1, 0.1, 1)
+polygon = PackedVector2Array(15.65, -3.327, 24, 0, 15.65, 3.327)
+
+[node name="Spike2" type="Polygon2D" parent="Visual" unique_id=1588065571]
+color = Color(0.8, 0.1, 0.1, 1)
+polygon = PackedVector2Array(10.706, 11.89, 12, 20.785, 4.944, 15.217)
+
+[node name="Spike3" type="Polygon2D" parent="Visual" unique_id=1933572553]
+color = Color(0.8, 0.1, 0.1, 1)
+polygon = PackedVector2Array(-4.944, 15.217, -12, 20.785, -10.706, 11.89)
+
+[node name="Spike4" type="Polygon2D" parent="Visual" unique_id=1994667661]
+color = Color(0.8, 0.1, 0.1, 1)
+polygon = PackedVector2Array(-15.65, 3.327, -24, 0, -15.65, -3.327)
+
+[node name="Spike5" type="Polygon2D" parent="Visual" unique_id=1818278715]
+color = Color(0.8, 0.1, 0.1, 1)
+polygon = PackedVector2Array(-10.706, -11.89, -12, -20.785, -4.944, -15.217)
+
+[node name="Spike6" type="Polygon2D" parent="Visual" unique_id=1296118604]
+color = Color(0.8, 0.1, 0.1, 1)
+polygon = PackedVector2Array(4.944, -15.217, 12, -20.785, 10.706, -11.89)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=122540509]
+shape = SubResource("CircleShape2D_body")
+
+[node name="Killzone" type="Area2D" parent="." unique_id=1478228890]
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Killzone" unique_id=363751022]
+shape = SubResource("CircleShape2D_body")
+
+[node name="ActivationZone" type="Area2D" parent="." unique_id=2120206425]
+position = Vector2(0, 250)
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ActivationZone" unique_id=193945934]
+shape = SubResource("RectangleShape2D_zone")

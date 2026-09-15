@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3 uid="uid://bflqi8vip72ap"]
+
+[ext_resource type="Script" path="res://Environment/spike.gd" id="1_spike"]
+[ext_resource type="Texture2D" uid="uid://dq3xn8espvrm1" path="res://assets/espinho_vermelho.png" id="2_spikered"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_espinho"]
+size = Vector2(24, 12)
+
+[node name="EspinhoTatu" type="Area2D"]
+collision_layer = 0
+collision_mask = 1
+script = ExtResource("1_spike")
+damage = 1
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(1.6, 1.6)
+texture = ExtResource("2_spikered")
+offset = Vector2(0, -4)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -2)
+shape = SubResource("RectangleShape2D_espinho")
+
+[node name="DamageTimer" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true

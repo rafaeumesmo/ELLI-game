@@ -1,0 +1,61 @@
+[gd_scene format=3 uid="uid://d0vagalume01"]
+
+[ext_resource type="Texture2D" path="res://assets/vagalume.png" id="1_sheet"]
+[ext_resource type="Script" path="res://Environment/vagalume.gd" id="2_script"]
+[ext_resource type="Texture2D" path="res://Environment/luz_vagalume.tres" id="3_luz"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vagalume1"]
+atlas = ExtResource("1_sheet")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vagalume2"]
+atlas = ExtResource("1_sheet")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vagalume3"]
+atlas = ExtResource("1_sheet")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_vagalume"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vagalume1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vagalume2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vagalume3")
+}],
+"loop": true,
+"name": &"voar",
+"speed": 9.0
+}]
+
+[node name="Vagalume" type="Node2D"]
+z_index = 6
+script = ExtResource("2_script")
+
+[node name="Halo" type="PointLight2D" parent="."]
+texture_filter = 1
+color = Color(1, 0.8509804, 0.5411765, 1)
+energy = 0.0
+blend_mode = 0
+shadow_enabled = false
+texture = ExtResource("3_luz")
+texture_scale = 1.4
+
+[node name="Core" type="PointLight2D" parent="."]
+texture_filter = 1
+color = Color(1, 0.9529412, 0.76862746, 1)
+energy = 0.0
+blend_mode = 0
+shadow_enabled = false
+texture = ExtResource("3_luz")
+texture_scale = 0.25
+
+[node name="Corpo" type="AnimatedSprite2D" parent="."]
+light_mask = 0
+sprite_frames = SubResource("SpriteFrames_vagalume")
+animation = &"voar"

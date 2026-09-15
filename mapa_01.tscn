@@ -1,0 +1,115 @@
+[gd_scene format=4 uid="uid://tmsty6wrsu0u"]
+
+[ext_resource type="TileSet" uid="uid://bkjw6ewvpf5t0" path="res://assets/blocos_tileset.tres" id="6_tileset"]
+[ext_resource type="Script" uid="uid://du58ifk0orr2v" path="res://Environment/cristais_layer.gd" id="7_cristais_scr"]
+[ext_resource type="TileSet" uid="uid://bksacx2vpm4t0" path="res://assets/cristais_tileset.tres" id="7_cristais_ts"]
+[ext_resource type="Script" uid="uid://c50lndsehgvfj" path="res://Environment/blocos_layer.gd" id="7_portal"]
+[ext_resource type="Texture2D" uid="uid://bmcqsrt5bgbg4" path="res://assets/mapa 01.png" id="8_pmmji"]
+[ext_resource type="Script" uid="uid://b5oq6b4rlhbe7" path="res://Environment/lava_floor.gd" id="9_lava"]
+[ext_resource type="PackedScene" uid="uid://dqvpyfsmsranl" path="res://Environment/PortalFase.tscn" id="13_c5hx6"]
+[ext_resource type="Script" uid="uid://bfgb4w1di3l6g" path="res://Environment/fixed_camera_zone.gd" id="13_fixedcam"]
+[ext_resource type="PackedScene" path="res://Environment/Vagalume.tscn" id="14_vagalume"]
+[ext_resource type="Script" path="res://Environment/tela_camera.gd" id="15_telacam"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lava_trigger"]
+size = Vector2(223.83563, 21.23288)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_tower_trigger"]
+size = Vector2(362.4658, 192.0548)
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_brilho"]
+blend_mode = 1
+
+[sub_resource type="Gradient" id="Gradient_brilho"]
+colors = PackedColorArray(1, 1, 1, 0.9, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_brilho"]
+gradient = SubResource("Gradient_brilho")
+width = 256
+height = 256
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[node name="Mapa01" type="Sprite2D" unique_id=1681206707]
+scale = Vector2(3.65, 3.65)
+script = ExtResource("15_telacam")
+modo_camera = "seguir"
+
+[node name="AncoraSuperior" type="Marker2D" parent="."]
+position = Vector2(-192, -128)
+
+[node name="AncoraInferior" type="Marker2D" parent="."]
+position = Vector2(-145.75342, 42.465755)
+
+[node name="AncoraTorre" type="Marker2D" parent="."]
+position = Vector2(1.9178145, -1.9178042)
+
+[node name="Respawn" type="Marker2D" parent="."]
+position = Vector2(-145.75342, 42.465755)
+
+[node name="Blocos" type="TileMapLayer" parent="." unique_id=2049213877]
+tile_map_data = PackedByteArray("AAD4//z/BwAAAAAAAAD5//z/BwAAAAAAAAD4//3/BwAAAAAAAAD5//3/BwAAAAAAAAAGAPz/BwAAAAAAAAAGAP3/BwAAAAAAAAAHAP3/BwAAAAAAAAAHAPz/BAAAAAAAAAD+//7/BwAAAAAAAAD///7/BAAAAAAAAAAAAP7/BwAAAAAAAAABAP7/BAAAAAAAAAACAP7/BwAAAAAAAAADAP7/BwAAAAAAAAD4/wEABwAAAAAAAAD3/wEABwAAAAAAAAD2/wEABwAAAAAAAAAHAAAABwAAAAAAAAAIAAAABAAAAAAAAAAJAAAABAAAAAAAAAAAAPv/BgAAAAAAAAAAAPr/BgAAAAAAAAD4//7/BwAAAAAAAAD5//7/BAAAAAAAAAD7/wMABwAAAAAAAAABAPz/BwAAAAAAAAACAPz/BwAAAAAAAAADAPz/BwAAAAAAAAAEAPz/BwAAAAAAAAAGAP7/BwAAAAAAAAAHAP7/BwAAAAAAAAAFAPz/BwAAAAAAAAAAAPz/BwAAAAAAAAD+/30AAAAAAAAAAAD//30AAAAAAAAAAAAAAH0AAgAAAAAAAAABAH0AAAAAAAAAAAACAH0AAAAAAAAAAAD+/3wAAAAAAAAAAAD+/3sAAAAAAAAAAAD+/3oAAAAAAAAAAAACAHwAAAAAAAAAAAACAHsAAAAAAAAAAAACAHoAAAAAAAAAAAD2/wQABwAAAAAAAAD3/wQABwAAAAAAAAD4/wQABwAAAAAAAAD5/wQABAAAAAAAAAD7/wQABwAAAAAAAAD6/wQABAAAAAAAAAD///n/BwAAAAAAAAD+//n/BwAAAAAAAAD9//n/BwAAAAAAAAD8//n/BwAAAAAAAAD7//n/BwAAAAAAAAD6//n/BwAAAAAAAAD5//n/BwAAAAAAAAD4//n/BwAAAAAAAAD3//n/BwAAAAAAAAD2//n/BwAAAAAAAAD1//n/BwAAAAAAAAD1//r/BwAAAAAAAAAAAPn/BgAAAAAAAAAKAPn/BwAAAAAAAAAKAPv/BwAAAAAAAAAKAPr/BwAAAAAAAAADAPn/BgAAAAAAAAAEAPn/BwAAAAAAAAAFAPn/BwAAAAAAAAAGAPn/BwAAAAAAAAAHAPn/BwAAAAAAAAAIAPn/BwAAAAAAAAAJAPn/BwAAAAAAAAALAPn/BwAAAAAAAAALAPr/BwAAAAAAAAALAPv/BwAAAAAAAAALAPz/BwAAAAAAAAALAP//BwAAAAAAAAALAAAABwAAAAAAAAALAAEABwAAAAAAAAALAAIABwAAAAAAAAALAAMABwAAAAAAAAALAAQABwAAAAAAAAALAAUABwAAAAAAAAAKAPz/BwAAAAAAAAAKAP3/BwAAAAAAAAAKAP7/BwAAAAAAAAAKAP//BwAAAAAAAAAKAAAABwAAAAAAAAAKAAEABwAAAAAAAAAKAAIABwAAAAAAAAAKAAMABwAAAAAAAAAKAAQABwAAAAAAAAAKAAUABwAAAAAAAAAJAAUABwAAAAAAAAAIAAUABwAAAAAAAAAHAAUABwAAAAAAAAAGAAUABwAAAAAAAAAFAAUABwAAAAAAAAAEAAUABwAAAAAAAAADAAUABwAAAAAAAAACAAUABwAAAAAAAAABAAUABwAAAAAAAAAAAAUABwAAAAAAAAD//wUABwAAAAAAAAD+/wUABwAAAAAAAAD9/wUABwAAAAAAAAD8/wUABwAAAAAAAAD7/wUABwAAAAAAAAD4/wUABwAAAAAAAAD3/wUABwAAAAAAAAD2/wUABwAAAAAAAAD1/wUABwAAAAAAAAD1/wQABwAAAAAAAAD1/wIABwAAAAAAAAD1/wEABwAAAAAAAAD1/wAABwAAAAAAAAD1////BwAAAAAAAAD1//7/BwAAAAAAAAD1//v/BwAAAAAAAAD1//z/BwAAAAAAAAD1//3/BwAAAAAAAAD0//n/BwAAAAAAAAD0//r/BwAAAAAAAAD0//v/BwAAAAAAAAD0//z/BwAAAAAAAAALAAYABwAAAAAAAAAKAAYABwAAAAAAAAD5/wYABwAAAAAAAAD6/wYABwAAAAAAAAD7/wYABwAAAAAAAAD8/wYABwAAAAAAAAD9/wYABwAAAAAAAAD+/wYABwAAAAAAAAD//wYABwAAAAAAAAAAAAYABwAAAAAAAAABAAYABwAAAAAAAAACAAYABwAAAAAAAAADAAYABwAAAAAAAAAEAAYABwAAAAAAAAAFAAYABwAAAAAAAAAGAAYABwAAAAAAAAAHAAYABwAAAAAAAAAIAAYABwAAAAAAAAAJAAYABwAAAAAAAAD4/wYABwAAAAAAAAD3/wYABwAAAAAAAAD2/wYABwAAAAAAAAD1/wYABwAAAAAAAAD0/wYABwAAAAAAAAD0/wUABwAAAAAAAAD0/wMABwAAAAAAAAD0/wQABwAAAAAAAAD0/wIABwAAAAAAAAD0/wEABwAAAAAAAAD0/wAABwAAAAAAAAD0////BwAAAAAAAAD0//7/BwAAAAAAAAD0//3/BwAAAAAAAAD1/wMABwAAAAAAAAALAP3/BwAAAAAAAAALAP7/BwAAAAAAAAD5/wUACwAAAAAAAAD6/wUACwAAAAAAAAD5/wEABAAAAAAAAAAAAPj/BgAAAAAAAAABAPj/BgAAAAAAAAACAPj/BgAAAAAAAAADAPj/BgAAAAAAAAA=")
+tile_set = ExtResource("6_tileset")
+script = ExtResource("7_portal")
+
+[node name="Cristais" type="TileMapLayer" parent="." unique_id=2049213878]
+light_mask = 0
+z_index = 5
+tile_set = ExtResource("7_cristais_ts")
+script = ExtResource("7_cristais_scr")
+
+[node name="LavaFloor" type="Area2D" parent="." unique_id=699163944]
+position = Vector2(0.8219147, 78.56164)
+collision_layer = 0
+script = ExtResource("9_lava")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LavaFloor" unique_id=647785222]
+position = Vector2(46.986298, -1.2328796)
+shape = SubResource("RectangleShape2D_lava_trigger")
+
+[node name="Visual" type="Polygon2D" parent="LavaFloor" unique_id=894413432]
+position = Vector2(-4.6575336, -2.945205)
+polygon = PackedVector2Array(-60.27398, -15.342468, 1.3698578, -15.068497, 163.83562, -15.342468, 163.8356, -4.1095886, 163.8356, 6.301361, -60.27398, 6.3013763, -60.27398, -4.38356)
+
+[node name="TowerCameraZone" type="Area2D" parent="." unique_id=191459510]
+position = Vector2(32, -104)
+collision_layer = 0
+script = ExtResource("13_fixedcam")
+ancora_camera_path = NodePath("../AncoraTorre")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="TowerCameraZone" unique_id=335612099]
+position = Vector2(-30.493073, 104.410965)
+shape = SubResource("RectangleShape2D_tower_trigger")
+
+[node name="Cenario" type="Node2D" parent="." unique_id=1800000001]
+z_index = -10
+z_as_relative = false
+
+[node name="BrilhoFundo" type="Sprite2D" parent="Cenario" unique_id=1800000002]
+z_index = 1
+material = SubResource("CanvasItemMaterial_brilho")
+position = Vector2(-3.6986086, -10.684929)
+scale = Vector2(1.6, 1.6)
+texture = SubResource("GradientTexture2D_brilho")
+
+[node name="Mapa01" type="Sprite2D" parent="Cenario" unique_id=1789389830]
+position = Vector2(-3.6986086, -10.684929)
+scale = Vector2(0.26134416, 0.29756466)
+texture = ExtResource("8_pmmji")
+
+[node name="PortalFase" parent="." unique_id=1861570654 instance=ExtResource("13_c5hx6")]
+position = Vector2(31.78082, -105.75342)
+next_scene = "res://mapa_02.tscn"
+
+[node name="Vagalume" parent="." instance=ExtResource("14_vagalume")]
+position = Vector2(20, -20)
+raio_voo = 55.0
+
+[node name="Vagalume2" parent="." instance=ExtResource("14_vagalume")]
+position = Vector2(100, 10)
+raio_voo = 45.0
+
+[node name="Vagalume3" parent="." instance=ExtResource("14_vagalume")]
+position = Vector2(-45, -50)
+raio_voo = 40.0

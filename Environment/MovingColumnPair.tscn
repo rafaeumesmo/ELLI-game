@@ -1,0 +1,58 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://Environment/moving_column_pair.gd" id="1_pair"]
+[ext_resource type="Texture2D" uid="uid://cuqpfw0wpfmq3" path="res://assets/blocoss2.png" id="2_tex"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_column"]
+size = Vector2(16, 64)
+
+[node name="MovingColumnPair" type="Node2D"]
+script = ExtResource("1_pair")
+
+[node name="ColumnA" type="AnimatableBody2D" parent="."]
+position = Vector2(-24, 0)
+collision_layer = 3
+collision_mask = 3
+
+[node name="Tile1" type="Sprite2D" parent="ColumnA"]
+position = Vector2(0, -24)
+texture = ExtResource("2_tex")
+
+[node name="Tile2" type="Sprite2D" parent="ColumnA"]
+position = Vector2(0, -8)
+texture = ExtResource("2_tex")
+
+[node name="Tile3" type="Sprite2D" parent="ColumnA"]
+position = Vector2(0, 8)
+texture = ExtResource("2_tex")
+
+[node name="Tile4" type="Sprite2D" parent="ColumnA"]
+position = Vector2(0, 24)
+texture = ExtResource("2_tex")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ColumnA"]
+shape = SubResource("RectangleShape2D_column")
+
+[node name="ColumnB" type="AnimatableBody2D" parent="."]
+position = Vector2(24, 0)
+collision_layer = 3
+collision_mask = 3
+
+[node name="Tile1" type="Sprite2D" parent="ColumnB"]
+position = Vector2(0, -24)
+texture = ExtResource("2_tex")
+
+[node name="Tile2" type="Sprite2D" parent="ColumnB"]
+position = Vector2(0, -8)
+texture = ExtResource("2_tex")
+
+[node name="Tile3" type="Sprite2D" parent="ColumnB"]
+position = Vector2(0, 8)
+texture = ExtResource("2_tex")
+
+[node name="Tile4" type="Sprite2D" parent="ColumnB"]
+position = Vector2(0, 24)
+texture = ExtResource("2_tex")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ColumnB"]
+shape = SubResource("RectangleShape2D_column")

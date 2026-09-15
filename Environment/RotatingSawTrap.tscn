@@ -1,0 +1,31 @@
+[gd_scene format=3 uid="uid://b07vound40hxl"]
+
+[ext_resource type="Script" uid="uid://d34kirdt13s51" path="res://Environment/rotating_saw_trap.gd" id="1_saw"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_floor"]
+radius = 12.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_hitbox"]
+radius = 15.0
+
+[node name="RotatingSawTrap" type="Node2D" unique_id=910410247]
+script = ExtResource("1_saw")
+
+[node name="Riser" type="AnimatableBody2D" parent="." unique_id=749619696]
+position = Vector2(0, 24)
+collision_layer = 3
+collision_mask = 3
+
+[node name="Visual" type="Polygon2D" parent="Riser" unique_id=1255495919]
+color = Color(0.6, 0.6, 0.65, 1)
+polygon = PackedVector2Array(16, 0, 8.32, 4.8, 8, 13.86, 0, 9.6, -8, 13.86, -8.32, 4.8, -16, 0, -8.32, -4.8, -8, -13.86, 0, -9.6, 8, -13.86, 8.32, -4.8)
+
+[node name="FloorCollision" type="CollisionShape2D" parent="Riser" unique_id=1395563526]
+shape = SubResource("CircleShape2D_floor")
+
+[node name="Hitbox" type="Area2D" parent="Riser" unique_id=1804445445]
+collision_layer = 0
+collision_mask = 5
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Riser/Hitbox" unique_id=2002102742]
+shape = SubResource("CircleShape2D_hitbox")

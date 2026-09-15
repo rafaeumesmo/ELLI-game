@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="PackedScene" uid="uid://bqxr3n8yv6k2c" path="res://Environment/Caracol.tscn" id="1_base"]
+
+[node name="CaracolBebe" instance=ExtResource("1_base")]
+scale = Vector2(0.55, 0.55)
+eh_bebe = true
+velocidade = 10.0
+alcance_patrulha = 18.0
+distancia_encolher = 0.0
+morre_pisado = true
+texto_dica = ""
+frases_pai_vivo = Array[String](["meu pai é o mais rápido daqui.", "meu pai já subiu naquela pedra. na pedra inteira.", "meu pai não tem medo de nada.", "meu pai atravessou o jardim todo uma vez.", "meu pai carrega a casa dele e ainda me carrega.", "meu pai conhece todos os caminhos.", "meu pai fala com os grandes. tipo você.", "quando eu crescer eu vou ser igual ele.", "meu pai diz que a gente chega em qualquer lugar. só demora."])
+intervalo_pai_vivo = 3.0
+frases_pai_morto = Array[String](["pai! pai!", "pai, cadê você?", "paaaai!", "pai, para de brincar!", "pai, eu não tô achando você!", "pai, eu tô com medo!", "PAI!", "pai... responde."])
+intervalo_pai_morto = 2.0

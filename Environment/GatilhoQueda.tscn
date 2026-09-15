@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://q610mue5fiha"]
+
+[ext_resource type="Script" path="res://Environment/gatilho_queda.gd" id="1_gat"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_gat"]
+size = Vector2(18, 18)
+
+[node name="GatilhoQueda" type="Area2D"]
+collision_layer = 0
+collision_mask = 1
+script = ExtResource("1_gat")
+
+[node name="Marca" type="Polygon2D" parent="."]
+color = Color(0.22, 0.32, 0.45, 0.8)
+polygon = PackedVector2Array(0, -7, 7, 0, 0, 7, -7, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_gat")

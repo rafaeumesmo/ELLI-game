@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://cspy64i8xyo57"]
+
+[ext_resource type="Script" path="res://Environment/borda_superior.gd" id="1_script"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_borda"]
+size = Vector2(20, 12)
+
+[node name="BordaSuperior" type="Area2D"]
+collision_layer = 0
+script = ExtResource("1_script")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_borda")

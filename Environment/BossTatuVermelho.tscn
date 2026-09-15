@@ -1,0 +1,121 @@
+[gd_scene format=3 uid="uid://csw5ta0jqvf76"]
+
+[ext_resource type="Script" uid="uid://dkyp2jcv0x16w" path="res://Environment/boss_tatu_vermelho.gd" id="1_boss"]
+[ext_resource type="Texture2D" uid="uid://da12jc8hmvswo" path="res://assets/bosstatuvermelho.png" id="2_sheet"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_idle_a"]
+atlas = ExtResource("2_sheet")
+region = Rect2(0, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_idle_d"]
+atlas = ExtResource("2_sheet")
+region = Rect2(384, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_roll_a1"]
+atlas = ExtResource("2_sheet")
+region = Rect2(128, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_roll_a2"]
+atlas = ExtResource("2_sheet")
+region = Rect2(256, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_roll_d1"]
+atlas = ExtResource("2_sheet")
+region = Rect2(512, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_roll_d2"]
+atlas = ExtResource("2_sheet")
+region = Rect2(640, 0, 128, 128)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_boss"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_idle_a")
+}],
+"loop": 1,
+"name": &"idle_A",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_idle_d")
+}],
+"loop": 1,
+"name": &"idle_D",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_roll_a1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_roll_a2")
+}],
+"loop": 1,
+"name": &"roll_A",
+"speed": 16.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_roll_d1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_roll_d2")
+}],
+"loop": 1,
+"name": &"roll_D",
+"speed": 16.0
+}]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_body"]
+radius = 37.0
+height = 74.0
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_kill"]
+radius = 33.0
+height = 66.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_zone"]
+size = Vector2(394, 191)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_head"]
+size = Vector2(84, 29)
+
+[node name="BossTatuVermelho" type="CharacterBody2D" unique_id=549100635]
+collision_layer = 4
+collision_mask = 2
+script = ExtResource("1_boss")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1588701804]
+sprite_frames = SubResource("SpriteFrames_boss")
+animation = &"idle_D"
+frame_progress = 0.6944399
+offset = Vector2(0, -60)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=991029751]
+position = Vector2(0, -30)
+shape = SubResource("CapsuleShape2D_body")
+
+[node name="Killzone" type="Area2D" parent="." unique_id=1565416797]
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Killzone" unique_id=1220745270]
+position = Vector2(0, -30)
+shape = SubResource("CapsuleShape2D_kill")
+
+[node name="ActivationZone" type="Area2D" parent="." unique_id=670977052]
+position = Vector2(0, -20)
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ActivationZone" unique_id=1650791457]
+position = Vector2(-12, -75.5)
+shape = SubResource("RectangleShape2D_zone")
+
+[node name="Head" type="Area2D" parent="." unique_id=1551865360]
+position = Vector2(0, -62)
+collision_layer = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Head" unique_id=1638880362]
+position = Vector2(-3, 19.5)
+shape = SubResource("RectangleShape2D_head")

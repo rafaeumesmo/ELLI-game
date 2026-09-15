@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://djbyguymwfhkf"]
+
+[ext_resource type="Script" uid="uid://c4o1meggcyif6" path="res://Environment/granito.gd" id="1_granito"]
+[ext_resource type="Texture2D" uid="uid://c2ufd8gs3petl" path="res://assets/pedras/granito00.png" id="2_tex"]
+
+[node name="Granito" type="Sprite2D" unique_id=1176153955]
+texture = ExtResource("2_tex")
+script = ExtResource("1_granito")

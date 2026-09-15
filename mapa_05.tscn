@@ -1,0 +1,92 @@
+[gd_scene format=4 uid="uid://dm0apa05cena1"]
+
+[ext_resource type="Script" uid="uid://cxi6cdacistp5" path="res://Environment/cena_camera_fixa.gd" id="1_cam"]
+[ext_resource type="TileSet" uid="uid://bkjw6ewvpf5t0" path="res://assets/blocos_tileset.tres" id="2_tileset"]
+[ext_resource type="Script" uid="uid://c50lndsehgvfj" path="res://Environment/blocos_layer.gd" id="3_blocos"]
+[ext_resource type="Script" uid="uid://du58ifk0orr2v" path="res://Environment/cristais_layer.gd" id="4_cristais_scr"]
+[ext_resource type="TileSet" uid="uid://bksacx2vpm4t0" path="res://assets/cristais_tileset.tres" id="4_cristais_ts"]
+[ext_resource type="PackedScene" uid="uid://ck4l3vm43pipc" path="res://Player/Player.tscn" id="5_player"]
+[ext_resource type="PackedScene" uid="uid://de8utfkx51gq2" path="res://UI/DeathMenu.tscn" id="6_deathmenu"]
+[ext_resource type="PackedScene" path="res://UI/HealthBar.tscn" id="7_healthbar"]
+[ext_resource type="Texture2D" uid="uid://bmcqsrt5bgbg4" path="res://assets/mapa 01.png" id="9_fundo"]
+[ext_resource type="PackedScene" uid="uid://d0vagalume01" path="res://Environment/Vagalume.tscn" id="11_2bbwh"]
+
+[sub_resource type="Environment" id="Environment_vagalume"]
+background_mode = 3
+glow_enabled = true
+glow_bloom = 0.1
+glow_hdr_threshold = 0.9
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_brilho"]
+blend_mode = 1
+
+[sub_resource type="Gradient" id="Gradient_brilho"]
+colors = PackedColorArray(1, 1, 1, 0.9, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_brilho"]
+gradient = SubResource("Gradient_brilho")
+width = 256
+height = 256
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[node name="Mapa05" type="Node2D" unique_id=878957284]
+scale = Vector2(3.65, 3.65)
+script = ExtResource("1_cam")
+
+[node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=1641997980]
+position = Vector2(0.2739726, 0)
+color = Color(0.12549, 0.141176, 0.227451, 1)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1483576690]
+environment = SubResource("Environment_vagalume")
+
+[node name="Blocos" type="TileMapLayer" parent="." unique_id=747837629]
+tile_map_data = PackedByteArray("AAAAAAsABwAAAAAAAAABAAsABwAAAAAAAAACAAsABwAAAAAAAAAGAAsABwAAAAAAAAAHAAsABwAAAAAAAAAIAAsABwAAAAAAAAAJAAsABwAAAAAAAAAKAAsABwAAAAAAAAALAAsABwAAAAAAAAAMAAsABwAAAAAAAAANAAsABwAAAAAAAAAOAAsABwAAAAAAAAAPAAsABwAAAAAAAAAQAAsABwAAAAAAAAARAAsABwAAAAAAAAASAAsABwAAAAAAAAATAAsABwAAAAAAAAAUAAsABwAAAAAAAAAUAAoABwAAAAAAAAAUAAkABwAAAAAAAAAUAAgABwAAAAAAAAAUAAcABwAAAAAAAAAUAAYABwAAAAAAAAAUAAUABwAAAAAAAAAUAAQABwAAAAAAAAAUAAMABwAAAAAAAAAUAAIABwAAAAAAAAAUAAEABwAAAAAAAAAUAAAABwAAAAAAAAAUAP//BwAAAAAAAAATAP//BwAAAAAAAAASAP//BwAAAAAAAAARAP//BwAAAAAAAAAQAP//BwAAAAAAAAAPAP//BwAAAAAAAAAOAP//BwAAAAAAAAAAAP//BwAAAAAAAAABAP//BwAAAAAAAAACAP//BwAAAAAAAAADAP//BwAAAAAAAAAEAP//BwAAAAAAAAAFAP//BwAAAAAAAAAGAP//BwAAAAAAAAAHAP//BwAAAAAAAAAIAP//BwAAAAAAAAAJAP//BwAAAAAAAAAKAP//BwAAAAAAAAALAP//BwAAAAAAAAAMAP//BwAAAAAAAAANAP//BwAAAAAAAAD//wIABwAAAAAAAAD//wUABwAAAAAAAAD//wYABwAAAAAAAAD//wcABwAAAAAAAAD//wgABwAAAAAAAAD//wkABwAAAAAAAAD//woABwAAAAAAAAD//wsABwAAAAAAAAAOAAwABwAAAAAAAAAPAAwABwAAAAAAAAAQAAwABwAAAAAAAAANAAwABwAAAAAAAAD+////BwAAAAAAAAD+/wAABwAAAAAAAAD+/wEABwAAAAAAAAD+/wIABwAAAAAAAAD+/wMABwAAAAAAAAD+/wQABwAAAAAAAAD+/wUABwAAAAAAAAD+/wYABwAAAAAAAAD+/wcABwAAAAAAAAD+/wgABwAAAAAAAAD+/wkABwAAAAAAAAD+/woABwAAAAAAAAD+/wsABwAAAAAAAAD+/wwABwAAAAAAAAD//wwABwAAAAAAAAAAAAwABwAAAAAAAAABAAwABwAAAAAAAAACAAwABwAAAAAAAAAGAAwABwAAAAAAAAAHAAwABwAAAAAAAAAIAAwABwAAAAAAAAAJAAwABwAAAAAAAAAKAAwABwAAAAAAAAALAAwABwAAAAAAAAAMAAwABwAAAAAAAAARAAwABwAAAAAAAAASAAwABwAAAAAAAAATAAwABwAAAAAAAAAUAAwABwAAAAAAAAAVAAwABwAAAAAAAAAVAAsABwAAAAAAAAAVAAoABwAAAAAAAAAVAAkABwAAAAAAAAAVAAgABwAAAAAAAAAVAAcABwAAAAAAAAAVAAYABwAAAAAAAAAVAAUABwAAAAAAAAAVAAQABwAAAAAAAAAVAAMABwAAAAAAAAAVAAIABwAAAAAAAAAVAAEABwAAAAAAAAAVAAAABwAAAAAAAAAVAP//BwAAAAAAAAD//wMABwAAAAAAAAD//wQABwAAAAAAAAD//wEABwAAAAAAAAD//wAABwAAAAAAAAD/////BwAAAAAAAAADAAsABwAAAAAAAAAEAAsABwAAAAAAAAAFAAsABwAAAAAAAAADAAwABwAAAAAAAAAEAAwABwAAAAAAAAAFAAwABwAAAAAAAAA=")
+tile_set = ExtResource("2_tileset")
+script = ExtResource("3_blocos")
+
+[node name="Cristais" type="TileMapLayer" parent="." unique_id=90097908]
+light_mask = 0
+z_index = 5
+tile_set = ExtResource("4_cristais_ts")
+script = ExtResource("4_cristais_scr")
+
+[node name="Player" parent="." unique_id=26884424 instance=ExtResource("5_player")]
+position = Vector2(17.53424, 159.45206)
+
+[node name="FixedCamera" type="Camera2D" parent="." unique_id=1164330075]
+position = Vector2(158.90411, 92.60274)
+zoom = Vector2(0.9, 0.9)
+
+[node name="DeathMenu" parent="." unique_id=976302966 instance=ExtResource("6_deathmenu")]
+visible = false
+
+[node name="HealthBar" parent="." unique_id=286172687 instance=ExtResource("7_healthbar")]
+visible = false
+
+[node name="Cenario" type="Node2D" parent="." unique_id=317925928]
+z_index = -10
+z_as_relative = false
+
+[node name="BrilhoFundo" type="Sprite2D" parent="Cenario" unique_id=1871430200]
+z_index = 1
+material = SubResource("CanvasItemMaterial_brilho")
+position = Vector2(156.71233, 90.0685)
+scale = Vector2(1.6, 1.6)
+texture = SubResource("GradientTexture2D_brilho")
+
+[node name="Mapa01" type="Sprite2D" parent="Cenario" unique_id=631123255]
+position = Vector2(156.71233, 90.0685)
+scale = Vector2(0.31635278, 0.3445586)
+texture = ExtResource("9_fundo")
+
+[node name="Vagalume2" parent="." unique_id=122324904 instance=ExtResource("11_2bbwh")]
+position = Vector2(201.64383, 131.78082)
+
+[node name="Vagalume3" parent="." unique_id=681264449 instance=ExtResource("11_2bbwh")]
+position = Vector2(254.24657, 23.561644)
+
+[node name="Vagalume4" parent="." unique_id=1571390339 instance=ExtResource("11_2bbwh")]
+position = Vector2(27.39726, 40.27397)

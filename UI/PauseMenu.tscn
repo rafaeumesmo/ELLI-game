@@ -1,0 +1,41 @@
+[gd_scene format=3 uid="uid://dv6co4w2cyhyb"]
+
+[ext_resource type="Script" uid="uid://bsquhy5ra3j5u" path="res://UI/pause_menu.gd" id="1_05bun"]
+
+[node name="PauseMenu" type="CanvasLayer" unique_id=329811470]
+process_mode = 3
+script = ExtResource("1_05bun")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=1128120967]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="Label" type="Label" parent="VBoxContainer" unique_id=656887514]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "PAUSED"
+
+[node name="ContinuarButton" type="Button" parent="VBoxContainer" unique_id=1555153770]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+text = "Resume"
+metadata/_edit_use_anchors_ = true
+
+[node name="MenuButton" type="Button" parent="VBoxContainer" unique_id=1179228643]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+text = "Main Menu"
+metadata/_edit_use_anchors_ = true
+
+[node name="SairButton" type="Button" parent="VBoxContainer" unique_id=348293554]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+text = "Quit"
+metadata/_edit_use_anchors_ = true

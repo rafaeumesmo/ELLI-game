@@ -1,0 +1,25 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Environment/crushing_block.gd" id="1_crush"]
+[ext_resource type="Texture2D" path="res://assets/blocoss2.png" id="2_tex"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_block"]
+size = Vector2(16, 16)
+
+[node name="CrushingBlock" type="AnimatableBody2D"]
+collision_layer = 3
+collision_mask = 3
+script = ExtResource("1_crush")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_tex")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_block")
+
+[node name="Killzone" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 1
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Killzone"]
+shape = SubResource("RectangleShape2D_block")

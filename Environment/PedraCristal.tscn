@@ -1,0 +1,21 @@
+[gd_scene format=3 uid="uid://dq3k7wcpbnx5r"]
+
+[ext_resource type="Script" path="res://Environment/pedra_cristal.gd" id="1_pc"]
+[ext_resource type="Texture2D" path="res://assets/pedras/pedras-cristal.png" id="2_sheet"]
+[ext_resource type="Texture2D" path="res://Environment/luz_radial.tres" id="3_luz"]
+
+[node name="PedraCristal" type="Node2D"]
+z_index = 5
+script = ExtResource("1_pc")
+
+[node name="Cristal" type="Sprite2D" parent="."]
+light_mask = 0
+texture = ExtResource("2_sheet")
+hframes = 9
+
+[node name="Luz" type="PointLight2D" parent="."]
+texture_filter = 1
+color = Color(0.55, 0.85, 1, 1)
+energy = 0.8
+texture = ExtResource("3_luz")
+texture_scale = 0.65

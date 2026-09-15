@@ -1,0 +1,37 @@
+[gd_scene format=3 uid="uid://dqvpyfsmsranl"]
+
+[ext_resource type="Script" uid="uid://cn30lt1hflsyc" path="res://Environment/portal_fase.gd" id="1_portal"]
+
+[sub_resource type="Gradient" id="Gradient_portal"]
+offsets = PackedFloat32Array(0, 0.5, 1)
+colors = PackedColorArray(0.6, 0.62, 0.78, 0, 0.5, 0.52, 0.65, 0.5, 0.4, 0.42, 0.55, 0)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_portal"]
+radius = 16.0
+
+[node name="PortalFase" type="Area2D" unique_id=1422716085]
+collision_layer = 0
+script = ExtResource("1_portal")
+
+[node name="Particulas" type="CPUParticles2D" parent="." unique_id=807661752]
+texture_filter = 1
+emitting = false
+amount = 10
+lifetime = 1.6
+randomness = 0.6
+emission_shape = 1
+emission_sphere_radius = 14.0
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 1.0
+initial_velocity_max = 4.0
+radial_accel_min = -10.0
+radial_accel_max = -3.0
+tangential_accel_min = 4.0
+tangential_accel_max = 10.0
+scale_amount_max = 1.6
+color = Color(0.5, 0.52, 0.62, 1)
+color_ramp = SubResource("Gradient_portal")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1020293439]
+shape = SubResource("CircleShape2D_portal")
