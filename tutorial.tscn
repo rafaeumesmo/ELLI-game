@@ -1,16 +1,18 @@
 [gd_scene format=4 uid="uid://ctuusr11vxel6"]
 
-[ext_resource type="Script" uid="uid://d0dxoont1dta6" path="res://Environment/tela_camera.gd" id="1_cam"]
+[ext_resource type="Script" uid="uid://cxi6cdacistp5" path="res://Environment/cena_camera_fixa.gd" id="1_cam"]
 [ext_resource type="TileSet" uid="uid://bkjw6ewvpf5t0" path="res://assets/blocos_tileset.tres" id="3_tileset"]
 [ext_resource type="Script" uid="uid://c50lndsehgvfj" path="res://Environment/blocos_layer.gd" id="4_blocos"]
 [ext_resource type="Script" uid="uid://du58ifk0orr2v" path="res://Environment/cristais_layer.gd" id="4_cristais_scr"]
 [ext_resource type="TileSet" uid="uid://bksacx2vpm4t0" path="res://assets/cristais_tileset.tres" id="4_cristais_ts"]
-[ext_resource type="PackedScene" uid="uid://cspy64i8xyo57" path="res://Environment/BordaSuperior.tscn" id="7_borda"]
-[ext_resource type="PackedScene" uid="uid://tmsty6wrsu0u" path="res://mapa_01.tscn" id="7_mapa01"]
+[ext_resource type="PackedScene" uid="uid://dqvpyfsmsranl" path="res://Environment/PortalFase.tscn" id="7_portal"]
 [ext_resource type="PackedScene" uid="uid://bqxr3n8yv6k2c" path="res://Environment/Caracol.tscn" id="8_4t6hg"]
 [ext_resource type="Texture2D" uid="uid://bmcqsrt5bgbg4" path="res://assets/mapa 01.png" id="9_7vrqn"]
 [ext_resource type="Texture2D" uid="uid://dm7db2pcksjxg" path="res://assets/efeito subindo a parede.png" id="13_dicaparede"]
 [ext_resource type="Script" uid="uid://df617odw0ife8" path="res://Environment/dica_parede.gd" id="14_dicaparede_scr"]
+[ext_resource type="PackedScene" uid="uid://ck4l3vm43pipc" path="res://Player/Player.tscn" id="20_player"]
+[ext_resource type="PackedScene" uid="uid://de8utfkx51gq2" path="res://UI/DeathMenu.tscn" id="21_deathmenu"]
+[ext_resource type="PackedScene" path="res://UI/HealthBar.tscn" id="22_healthbar"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_brilho"]
 blend_mode = 1
@@ -94,21 +96,20 @@ animations = [{
 size = Vector2(88, 104)
 
 [node name="Tutorial" type="Node2D" unique_id=1681206707]
-position = Vector2(700, 409)
+position = Vector2(580, 326)
 scale = Vector2(3.65, 3.65)
 script = ExtResource("1_cam")
 
-[node name="AncoraSuperior" type="Marker2D" parent="." unique_id=64176491]
-position = Vector2(-166.30136, -81.36986)
-
-[node name="AncoraInferior" type="Marker2D" parent="." unique_id=158475495]
-position = Vector2(-192, 96)
-
-[node name="AncoraCamera" type="Marker2D" parent="." unique_id=1378639882]
-position = Vector2(1.9178145, -1.9178042)
-
-[node name="Respawn" type="Marker2D" parent="." unique_id=1977525591]
+[node name="Player" parent="." unique_id=805600248 instance=ExtResource("20_player")]
 position = Vector2(-145.75342, 42.465755)
+
+[node name="FixedCamera" type="Camera2D" parent="." unique_id=473829105]
+position = Vector2(1.9178145, -1.9178042)
+zoom = Vector2(0.9, 0.9)
+
+[node name="DeathMenu" parent="." unique_id=411104661 instance=ExtResource("21_deathmenu")]
+
+[node name="HealthBar" parent="." unique_id=551189739 instance=ExtResource("22_healthbar")]
 
 [node name="Blocos" type="TileMapLayer" parent="." unique_id=2049213877]
 tile_map_data = PackedByteArray("AAD7/wMABwAAAAAAAAD2/wQABwAAAAAAAAD3/wQABwAAAAAAAAD4/wQABwAAAAAAAAD7/wQABwAAAAAAAAD///n/BwAAAAAAAAD+//n/BwAAAAAAAAD9//n/BwAAAAAAAAD8//n/BwAAAAAAAAD7//n/BwAAAAAAAAD6//n/BwAAAAAAAAD5//n/BwAAAAAAAAD4//n/BwAAAAAAAAD3//n/BwAAAAAAAAD2//n/BwAAAAAAAAD1//n/BwAAAAAAAAAKAPn/BwAAAAAAAAAKAPv/BwAAAAAAAAAKAPr/BwAAAAAAAAAEAPn/BwAAAAAAAAAFAPn/BwAAAAAAAAAGAPn/BwAAAAAAAAAHAPn/BwAAAAAAAAAIAPn/BwAAAAAAAAAJAPn/BwAAAAAAAAALAPn/BwAAAAAAAAALAPr/BwAAAAAAAAALAPv/BwAAAAAAAAALAPz/BwAAAAAAAAALAP//BwAAAAAAAAALAAAABwAAAAAAAAALAAEABwAAAAAAAAALAAIABwAAAAAAAAALAAMABwAAAAAAAAALAAQABwAAAAAAAAALAAUABwAAAAAAAAAKAPz/BwAAAAAAAAAKAP3/BwAAAAAAAAAKAP7/BwAAAAAAAAAKAP//BwAAAAAAAAAKAAAABwAAAAAAAAAKAAEABwAAAAAAAAAKAAIABwAAAAAAAAAKAAMABwAAAAAAAAAKAAQABwAAAAAAAAAKAAUABwAAAAAAAAAJAAUABwAAAAAAAAAIAAUABwAAAAAAAAAHAAUABwAAAAAAAAAGAAUABwAAAAAAAAAFAAUABwAAAAAAAAAEAAUABwAAAAAAAAADAAUABwAAAAAAAAACAAUABwAAAAAAAAABAAUABwAAAAAAAAAAAAUABwAAAAAAAAD//wUABwAAAAAAAAD+/wUABwAAAAAAAAD9/wUABgAAAAAAAAD8/wUABwAAAAAAAAD7/wUABwAAAAAAAAD4/wUABwAAAAAAAAD3/wUABwAAAAAAAAD2/wUABwAAAAAAAAD1/wUABwAAAAAAAAD1/wQABwAAAAAAAAD1/wIABwAAAAAAAAD1/wEABwAAAAAAAAD1/wAABwAAAAAAAAD1////BwAAAAAAAAD1//7/BwAAAAAAAAD1//z/BwAAAAAAAAD1//3/BwAAAAAAAAD0//n/BwAAAAAAAAD0//r/BwAAAAAAAAD0//v/BwAAAAAAAAD0//z/BwAAAAAAAAALAAYABwAAAAAAAAAKAAYABwAAAAAAAAD5/wYABwAAAAAAAAD6/wYABwAAAAAAAAD7/wYABwAAAAAAAAD8/wYABgAAAAAAAAD9/wYABgAAAAAAAAD+/wYABgAAAAAAAAD//wYABwAAAAAAAAAAAAYABwAAAAAAAAABAAYABwAAAAAAAAACAAYABwAAAAAAAAADAAYABwAAAAAAAAAEAAYABwAAAAAAAAAFAAYABwAAAAAAAAAGAAYABwAAAAAAAAAHAAYABwAAAAAAAAAIAAYABwAAAAAAAAAJAAYABwAAAAAAAAD4/wYABwAAAAAAAAD3/wYABwAAAAAAAAD2/wYABwAAAAAAAAD1/wYABwAAAAAAAAD0/wYABwAAAAAAAAD0/wUABwAAAAAAAAD0/wMABwAAAAAAAAD0/wQABwAAAAAAAAD0/wIABwAAAAAAAAD0/wEABwAAAAAAAAD0/wAABwAAAAAAAAD0////BwAAAAAAAAD0//7/BwAAAAAAAAD0//3/BwAAAAAAAAD1/wMABwAAAAAAAAALAP3/BwAAAAAAAAALAP7/BwAAAAAAAAAAAPn/BwAAAAAAAAABAPn/BwAAAAAAAAACAPn/BwAAAAAAAAADAPn/BwAAAAAAAAD6/wMABwAAAAAAAAD6/wQABwAAAAAAAAD6/wUABwAAAAAAAAD5/wUABwAAAAAAAAD5/wQABwAAAAAAAAD6/wIABgAAAAAAAAD7/wIABgAAAAAAAAD8/wIABgAAAAAAAAD9/wIABgAAAAAAAAD+/wIABgAAAAAAAAABAAIABwAAAAAAAAACAAIABwAAAAAAAAACAAMABwAAAAAAAAACAAQABwAAAAAAAAABAAQABwAAAAAAAAAAAAQABwAAAAAAAAD//wQABwAAAAAAAAD+/wQABwAAAAAAAAD9/wQABgAAAAAAAAD8/wQABgAAAAAAAAD8/wMABgAAAAAAAAD9/wMABwAAAAAAAAD+/wMABwAAAAAAAAAAAAMABwAAAAAAAAABAAMABwAAAAAAAAD//wMABwAAAAAAAAADAAIABwAAAAAAAAAEAAIABwAAAAAAAAAFAAIABwAAAAAAAAAGAAIABwAAAAAAAAAHAAIABwAAAAAAAAAIAAIABwAAAAAAAAAIAAMABwAAAAAAAAAJAAMABwAAAAAAAAAJAAQABwAAAAAAAAAJAAIABwAAAAAAAAAIAAQABwAAAAAAAAAHAAQABwAAAAAAAAAGAAQABwAAAAAAAAAFAAQABwAAAAAAAAAEAAQABwAAAAAAAAADAAQABwAAAAAAAAADAAMABwAAAAAAAAAEAAMABwAAAAAAAAAFAAMABwAAAAAAAAAGAAMABwAAAAAAAAAHAAMABwAAAAAAAAAHAP//BwAAAAAAAAAHAP7/BgAAAAAAAAAHAP3/BwAAAAAAAAAHAPz/BgAAAAAAAAABAPz/BwAAAAAAAAACAPz/BwAAAAAAAAADAPz/BwAAAAAAAAAEAPz/BwAAAAAAAAAFAPz/BwAAAAAAAAAGAPz/BwAAAAAAAAD+//z/BwAAAAAAAAD9//z/BwAAAAAAAAD8//z/BwAAAAAAAAD7//z/BwAAAAAAAAD6//z/BwAAAAAAAAD4//z/BwAAAAAAAAD3//z/BwAAAAAAAAD2//z/BwAAAAAAAAD5//z/BwAAAAAAAAD///z/BAAAAAAAAAAAAPz/BAAAAAAAAAD//wIACwAAAAAAAAAAAAIACwAAAAAAAAD2//3/BgAAAAAAAAD3//3/BgAAAAAAAAD4//3/BwAAAAAAAAD5//3/BwAAAAAAAAD6//3/BwAAAAAAAAD7//3/BwAAAAAAAAD8//3/BwAAAAAAAAD9//3/BwAAAAAAAAD+//3/BwAAAAAAAAABAP3/BwAAAAAAAAACAP3/BwAAAAAAAAADAP3/BwAAAAAAAAAEAP3/BwAAAAAAAAAFAP3/BwAAAAAAAAAGAP3/BgAAAAAAAAAGAP7/BwAAAAAAAAAGAP//BgAAAAAAAAA=")
@@ -121,9 +122,9 @@ z_index = 5
 tile_set = ExtResource("4_cristais_ts")
 script = ExtResource("4_cristais_scr")
 
-[node name="BordaSuperior" parent="." unique_id=1861570654 instance=ExtResource("7_borda")]
+[node name="PortalFase" parent="." unique_id=1861570654 instance=ExtResource("7_portal")]
 position = Vector2(-166.30136, -81.36986)
-proxima_tela = ExtResource("7_mapa01")
+next_scene = "res://mapa_01.tscn"
 
 [node name="Caracol" parent="." unique_id=1948034631 instance=ExtResource("8_4t6hg")]
 position = Vector2(-130.95891, 54.520546)

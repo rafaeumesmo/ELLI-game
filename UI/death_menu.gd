@@ -20,11 +20,7 @@ func show_death() -> void:
 func _on_retry_pressed() -> void:
 	SaveManager.descartar_pendentes()
 	get_tree().paused = false
-	var mundo := get_tree().get_first_node_in_group("gerenciador")
-	if mundo != null:
-		mundo.recarregar_tela()
-	else:
-		get_tree().reload_current_scene()
+	get_tree().reload_current_scene()
 
 func _on_menu_pressed() -> void:
 	get_tree().paused = false

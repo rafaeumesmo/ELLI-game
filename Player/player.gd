@@ -94,40 +94,12 @@ func _ready() -> void:
 		equip_gun(false)
 	if SaveManager.tem_dash:
 		dash_desbloqueado = true
-	# Cenas ainda no esquema antigo (troca de cena): current_scene É a fase,
-	# então o checkpoint dela já pode ser aplicado aqui. Sob o Mundo
-	# (mundo.gd), quem chama ao_entrar_na_tela() é o próprio Mundo -- ver
-	# comentário lá; current_scene seria o Mundo, não a tela.
-	if get_tree().get_first_node_in_group("gerenciador") != null:
-		return
 	var scene_path := get_tree().current_scene.scene_file_path
 	if SaveManager.has_checkpoint(scene_path):
 		global_position = SaveManager.checkpoint_position
 		_apply_checkpoint_camera(get_tree().current_scene)
 
-## Chamado sempre que o Elísio "entra" numa tela: pela primeira vez (Mundo
-## carregando a tela_inicial), ao subir de tela (subir_tela) ou ao recarregar
-## depois de morrer (recarregar_tela). Extraído do antigo _ready() -- que só
-## rodava uma vez, quando cada fase era sua própria cena com o player dentro.
-func ao_entrar_na_tela(tela: Node2D) -> void:
-	if SaveManager.has_checkpoint(tela.scene_file_path):
-		global_position = SaveManager.checkpoint_position
-		_apply_checkpoint_camera(tela)
-
 func _apply_checkpoint_camera(tela: Node) -> void:
-	var mundo := get_tree().get_first_node_in_group("gerenciador")
-	if mundo != null:
-		# Sob o Mundo, checkpoint_camera_path aponta pra um Marker2D (âncora)
-		# dentro da tela, não pra uma Camera2D irmã.
-		if SaveManager.checkpoint_camera_path != "":
-			var ancora := tela.get_node_or_null(SaveManager.checkpoint_camera_path) as Marker2D
-			if ancora:
-				var zoom: Vector2 = tela.zoom_camera if "zoom_camera" in tela else Vector2(0.9, 0.9)
-				mundo.ancorada(ancora, zoom, true)
-				return
-		mundo.seguir_jogador(true)
-		return
-	# Esquema antigo: liga a Camera2D certa dentro da própria cena da fase.
 	var fixed_camera: Camera2D = null
 	if SaveManager.checkpoint_camera_path != "":
 		fixed_camera = tela.get_node_or_null(SaveManager.checkpoint_camera_path) as Camera2D
@@ -216,17 +188,11 @@ func die() -> void:
 	_spawn_death_particles()
 	visible = false
 	set_physics_process(false)
-	var mundo := get_tree().get_first_node_in_group("gerenciador")
 	var scene_path: String = get_tree().current_scene.scene_file_path
-	if mundo != null:
-		scene_path = mundo.tela_atual_scene_path()
 	if SaveManager.has_checkpoint(scene_path):
 		# Caracois / blocos que morreram DEPOIS do checkpoint voltam ao renascer.
 		SaveManager.descartar_pendentes()
-		if mundo != null:
-			mundo.recarregar_tela()
-		else:
-			get_tree().reload_current_scene()
+		get_tree().reload_current_scene()
 		return
 	var death_menu := get_tree().get_first_node_in_group("death_menu")
 	if death_menu:
