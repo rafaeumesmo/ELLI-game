@@ -20,9 +20,7 @@ func _on_body_entered(body: Node) -> void:
 		return
 	var mundo := get_tree().get_first_node_in_group("gerenciador")
 	if mundo:
-		# ancora.position é local à tela (a própria mãe do Marker2D) -- os
-		# mesmos valores que a antiga IntroCamera tinha como filha direta dela.
-		mundo.ancorada(ancora.get_parent() as Node2D, ancora.position, zoom_camera)
+		mundo.ancorada(ancora, zoom_camera)
 
 func _on_body_exited(body: Node) -> void:
 	if not body.is_in_group("player"):

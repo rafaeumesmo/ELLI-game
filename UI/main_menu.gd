@@ -1,6 +1,9 @@
 extends Control
 
-const FIRST_LEVEL_SCENE := "res://tutorial.tscn"
+## Sempre entra pelo Mundo (scenes/mundo.gd) -- é ele quem mantém o Elísio
+## vivo entre trocas de tela e decide se carrega a tela_inicial (New Game)
+## ou retoma na tela salva (Continue, via SaveManager.checkpoint_scene).
+const MUNDO_SCENE := "res://scenes/mundo.tscn"
 const SETTINGS_PATH := "user://settings.cfg"
 const FADE_DURATION := 0.3
 
@@ -88,7 +91,8 @@ func _set_main_buttons_focusable(enabled: bool) -> void:
 		button.focus_mode = Control.FOCUS_ALL if enabled else Control.FOCUS_NONE
 
 func _on_continue_pressed() -> void:
-	_change_scene_with_fade(SaveManager.load_progress())
+	SaveManager.load_progress()
+	_change_scene_with_fade(MUNDO_SCENE)
 
 func _on_new_game_pressed() -> void:
 	if SaveManager.has_save():
@@ -103,7 +107,7 @@ func _on_new_game_confirmed() -> void:
 func _start_new_game() -> void:
 	SaveManager.clear_save()
 	SaveManager.clear_checkpoint()
-	_change_scene_with_fade(FIRST_LEVEL_SCENE)
+	_change_scene_with_fade(MUNDO_SCENE)
 
 func _on_options_pressed() -> void:
 	options_panel.show()

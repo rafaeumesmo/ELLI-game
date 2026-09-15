@@ -14,9 +14,7 @@ tela_inicial = ExtResource("5_tutorial")
 
 [node name="Elisio" parent="." instance=ExtResource("2_player")]
 
-[node name="PortaCamera" type="Node2D" parent="."]
-
-[node name="Camera" type="Camera2D" parent="PortaCamera"]
+[node name="Camera" type="Camera2D" parent="."]
 position_smoothing_enabled = false
 
 [node name="UI" type="CanvasLayer" parent="."]
