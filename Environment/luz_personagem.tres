@@ -1,0 +1,13 @@
+[gd_resource type="GradientTexture2D" format=3 uid="uid://dxj1lpersonagem"]
+
+[sub_resource type="Gradient" id="Gradient_luz_personagem"]
+offsets = PackedFloat32Array(0, 0.12, 0.35, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0.5, 1, 1, 1, 0.12, 1, 1, 1, 0)
+
+[resource]
+gradient = SubResource("Gradient_luz_personagem")
+width = 256
+height = 256
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.5, 0)
