@@ -8,8 +8,6 @@
 [ext_resource type="Script" path="res://Player/dust_run.gd" id="6_dust_run"]
 [ext_resource type="Script" path="res://Player/dust_land.gd" id="7_dust_land"]
 [ext_resource type="Script" path="res://Player/dust_wall.gd" id="8_dust_wall"]
-[ext_resource type="Texture2D" uid="uid://dxj1lpersonagem" path="res://Environment/luz_personagem.tres" id="9_luz"]
-[ext_resource type="Script" path="res://Player/luz_personagem.gd" id="10_luz_script"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_v0k0e"]
 atlas = ExtResource("1_3qydi")
@@ -225,20 +223,6 @@ flip_h = true
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D" unique_id=690433414]
 position = Vector2(0, 2)
 shape = SubResource("RectangleShape2D_xw6t8")
-
-[node name="LuzPersonagem" type="PointLight2D" parent="CharacterBody2D"]
-position = Vector2(0, -2)
-texture_filter = 1
-script = ExtResource("10_luz_script")
-cor_luz = Color(1, 0.8509804, 0.5411765, 1)
-energia = 0.6
-raio = 0.25
-color = Color(1, 0.8509804, 0.5411765, 1)
-energy = 0.6
-blend_mode = 0
-shadow_enabled = false
-texture = ExtResource("9_luz")
-texture_scale = 0.25
 
 [node name="GunSprite" type="Sprite2D" parent="CharacterBody2D" unique_id=1910923458]
 visible = false
