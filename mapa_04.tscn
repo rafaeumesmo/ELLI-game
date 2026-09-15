@@ -14,12 +14,13 @@
 [ext_resource type="PackedScene" uid="uid://b07vound40hxl" path="res://Environment/RotatingSawTrap.tscn" id="13_uo806"]
 [ext_resource type="PackedScene" uid="uid://c8s7twn0saw02" path="res://Environment/StaticSaw.tscn" id="14_s4qfk"]
 [ext_resource type="PackedScene" path="res://Environment/TeleportPad.tscn" id="14_to1oi"]
-[ext_resource type="PackedScene" path="res://UI/VitoriaMenu.tscn" id="15_vit"]
-[ext_resource type="Script" uid="uid://wmbkgyfw6g2t" path="res://Environment/gatilho_vitoria.gd" id="16_vit"]
 [ext_resource type="PackedScene" uid="uid://d0vagalume01" path="res://Environment/Vagalume.tscn" id="17_vagalume"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_vit"]
-size = Vector2(20, 40)
+[sub_resource type="Environment" id="Environment_escuro"]
+background_mode = 3
+glow_enabled = true
+glow_bloom = 0.1
+glow_hdr_threshold = 0.9
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_brilho"]
 blend_mode = 1
@@ -35,27 +36,21 @@ fill = 1
 fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(1, 0.5)
 
-[sub_resource type="Environment" id="Environment_escuro"]
-background_mode = 3
-glow_enabled = true
-glow_bloom = 0.1
-glow_hdr_threshold = 0.9
-
 [node name="Mapa03" type="Node2D" unique_id=1781797396]
 scale = Vector2(3.65, 3.65)
 script = ExtResource("1_to1oi")
 
-[node name="CanvasModulate" type="CanvasModulate" parent="."]
+[node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=1393615163]
 color = Color(0.290196, 0.321569, 0.4, 1)
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1209693385]
 environment = SubResource("Environment_escuro")
 
-[node name="Vagalume" parent="." instance=ExtResource("17_vagalume")]
+[node name="Vagalume" parent="." unique_id=812853543 instance=ExtResource("17_vagalume")]
 position = Vector2(56, 8)
 raio_voo = 35.0
 
-[node name="Vagalume2" parent="." instance=ExtResource("17_vagalume")]
+[node name="Vagalume2" parent="." unique_id=1457063637 instance=ExtResource("17_vagalume")]
 position = Vector2(88, 120)
 raio_voo = 45.0
 
@@ -81,16 +76,6 @@ zoom = Vector2(0.9, 0.9)
 
 [node name="HealthBar" parent="." unique_id=2015127992 instance=ExtResource("7_pqnjo")]
 
-[node name="VitoriaMenu" parent="." unique_id=6332243 instance=ExtResource("15_vit")]
-
-[node name="GatilhoVitoria" type="Area2D" parent="." unique_id=813835961]
-position = Vector2(-20, 66.57534)
-collision_layer = 0
-script = ExtResource("16_vit")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="GatilhoVitoria" unique_id=993824928]
-shape = SubResource("RectangleShape2D_vit")
-
 [node name="Cenario" type="Node2D" parent="." unique_id=986790108]
 z_index = -10
 z_as_relative = false
@@ -98,7 +83,7 @@ z_as_relative = false
 [node name="BrilhoFundo" type="Sprite2D" parent="Cenario" unique_id=986790109]
 z_index = 1
 material = SubResource("CanvasItemMaterial_brilho")
-position = Vector2(155.06848, 178.08218)
+position = Vector2(150.41095, 87.67123)
 scale = Vector2(1.6, 1.6)
 texture = SubResource("GradientTexture2D_brilho")
 
@@ -108,7 +93,7 @@ scale = Vector2(0.3116438, 0.32876715)
 texture = ExtResource("10_kbtba")
 
 [node name="PortalFase" parent="Cenario" unique_id=1893502680 instance=ExtResource("8_pa043")]
-position = Vector2(14.794526, 66.57534)
+position = Vector2(-20, 66.57534)
 next_scene = "res://mapa_05.tscn"
 
 [node name="MovingSaw" parent="Cenario" unique_id=1242416693 instance=ExtResource("2_ooorx")]
@@ -122,6 +107,9 @@ position = Vector2(255.89047, 136.43835)
 
 [node name="StaticSaw2" parent="Cenario" unique_id=964309371 instance=ExtResource("14_s4qfk")]
 position = Vector2(112.328766, 126.02739)
+
+[node name="Vagalume" parent="Cenario" unique_id=1449525466 instance=ExtResource("17_vagalume")]
+position = Vector2(290.41095, 59.72603)
 
 [node name="TeleportPad" parent="." unique_id=172960360 instance=ExtResource("14_to1oi")]
 position = Vector2(326.84933, 20.547945)
