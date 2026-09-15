@@ -13,6 +13,12 @@
 [ext_resource type="PackedScene" uid="uid://de8utfkx51gq2" path="res://UI/DeathMenu.tscn" id="21_deathmenu"]
 [ext_resource type="PackedScene" path="res://UI/HealthBar.tscn" id="22_healthbar"]
 
+[sub_resource type="Environment" id="Environment_escuro"]
+background_mode = 3
+glow_enabled = true
+glow_bloom = 0.1
+glow_hdr_threshold = 0.9
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_lava_trigger"]
 size = Vector2(223.83563, 21.23288)
 
@@ -33,20 +39,14 @@ fill = 1
 fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(1, 0.5)
 
-[sub_resource type="Environment" id="Environment_escuro"]
-background_mode = 3
-glow_enabled = true
-glow_bloom = 0.1
-glow_hdr_threshold = 0.9
-
 [node name="Mapa01" type="Sprite2D" unique_id=1681206707]
 position = Vector2(580, 326)
 scale = Vector2(3.65, 3.65)
 
-[node name="CanvasModulate" type="CanvasModulate" parent="."]
+[node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=1383747231]
 color = Color(0.12549, 0.141176, 0.227451, 1)
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=213981649]
 environment = SubResource("Environment_escuro")
 
 [node name="Player" parent="." unique_id=805600247 instance=ExtResource("20_player")]
@@ -100,7 +100,6 @@ z_index = -10
 z_as_relative = false
 
 [node name="BrilhoFundo" type="Sprite2D" parent="Cenario" unique_id=1800000002]
-visible = false
 z_index = 1
 material = SubResource("CanvasItemMaterial_brilho")
 position = Vector2(-3.6986086, -10.684929)

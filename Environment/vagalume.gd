@@ -16,7 +16,7 @@ extends Node2D
 ## Energia base do núcleo (luz pequena e forte, tipo brasa).
 @export var energia_core: float = 2.0
 ## Cor do halo. O núcleo fica sempre num branco-quente fixo.
-@export var cor_luz: Color = Color("#FFD98A"):
+@export var cor_luz: Color = Color("#FFD023"):
 	set(v):
 		cor_luz = v
 		if _halo != null:
