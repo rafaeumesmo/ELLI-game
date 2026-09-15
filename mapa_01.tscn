@@ -44,7 +44,7 @@ position = Vector2(580, 326)
 scale = Vector2(3.65, 3.65)
 
 [node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=1383747231]
-color = Color(0.12549, 0.141176, 0.227451, 1)
+color = Color(0.290196, 0.321569, 0.4, 1)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=213981649]
 environment = SubResource("Environment_escuro")

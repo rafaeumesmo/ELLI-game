@@ -41,7 +41,7 @@ scale = Vector2(3.65, 3.65)
 script = ExtResource("0_mapa02")
 
 [node name="CanvasModulate" type="CanvasModulate" parent="."]
-color = Color(0.12549, 0.141176, 0.227451, 1)
+color = Color(0.290196, 0.321569, 0.4, 1)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_escuro")
