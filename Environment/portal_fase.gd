@@ -11,7 +11,7 @@ extends Area2D
 ## Raio do portal em pixels. A área andável (CollisionShape2D) é independente.
 @export var raio: float = 15.0
 ## Energia máxima da luz que o portal projeta (antes da pulsação).
-@export var energia_luz: float = 0.9
+@export var energia_luz: float = 1.5
 
 var _ativando := false
 var _t := 0.0

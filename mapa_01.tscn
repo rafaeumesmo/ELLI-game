@@ -124,5 +124,5 @@ position = Vector2(100, 10)
 raio_voo = 45.0
 
 [node name="Vagalume3" parent="." unique_id=2087891669 instance=ExtResource("14_vagalume")]
-position = Vector2(-45, -50)
+position = Vector2(-115.61644, -69.04109)
 raio_voo = 40.0

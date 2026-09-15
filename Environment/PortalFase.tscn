@@ -21,7 +21,7 @@ energy = 0.0
 blend_mode = 0
 shadow_enabled = false
 texture = ExtResource("2_luz")
-texture_scale = 0.4
+texture_scale = 0.65
 
 [node name="Particulas" type="CPUParticles2D" parent="." unique_id=807661752]
 texture_filter = 1

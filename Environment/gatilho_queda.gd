@@ -9,8 +9,11 @@ extends Area2D
 
 ## Cor base das partículas (segue a cor da Marca).
 const COR := Color(0.22, 0.32, 0.45)
+## Energia máxima da luz que o gatilho projeta enquanto está armado.
+@export var energia_luz: float = 1.3
 
 @onready var _marca: Polygon2D = $Marca
+@onready var _luz: PointLight2D = $Luz
 
 var _usado := false
 var _t := 0.0
@@ -51,7 +54,9 @@ func _process(delta: float) -> void:
 	if _usado:
 		return
 	_t += delta
-	_marca.modulate.a = 0.5 + sin(_t * 3.0) * 0.35
+	var pulso := 0.5 + sin(_t * 3.0) * 0.35
+	_marca.modulate.a = pulso
+	_luz.energy = energia_luz * pulso
 
 func _on_body_entered(body: Node) -> void:
 	if _usado or not body.is_in_group("player"):
@@ -63,6 +68,7 @@ func _on_body_entered(body: Node) -> void:
 		_brilho.emitting = false
 		var tw := create_tween()
 		tw.tween_property(_marca, "modulate:a", 0.0, 0.25)
+		tw.parallel().tween_property(_luz, "energy", 0.0, 0.25)
 	for caminho in blocos:
 		var bloco := get_node_or_null(caminho)
 		if bloco != null and bloco.has_method("derrubar"):

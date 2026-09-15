@@ -16,6 +16,12 @@
 [ext_resource type="PackedScene" path="res://UI/HealthBar.tscn" id="11_healthbar"]
 [ext_resource type="PackedScene" uid="uid://d0vagalume01" path="res://Environment/Vagalume.tscn" id="12_vagalume"]
 
+[sub_resource type="Environment" id="Environment_escuro"]
+background_mode = 3
+glow_enabled = true
+glow_bloom = 0.1
+glow_hdr_threshold = 0.9
+
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_brilho"]
 blend_mode = 1
 
@@ -30,27 +36,21 @@ fill = 1
 fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(1, 0.5)
 
-[sub_resource type="Environment" id="Environment_escuro"]
-background_mode = 3
-glow_enabled = true
-glow_bloom = 0.1
-glow_hdr_threshold = 0.9
-
 [node name="Mapa02" type="Node2D" unique_id=1781797396]
 scale = Vector2(3.65, 3.65)
 script = ExtResource("0_mapa02")
 
-[node name="CanvasModulate" type="CanvasModulate" parent="."]
+[node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=425477303]
 color = Color(0.290196, 0.321569, 0.4, 1)
 
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=518184810]
 environment = SubResource("Environment_escuro")
 
-[node name="Vagalume" parent="." instance=ExtResource("12_vagalume")]
+[node name="Vagalume" parent="." unique_id=570884249 instance=ExtResource("12_vagalume")]
 position = Vector2(56, 152)
 raio_voo = 45.0
 
-[node name="Vagalume2" parent="." instance=ExtResource("12_vagalume")]
+[node name="Vagalume2" parent="." unique_id=1600998112 instance=ExtResource("12_vagalume")]
 position = Vector2(264, 152)
 raio_voo = 50.0
 
@@ -112,3 +112,6 @@ texture = ExtResource("9_2x3s6")
 
 [node name="StaticSaw" parent="Cenario" unique_id=1918773883 instance=ExtResource("7_saw")]
 position = Vector2(80.54794, 95.89041)
+
+[node name="Vagalume3" parent="." unique_id=124824582 instance=ExtResource("12_vagalume")]
+position = Vector2(189.04109, 18.90411)

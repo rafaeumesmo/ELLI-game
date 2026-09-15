@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://q610mue5fiha"]
 
 [ext_resource type="Script" path="res://Environment/gatilho_queda.gd" id="1_gat"]
+[ext_resource type="Texture2D" uid="uid://cp0gt2vpdf3vx" path="res://Environment/luz_radial.tres" id="2_luz"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gat"]
 size = Vector2(18, 18)
@@ -9,6 +10,15 @@ size = Vector2(18, 18)
 collision_layer = 0
 collision_mask = 1
 script = ExtResource("1_gat")
+
+[node name="Luz" type="PointLight2D" parent="."]
+texture_filter = 1
+color = Color(0.48, 0.7, 0.99, 1)
+energy = 0.0
+blend_mode = 0
+shadow_enabled = false
+texture = ExtResource("2_luz")
+texture_scale = 0.45
 
 [node name="Marca" type="Polygon2D" parent="."]
 color = Color(0.22, 0.32, 0.45, 0.8)
