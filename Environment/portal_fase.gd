@@ -6,10 +6,12 @@ extends Area2D
 ## montado por código a partir do `raio` e da `cor`.
 
 @export_file("*.tscn") var next_scene: String = ""
-## Cor base do portal (anel e brilho). Puxada pra um tom apagado de propósito.
+## Cor base do portal (anel, brilho e luz que ele projeta no cenário).
 @export var cor: Color = Color(0.42, 0.44, 0.6)
 ## Raio do portal em pixels. A área andável (CollisionShape2D) é independente.
 @export var raio: float = 15.0
+## Energia máxima da luz que o portal projeta (antes da pulsação).
+@export var energia_luz: float = 0.9
 
 var _ativando := false
 var _t := 0.0
@@ -18,10 +20,12 @@ var _glow: Line2D
 var _nucleo: Polygon2D
 
 @onready var particulas: CPUParticles2D = $Particulas
+@onready var _luz: PointLight2D = $Luz
 
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)
 	_montar_visual()
+	_luz.color = cor
 
 func _montar_visual() -> void:
 	# Vão escuro translúcido no meio.
@@ -63,6 +67,7 @@ func _process(delta: float) -> void:
 	var pulso := 1.0 + sin(_t * 1.6) * 0.02
 	_nucleo.scale = Vector2(pulso, pulso)
 	_glow.modulate.a = 0.6 + sin(_t * 1.6) * 0.25
+	_luz.energy = energia_luz * (0.8 + sin(_t * 1.6) * 0.2)
 
 func _on_body_entered(body: Node) -> void:
 	if _ativando or not body.is_in_group("player"):
@@ -82,6 +87,7 @@ func _ativar() -> void:
 	tw.tween_property(_anel, "modulate:a", 0.0, 0.4)
 	tw.tween_property(_glow, "modulate:a", 0.0, 0.4)
 	tw.tween_property(_nucleo, "scale", Vector2(0.1, 0.1), 0.4)
+	tw.tween_property(_luz, "energy", 0.0, 0.4)
 	tw.set_parallel(false)
 	tw.tween_interval(0.1)
 	tw.tween_callback(_trocar_cena)
