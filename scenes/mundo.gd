@@ -20,7 +20,8 @@ const ZOOM_PADRAO := Vector2(1, 1)
 @onready var telas: Node2D = $Telas
 @onready var elisio: Node2D = $Elisio
 @onready var elisio_corpo: CharacterBody2D = $Elisio/CharacterBody2D
-@onready var camera: Camera2D = $Camera
+@onready var porta_camera: Node2D = $PortaCamera
+@onready var camera: Camera2D = $PortaCamera/Camera
 
 var _tela_atual: Node2D = null
 var _tela_atual_packed: PackedScene = null
@@ -48,7 +49,13 @@ func tela_atual_scene_path() -> String:
 
 ## Câmera acompanha o Elísio direto (mundo aberto). `instantaneo` pula o tween
 ## (usado ao carregar uma tela; subir_tela já tem seu próprio tween).
+##
+## A PortaCamera precisa voltar pra identidade aqui: em modo "ancorada" ela
+## fica com o transform (e a escala 3.65) da tela, e uma Camera2D herda a
+## escala do pai no cálculo do zoom -- sem resetar, o zoom_padrao (1,1)
+## renderizaria escalado por engano.
 func seguir_jogador(instantaneo: bool = false) -> void:
+	porta_camera.global_transform = Transform2D.IDENTITY
 	if instantaneo or _em_transicao:
 		_seguindo = true
 		camera.global_position = elisio_corpo.global_position
@@ -60,16 +67,20 @@ func seguir_jogador(instantaneo: bool = false) -> void:
 	await tw.finished
 	_seguindo = true
 
-## Câmera fixa num Marker2D (tela de câmera fixa, ou zona de câmera fixa
-## dentro de uma tela de mundo aberto). `instantaneo` pula o tween.
-func ancorada(ancora: Marker2D, zoom: Vector2 = ZOOM_PADRAO, instantaneo: bool = false) -> void:
+## Câmera fixa relativa à `tela`: a PortaCamera assume o global_transform
+## da tela (mesma posição/escala que o root tinha quando era ela a mãe
+## direta da câmera fixa original) e a Camera recebe `posicao_local`/`zoom`
+## exatamente como foram autorados -- sem nenhuma conversão. `instantaneo`
+## pula o tween.
+func ancorada(tela: Node2D, posicao_local: Vector2, zoom: Vector2 = ZOOM_PADRAO, instantaneo: bool = false) -> void:
 	_seguindo = false
+	porta_camera.global_transform = tela.global_transform
 	if instantaneo or _em_transicao:
-		camera.global_position = ancora.global_position
+		camera.position = posicao_local
 		camera.zoom = zoom
 		return
 	var tw := create_tween().set_parallel(true).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	tw.tween_property(camera, "global_position", ancora.global_position, DURACAO_ANCORA)
+	tw.tween_property(camera, "position", posicao_local, DURACAO_ANCORA)
 	tw.tween_property(camera, "zoom", zoom, DURACAO_ANCORA)
 
 # --- Carregamento de telas -----------------------------------------------
@@ -98,11 +109,10 @@ func _posicionar_no_respawn_ou_checkpoint(tela: Node2D) -> void:
 func _aplicar_camera_da_tela(tela: Node2D, instantaneo: bool) -> void:
 	var modo: String = tela.modo_camera if "modo_camera" in tela else "seguir"
 	if modo == "ancorada":
-		var ancora := tela.get_node_or_null("AncoraCamera") as Marker2D
-		if ancora:
-			var zoom: Vector2 = tela.zoom_camera if "zoom_camera" in tela else ZOOM_PADRAO
-			ancorada(ancora, zoom, instantaneo)
-			return
+		var posicao_local: Vector2 = tela.camera_posicao if "camera_posicao" in tela else Vector2.ZERO
+		var zoom: Vector2 = tela.camera_zoom if "camera_zoom" in tela else ZOOM_PADRAO
+		ancorada(tela, posicao_local, zoom, instantaneo)
+		return
 	seguir_jogador(instantaneo)
 
 ## Sobe da tela atual pra `proxima`: instancia e alinha pela âncora
@@ -133,15 +143,21 @@ func subir_tela(proxima: PackedScene) -> void:
 	var modo: String = nova.modo_camera if "modo_camera" in nova else "seguir"
 	var zoom_destino: Vector2 = ZOOM_PADRAO
 	var pos_destino: Vector2 = elisio_corpo.global_position
+	# Preserva a posição global atual da câmera ANTES de trocar o transform da
+	# PortaCamera -- senão o valor local antigo de camera.position passaria a
+	# apontar pra outro ponto do mundo assim que o contexto mudar de baixo dela.
+	var pos_global_atual: Vector2 = camera.global_position
 	if modo == "ancorada":
-		var ancora_camera := nova.get_node_or_null("AncoraCamera") as Marker2D
-		if ancora_camera:
-			pos_destino = ancora_camera.global_position
-			zoom_destino = nova.zoom_camera if "zoom_camera" in nova else ZOOM_PADRAO
+		pos_destino = nova.camera_posicao if "camera_posicao" in nova else Vector2.ZERO
+		zoom_destino = nova.camera_zoom if "camera_zoom" in nova else ZOOM_PADRAO
+		porta_camera.global_transform = nova.global_transform
+	else:
+		porta_camera.global_transform = Transform2D.IDENTITY
+	camera.global_position = pos_global_atual
 
 	var tw := create_tween()
 	tw.set_parallel(true).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
-	tw.tween_property(camera, "global_position", pos_destino, DURACAO)
+	tw.tween_property(camera, "position", pos_destino, DURACAO)
 	tw.tween_property(camera, "zoom", zoom_destino, DURACAO)
 	tw.tween_property(elisio_corpo, "global_position:y", elisio_corpo.global_position.y - 20.0, DURACAO) \
 		.set_ease(Tween.EASE_OUT)

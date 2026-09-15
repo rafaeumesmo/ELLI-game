@@ -97,6 +97,8 @@ size = Vector2(88, 104)
 position = Vector2(560, 372)
 scale = Vector2(3.65, 3.65)
 script = ExtResource("1_cam")
+camera_posicao = Vector2(1.9178145, -1.9178042)
+camera_zoom = Vector2(0.9, 0.9)
 
 [node name="AncoraSuperior" type="Marker2D" parent="." unique_id=64176491]
 position = Vector2(-166.30136, -81.36986)
