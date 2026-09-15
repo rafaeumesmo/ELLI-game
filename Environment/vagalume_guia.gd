@@ -1,0 +1,98 @@
+extends Node2D
+## Vagalume-guia: voa na frente do player pelo caminho até o portal de saída
+## -- `pontos` é uma sequência de waypoints que segue os corredores do mapa
+## (não uma linha reta, pra não atravessar parede). Em cada waypoint (menos
+## no último) ele para e espera o player chegar perto antes de continuar pro
+## próximo; no último ponto (o portal) ele chega e fica flutuando por perto
+## (mesma flutuação em oito do Vagalume comum) em vez de parar parado, com o
+## guia completo. Mesmo visual do Vagalume comum (asas batendo + halo/core
+## pulsando), mas sempre visível -- sem sumir/reaparecer aleatório.
+##
+## Uso: arraste `VagalumeGuia.tscn` pro mapa e preenche `pontos` (espaço
+## local do nó pai) com os waypoints do trajeto -- a 1ª é onde ele começa
+## (perto do player), a última costuma ser o portal, e os do meio marcam as
+## curvas dos corredores/chaminés que tem que contornar.
+
+@export var pontos: PackedVector2Array = PackedVector2Array()
+@export var velocidade: float = 55.0
+## Distância (do player até o vagalume) abaixo da qual ele considera que o
+## player "chegou" e pode seguir pro próximo ponto.
+@export var raio_espera: float = 200.0
+## Pausa depois que o player chega, antes de sair voando de novo -- só pra
+## não parecer que ele sai no exato instante em que o player encosta.
+@export var pausa_antes_de_seguir: float = 0.4
+@export var amplitude_zigue: float = 6.0
+## Raio da flutuação em oito que ele faz parado no ponto final (o portal).
+@export var raio_flutuacao: float = 14.0
+## Velocidade angular dessa flutuação final.
+@export var velocidade_flutuacao: float = 0.7
+@export var energia_halo: float = 1.1
+@export var energia_core: float = 2.4
+@export var cor_luz: Color = Color("#FFD023"):
+	set(v):
+		cor_luz = v
+		if _halo != null:
+			_halo.color = cor_luz
+
+@onready var _corpo: AnimatedSprite2D = $Corpo
+@onready var _halo: PointLight2D = $Halo
+@onready var _core: PointLight2D = $Core
+
+var _fase_pulso: float = 0.0
+var _flutuando := false
+var _origem_flutuacao := Vector2.ZERO
+var _tempo_flutuacao: float = 0.0
+
+func _ready() -> void:
+	_corpo.play("voar")
+	_halo.color = cor_luz
+	modulate.a = 1.0
+	if pontos.size() >= 1:
+		position = pontos[0]
+	if pontos.size() >= 2:
+		_guiar()
+
+func _process(delta: float) -> void:
+	_fase_pulso += delta * 2.0
+	var pulso: float = 0.85 + 0.15 * sin(_fase_pulso)
+	_halo.energy = energia_halo * pulso
+	_core.energy = energia_core * pulso
+
+	if _flutuando:
+		_tempo_flutuacao += delta * velocidade_flutuacao
+		var t: float = _tempo_flutuacao
+		var offset := Vector2(sin(t) * raio_flutuacao, sin(t * 2.0) * raio_flutuacao * 0.5)
+		position = _origem_flutuacao + offset
+
+func _guiar() -> void:
+	for i in range(1, pontos.size()):
+		await _voar_ate(pontos[i])
+		if i < pontos.size() - 1:
+			await _esperar_jogador()
+			await get_tree().create_timer(pausa_antes_de_seguir).timeout
+	_origem_flutuacao = position
+	_flutuando = true
+
+func _esperar_jogador() -> void:
+	var jogador: Node2D = get_tree().get_first_node_in_group("player")
+	if jogador == null:
+		return
+	while is_inside_tree() and global_position.distance_to(jogador.global_position) > raio_espera:
+		await get_tree().process_frame
+
+func _voar_ate(alvo: Vector2) -> void:
+	var origem := position
+	var distancia := origem.distance_to(alvo)
+	var duracao: float = max(distancia / velocidade, 0.1)
+	var perpendicular := (alvo - origem).orthogonal().normalized()
+	_corpo.flip_h = alvo.x < origem.x
+	var tw := create_tween()
+	tw.set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tw.tween_method(
+		func(t: float) -> void:
+			var base := origem.lerp(alvo, t)
+			var onda: float = sin(t * TAU * 2.0) * amplitude_zigue * t * (1.0 - t) * 4.0
+			position = base + perpendicular * onda,
+		0.0, 1.0, duracao
+	)
+	await tw.finished

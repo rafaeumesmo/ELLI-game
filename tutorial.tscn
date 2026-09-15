@@ -6,13 +6,20 @@
 [ext_resource type="Script" uid="uid://du58ifk0orr2v" path="res://Environment/cristais_layer.gd" id="4_cristais_scr"]
 [ext_resource type="TileSet" uid="uid://bksacx2vpm4t0" path="res://assets/cristais_tileset.tres" id="4_cristais_ts"]
 [ext_resource type="PackedScene" uid="uid://dqvpyfsmsranl" path="res://Environment/PortalFase.tscn" id="7_portal"]
-[ext_resource type="PackedScene" uid="uid://bqxr3n8yv6k2c" path="res://Environment/Caracol.tscn" id="8_4t6hg"]
 [ext_resource type="Texture2D" uid="uid://bmcqsrt5bgbg4" path="res://assets/mapa 01.png" id="9_7vrqn"]
+[ext_resource type="PackedScene" uid="uid://d0vagalume01" path="res://Environment/Vagalume.tscn" id="12_bsk3x"]
 [ext_resource type="Texture2D" uid="uid://dm7db2pcksjxg" path="res://assets/efeito subindo a parede.png" id="13_dicaparede"]
 [ext_resource type="Script" uid="uid://df617odw0ife8" path="res://Environment/dica_parede.gd" id="14_dicaparede_scr"]
 [ext_resource type="PackedScene" uid="uid://ck4l3vm43pipc" path="res://Player/Player.tscn" id="20_player"]
 [ext_resource type="PackedScene" uid="uid://de8utfkx51gq2" path="res://UI/DeathMenu.tscn" id="21_deathmenu"]
 [ext_resource type="PackedScene" path="res://UI/HealthBar.tscn" id="22_healthbar"]
+[ext_resource type="PackedScene" uid="uid://botlj2i8j1sc7" path="res://Environment/VagalumeGuia.tscn" id="23_vagalumeguia"]
+
+[sub_resource type="Environment" id="Environment_escuro"]
+background_mode = 3
+glow_enabled = true
+glow_bloom = 0.1
+glow_hdr_threshold = 0.9
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_brilho"]
 blend_mode = 1
@@ -100,6 +107,12 @@ position = Vector2(580, 326)
 scale = Vector2(3.65, 3.65)
 script = ExtResource("1_cam")
 
+[node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=1898064880]
+color = Color(0.12549, 0.141176, 0.227451, 1)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=2035135429]
+environment = SubResource("Environment_escuro")
+
 [node name="Player" parent="." unique_id=805600248 instance=ExtResource("20_player")]
 position = Vector2(-145.75342, 42.465755)
 
@@ -126,11 +139,8 @@ script = ExtResource("4_cristais_scr")
 position = Vector2(-166.30136, -81.36986)
 next_scene = "res://mapa_01.tscn"
 
-[node name="Caracol" parent="." unique_id=1948034631 instance=ExtResource("8_4t6hg")]
-position = Vector2(-130.95891, 54.520546)
-frases_dica = Array[String](["A / D  andar
-ESPAÇO  pular", "Use as paredes!", "Você só pode grudar em uma parede por vez."])
-dialogo = Array[String](["Opa, peraí! Antes de você sair correndo... deixa eu te ensinar.", "Pra andar é  A  e  D .", "Pra pular,  ESPAÇO .", "Chegou numa parede lá no alto? Pula contra ela que você gruda e escorrega devagar.", "Aí é só pular de novo pra subir. Mas presta atenção: só dá pra grudar numa parede por vez!", "Pronto. Agora vai lá. Aperta  E  se quiser ouvir de novo."])
+[node name="VagalumeGuia" parent="." unique_id=-1375567178 instance=ExtResource("23_vagalumeguia")]
+pontos = PackedVector2Array(-136, 40, -136, 8, 144, 8, 144, -80, -160, -76)
 
 [node name="Cenario" type="Node2D" parent="." unique_id=387199244]
 z_index = -10
@@ -144,9 +154,12 @@ texture = ExtResource("9_7vrqn")
 [node name="BrilhoFundo" type="Sprite2D" parent="Cenario" unique_id=1027466392]
 z_index = 1
 material = SubResource("CanvasItemMaterial_brilho")
-position = Vector2(4.3835607, -8.767122)
+position = Vector2(3.561643, -12.876711)
 scale = Vector2(1.6, 1.6)
 texture = SubResource("GradientTexture2D_brilho")
+
+[node name="Vagalume" parent="Cenario" unique_id=1804577811 instance=ExtResource("12_bsk3x")]
+position = Vector2(-1.0958939, -22.739729)
 
 [node name="DicaParede" type="AnimatedSprite2D" parent="." unique_id=43520110]
 light_mask = 0
