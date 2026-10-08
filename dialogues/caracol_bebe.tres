@@ -2,32 +2,45 @@
 
 [ext_resource type="Script" path="res://UI/dialogo/dialogue_data.gd" id="1_data"]
 [ext_resource type="Script" path="res://UI/dialogo/dialogue_line.gd" id="2_line"]
-[ext_resource type="Resource" path="res://dialogues/personagens/caracol_bebe.tres" id="3_char"]
+[ext_resource type="Resource" path="res://dialogues/personagens/caracol_bebe.tres" id="3_bebe"]
+[ext_resource type="Resource" path="res://dialogues/personagens/elisio.tres" id="4_elisio"]
 
 [sub_resource type="Resource" id="Resource_fala1"]
 script = ExtResource("2_line")
-personagem = ExtResource("3_char")
+personagem = ExtResource("3_bebe")
 expressao = "surpreso"
-texto = "Você é novo!"
+texto = "Ei! Você!"
 
 [sub_resource type="Resource" id="Resource_fala2"]
 script = ExtResource("2_line")
-personagem = ExtResource("3_char")
+personagem = ExtResource("4_elisio")
 expressao = "neutro"
-texto = "Todo mundo aqui é novo, até parar de ser."
+texto = "Oi."
 
 [sub_resource type="Resource" id="Resource_fala3"]
 script = ExtResource("2_line")
-personagem = ExtResource("3_char")
+personagem = ExtResource("3_bebe")
 expressao = "neutro"
-texto = "Minha mãe falou com você?"
+texto = "Você também tá seguindo os azuis?"
 
 [sub_resource type="Resource" id="Resource_fala4"]
 script = ExtResource("2_line")
-personagem = ExtResource("3_char")
+personagem = ExtResource("4_elisio")
+expressao = "neutro"
+texto = "Tô."
+
+[sub_resource type="Resource" id="Resource_fala5"]
+script = ExtResource("2_line")
+personagem = ExtResource("3_bebe")
 expressao = "feliz"
-texto = "Ela fala com todos."
+texto = "Sabia! Eu também."
+
+[sub_resource type="Resource" id="Resource_fala6"]
+script = ExtResource("2_line")
+personagem = ExtResource("3_bebe")
+expressao = "triste"
+texto = "Só que eu sempre me perco."
 
 [resource]
 script = ExtResource("1_data")
-falas = Array[ExtResource("2_line")]([SubResource("Resource_fala1"), SubResource("Resource_fala2"), SubResource("Resource_fala3"), SubResource("Resource_fala4")])
+falas = Array[ExtResource("2_line")]([SubResource("Resource_fala1"), SubResource("Resource_fala2"), SubResource("Resource_fala3"), SubResource("Resource_fala4"), SubResource("Resource_fala5"), SubResource("Resource_fala6")])
