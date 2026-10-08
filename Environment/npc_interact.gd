@@ -13,12 +13,16 @@ extends Area2D
 @export var pausar_npc: bool = true
 ## Altura do "!" acima do NPC, em px locais.
 @export var altura_indicador: float = 16.0
+## Abre a conversa sozinho na 1a vez que o player chega perto (depois só com E).
+@export var abrir_sozinho: bool = false
+## Libera o dash do player quando a conversa termina (ver player.desbloquear_dash).
+@export var desbloquear_dash: bool = false
 
 @onready var _indicador: Sprite2D = $Indicador
 
 var _player: Node2D
 var _tempo := 0.0
-var _npc_pausado: Node2D
+var _ja_conversou := false
 
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)
@@ -35,6 +39,8 @@ func _on_body_exited(body: Node2D) -> void:
 
 func _process(delta: float) -> void:
 	_tempo += delta
+	if abrir_sozinho and not _ja_conversou and _pode_iniciar():
+		_iniciar()
 	_indicador.visible = _player != null and not DialogueManager.is_active
 	if _indicador.visible:
 		_indicador.position.y = -altura_indicador - (1.0 if fmod(_tempo, 0.8) < 0.4 else 0.0)
@@ -42,19 +48,33 @@ func _process(delta: float) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	if not event.is_action_pressed("interagir") or event.is_echo():
 		return
-	if _player == null or dialogo == null or DialogueManager.is_active:
-		return
-	if exigir_chao and _player is CharacterBody2D and not (_player as CharacterBody2D).is_on_floor():
+	if not _pode_iniciar():
 		return
 	get_viewport().set_input_as_handled()
+	_iniciar()
+
+func _pode_iniciar() -> bool:
+	if _player == null or dialogo == null or DialogueManager.is_active:
+		return false
+	return not (exigir_chao and _player is CharacterBody2D and not (_player as CharacterBody2D).is_on_floor())
+
+func _iniciar() -> void:
+	_ja_conversou = true
 	var npc := get_parent() as Node2D
 	var falantes := {}
 	if personagem != null and npc != null:
 		falantes[personagem.id] = npc
 	if pausar_npc and npc != null:
 		_pausar(npc, true)
-		DialogueManager.dialogue_finished.connect(func(_d: DialogueData) -> void: _pausar(npc, false), CONNECT_ONE_SHOT)
+	DialogueManager.dialogue_finished.connect(_on_dialogue_finished.bind(npc), CONNECT_ONE_SHOT)
 	DialogueManager.start(dialogo, falantes)
+
+func _on_dialogue_finished(_d: DialogueData, npc: Variant) -> void:
+	if pausar_npc and is_instance_valid(npc):
+		_pausar(npc, false)
+	var player := get_tree().get_first_node_in_group("player")
+	if desbloquear_dash and player != null and player.has_method("desbloquear_dash"):
+		player.desbloquear_dash()
 
 func _pausar(npc: Node2D, pausar: bool) -> void:
 	if not is_instance_valid(npc):

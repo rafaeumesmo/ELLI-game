@@ -1,0 +1,39 @@
+[gd_resource type="Resource" script_class="DialogueData" format=3]
+
+[ext_resource type="Script" path="res://UI/dialogo/dialogue_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://UI/dialogo/dialogue_line.gd" id="2_line"]
+[ext_resource type="Resource" path="res://dialogues/personagens/caracol_mae.tres" id="3_char"]
+
+[sub_resource type="Resource" id="Resource_fala1"]
+script = ExtResource("2_line")
+personagem = ExtResource("3_char")
+expressao = "neutro"
+texto = "Caracol não corre. Mas você não é caracol, né?"
+
+[sub_resource type="Resource" id="Resource_fala2"]
+script = ExtResource("2_line")
+personagem = ExtResource("3_char")
+expressao = "feliz"
+texto = "Você cresceu tanto…"
+
+[sub_resource type="Resource" id="Resource_fala3"]
+script = ExtResource("2_line")
+personagem = ExtResource("3_char")
+expressao = "neutro"
+texto = "Acho que já tá pronto."
+
+[sub_resource type="Resource" id="Resource_fala4"]
+script = ExtResource("2_line")
+personagem = ExtResource("3_char")
+expressao = "feliz"
+texto = "Vou melhorar seu avanço. Aperta Shift e experimenta"
+
+[sub_resource type="Resource" id="Resource_fala5"]
+script = ExtResource("2_line")
+personagem = ExtResource("3_char")
+expressao = "feliz"
+texto = "Pode ir com tudo naquela parede."
+
+[resource]
+script = ExtResource("1_data")
+falas = Array[ExtResource("2_line")]([SubResource("Resource_fala1"), SubResource("Resource_fala2"), SubResource("Resource_fala3"), SubResource("Resource_fala4"), SubResource("Resource_fala5")])

@@ -1,0 +1,15 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" uid="uid://bqxr3n8yv6k2c" path="res://Environment/Caracol.tscn" id="1_base"]
+[ext_resource type="PackedScene" path="res://Environment/NPCInteract.tscn" id="2_npc"]
+[ext_resource type="Resource" path="res://dialogues/caracol_mae_dash.tres" id="3_dialogo"]
+[ext_resource type="Resource" path="res://dialogues/personagens/caracol_mae.tres" id="4_personagem"]
+
+[node name="CaracolMaeDash" instance=ExtResource("1_base")]
+texto_dica = ""
+
+[node name="NPCInteract" parent="." instance=ExtResource("2_npc")]
+abrir_sozinho = true
+desbloquear_dash = true
+dialogo = ExtResource("3_dialogo")
+personagem = ExtResource("4_personagem")

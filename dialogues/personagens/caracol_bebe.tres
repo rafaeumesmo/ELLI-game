@@ -1,0 +1,23 @@
+[gd_resource type="Resource" script_class="CharacterData" format=3]
+
+[ext_resource type="Script" path="res://UI/dialogo/character_data.gd" id="1_char"]
+[ext_resource type="Texture2D" path="res://assets/dialogo/retratos/caracol_neutro.png" id="2_neutro"]
+[ext_resource type="Texture2D" path="res://assets/dialogo/retratos/caracol_feliz.png" id="3_feliz"]
+[ext_resource type="Texture2D" path="res://assets/dialogo/retratos/caracol_surpreso.png" id="4_surpreso"]
+[ext_resource type="Texture2D" path="res://assets/dialogo/retratos/caracol_triste.png" id="5_triste"]
+[ext_resource type="AudioStream" path="res://assets/dialogo/sons/bip_caracol.wav" id="6_bip"]
+
+[resource]
+script = ExtResource("1_char")
+id = "caracol_bebe"
+nome = "Caracolzinho"
+retratos = Dictionary[String, Texture2D]({
+"feliz": ExtResource("3_feliz"),
+"neutro": ExtResource("2_neutro"),
+"surpreso": ExtResource("4_surpreso"),
+"triste": ExtResource("5_triste")
+})
+bip = ExtResource("6_bip")
+bip_pitch = 1.5
+letras_por_segundo = 40.0
+altura_cabeca = 8.0
