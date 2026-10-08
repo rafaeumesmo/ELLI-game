@@ -218,13 +218,20 @@ func _montar_layout() -> void:
 
 	# Retratos: colados nas laterais, saindo um pouco pro lado e na direção do
 	# meio da tela (pra baixo quando o painel está no topo, e vice-versa).
-	var tam := Vector2(tamanho_retrato, tamanho_retrato)
-	var ry := altura - tam.y + retrato_para_fora.y if not _embaixo else -retrato_para_fora.y
 	for r: TextureRect in [_retrato_esq, _retrato_dir]:
-		r.size = tam
-		r.position.y = ry
-	_retrato_esq.position.x = -retrato_para_fora.x
-	_retrato_dir.position.x = largura - tam.x + retrato_para_fora.x
+		var area := _area_retrato(r == _retrato_esq, 1.0)
+		r.size = area.size
+		r.position = area.position
+
+## Onde fica o retrato de um lado. Retrato menor (`escala_retrato` < 1, ex.: o
+## caracol bebê) fica centralizado no espaço do retrato normal e apoiado na
+## mesma base, como se estivesse "em pé" no mesmo chão.
+func _area_retrato(esquerda: bool, escala: float) -> Rect2:
+	var cheio := float(tamanho_retrato)
+	var lado := roundf(cheio * escala / P) * P
+	var x := -retrato_para_fora.x if esquerda else _raiz.size.x - cheio + retrato_para_fora.x
+	var y := _raiz.size.y - cheio + retrato_para_fora.y if not _embaixo else -retrato_para_fora.y
+	return Rect2(x + roundf((cheio - lado) * 0.5), y + cheio - lado, lado, lado)
 
 func _posicionar_ornamento(orn: Control, y: float, largura: float) -> void:
 	var detalhe := orn.get_node("Detalhe") as TextureRect
@@ -319,7 +326,10 @@ func definir_falante(personagem: CharacterData, expressao: String) -> void:
 		return
 	if _tw_retrato != null and _tw_retrato.is_valid():
 		_tw_retrato.kill()
-	var base_x := -retrato_para_fora.x if esquerda else _raiz.size.x - tamanho_retrato + retrato_para_fora.x
+	var area := _area_retrato(esquerda, personagem.escala_retrato if personagem != null else 1.0)
+	ativo.size = area.size
+	ativo.position.y = area.position.y
+	var base_x := area.position.x
 	ativo.position.x = base_x + (-deslize_retrato if esquerda else deslize_retrato)
 	ativo.modulate.a = 0.0
 	_tw_retrato = create_tween().set_parallel(true)

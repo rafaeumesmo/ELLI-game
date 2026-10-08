@@ -21,6 +21,7 @@ retratos = Dictionary[String, Texture2D]({
 "triste": ExtResource("5_triste")
 })
 lado_esquerdo = false
+escala_retrato = 0.6
 vozes = Array[AudioStream]([ExtResource("6_voz"), ExtResource("7_voz"), ExtResource("8_voz"), ExtResource("9_voz")])
 voz_pitch = 1.45
 letras_por_segundo = 40.0

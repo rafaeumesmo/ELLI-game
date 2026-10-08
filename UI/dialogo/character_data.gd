@@ -20,6 +20,9 @@ extends Resource
 @export var retratos_animados: SpriteFrames
 ## Lado da tela do retrato: o Elísio fala da esquerda, os NPCs da direita.
 @export var lado_esquerdo: bool = false
+## Tamanho do retrato em relação ao normal (0.6 = 60%), pra personagem pequeno
+## parecer pequeno. Fica apoiado na mesma base dos outros.
+@export_range(0.2, 1.5, 0.05) var escala_retrato: float = 1.0
 ## Pra onde o desenho do retrato olha. O retrato é espelhado sozinho pra olhar
 ## sempre pro centro da tela.
 @export var retrato_olha_para_direita: bool = true
