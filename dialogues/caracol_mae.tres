@@ -8,25 +8,25 @@
 script = ExtResource("2_line")
 personagem = ExtResource("3_mae")
 expressao = "neutro"
-texto = "Meu filho tá por aí em cima."
+texto = "Meu filhote tá lá em cima."
 
 [sub_resource type="Resource" id="Resource_fala2"]
 script = ExtResource("2_line")
 personagem = ExtResource("3_mae")
-expressao = "triste"
-texto = "Ele ainda não entende sobre os vagalumes."
+expressao = "feliz"
+texto = "Se encontrar ele, dá um toque nele por mim."
 
 [sub_resource type="Resource" id="Resource_fala3"]
 script = ExtResource("2_line")
 personagem = ExtResource("3_mae")
 expressao = "neutro"
-texto = "Toca nos amarelos, São eles que fazem o chão se mexer."
+texto = "E fica esperto com os amarelos."
 
 [sub_resource type="Resource" id="Resource_fala4"]
 script = ExtResource("2_line")
 personagem = ExtResource("3_mae")
 expressao = "neutro"
-texto = "Sobe logo."
+texto = "Toca neles e eles mexem nos blocos."
 
 [resource]
 script = ExtResource("1_data")
