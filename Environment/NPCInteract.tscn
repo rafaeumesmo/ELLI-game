@@ -1,0 +1,25 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Environment/npc_interact.gd" id="1_npc"]
+[ext_resource type="Texture2D" path="res://assets/dialogo/indicador.png" id="2_indicador"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_brilho"]
+light_mode = 1
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_conversa"]
+radius = 22.0
+
+[node name="NPCInteract" type="Area2D"]
+collision_layer = 0
+collision_mask = 1
+monitorable = false
+script = ExtResource("1_npc")
+
+[node name="Forma" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_conversa")
+
+[node name="Indicador" type="Sprite2D" parent="."]
+z_index = 10
+material = SubResource("CanvasItemMaterial_brilho")
+position = Vector2(0, -16)
+texture = ExtResource("2_indicador")

@@ -1,0 +1,33 @@
+[gd_resource type="Resource" script_class="DialogueData" format=3]
+
+[ext_resource type="Script" path="res://UI/dialogo/dialogue_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://UI/dialogo/dialogue_line.gd" id="2_line"]
+[ext_resource type="Resource" path="res://dialogues/personagens/caracol_mae.tres" id="3_mae"]
+
+[sub_resource type="Resource" id="Resource_fala1"]
+script = ExtResource("2_line")
+personagem = ExtResource("3_mae")
+expressao = "neutro"
+texto = "Meu filho tá por aí em cima."
+
+[sub_resource type="Resource" id="Resource_fala2"]
+script = ExtResource("2_line")
+personagem = ExtResource("3_mae")
+expressao = "triste"
+texto = "Ele ainda não entende sobre os vagalumes."
+
+[sub_resource type="Resource" id="Resource_fala3"]
+script = ExtResource("2_line")
+personagem = ExtResource("3_mae")
+expressao = "neutro"
+texto = "Toca nos amarelos, São eles que fazem o chão se mexer."
+
+[sub_resource type="Resource" id="Resource_fala4"]
+script = ExtResource("2_line")
+personagem = ExtResource("3_mae")
+expressao = "neutro"
+texto = "Sobe logo."
+
+[resource]
+script = ExtResource("1_data")
+falas = Array[ExtResource("2_line")]([SubResource("Resource_fala1"), SubResource("Resource_fala2"), SubResource("Resource_fala3"), SubResource("Resource_fala4")])

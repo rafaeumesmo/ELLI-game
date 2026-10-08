@@ -1,0 +1,27 @@
+[gd_resource type="Resource" script_class="DialogueData" format=3]
+
+[ext_resource type="Script" path="res://UI/dialogo/dialogue_data.gd" id="1_data"]
+[ext_resource type="Script" path="res://UI/dialogo/dialogue_line.gd" id="2_line"]
+[ext_resource type="Resource" path="res://dialogues/personagens/caracol.tres" id="3_caracol"]
+
+[sub_resource type="Resource" id="Resource_fala1"]
+script = ExtResource("2_line")
+personagem = ExtResource("3_caracol")
+expressao = "neutro"
+texto = "Cara... você também está procurando algo?"
+
+[sub_resource type="Resource" id="Resource_fala2"]
+script = ExtResource("2_line")
+personagem = ExtResource("3_caracol")
+expressao = "surpreso"
+texto = "Um vagalume azul? Eu vi um passar por aqui..."
+
+[sub_resource type="Resource" id="Resource_fala3"]
+script = ExtResource("2_line")
+personagem = ExtResource("3_caracol")
+expressao = "feliz"
+texto = "Boa sorte lá em cima."
+
+[resource]
+script = ExtResource("1_data")
+falas = Array[ExtResource("2_line")]([SubResource("Resource_fala1"), SubResource("Resource_fala2"), SubResource("Resource_fala3")])

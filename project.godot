@@ -20,6 +20,7 @@ config/features=PackedStringArray("4.7", "Forward Plus")
 PauseMenu="*uid://dv6co4w2cyhyb"
 SaveManager="*res://Environment/save_manager.gd"
 Transicao="*res://Environment/Transicao.tscn"
+DialogueManager="*res://UI/dialogo/dialogue_manager.gd"
 
 [display]
 
