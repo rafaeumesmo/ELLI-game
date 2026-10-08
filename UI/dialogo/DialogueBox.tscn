@@ -1,13 +1,9 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://UI/dialogo/dialogue_box.gd" id="1_box"]
-[ext_resource type="Texture2D" path="res://assets/dialogo/moldura.png" id="2_moldura"]
-[ext_resource type="Texture2D" path="res://assets/dialogo/aba_nome.png" id="3_aba"]
-[ext_resource type="Texture2D" path="res://assets/dialogo/rabicho.png" id="4_rabicho"]
-[ext_resource type="Texture2D" path="res://assets/dialogo/seta.png" id="5_seta"]
 
 [node name="DialogueBox" type="CanvasLayer"]
-layer = 40
+layer = 110
 script = ExtResource("1_box")
 
 [node name="Raiz" type="Control" parent="."]
@@ -16,55 +12,39 @@ layout_mode = 3
 anchors_preset = 0
 mouse_filter = 2
 
-[node name="Caixa" type="NinePatchRect" parent="Raiz"]
-layout_mode = 0
-mouse_filter = 2
-texture = ExtResource("2_moldura")
-patch_margin_left = 9
-patch_margin_top = 9
-patch_margin_right = 9
-patch_margin_bottom = 9
-
-[node name="Texto" type="Label" parent="Raiz/Caixa"]
+[node name="Painel" type="ColorRect" parent="Raiz"]
 layout_mode = 0
 mouse_filter = 2
 
-[node name="Seta" type="TextureRect" parent="Raiz/Caixa"]
-visible = false
-layout_mode = 0
-mouse_filter = 2
-texture = ExtResource("5_seta")
-
-[node name="Rabicho" type="TextureRect" parent="Raiz"]
-layout_mode = 0
-mouse_filter = 2
-texture = ExtResource("4_rabicho")
-
-[node name="Aba" type="NinePatchRect" parent="Raiz"]
-layout_mode = 0
-mouse_filter = 2
-texture = ExtResource("3_aba")
-patch_margin_left = 9
-patch_margin_right = 27
-
-[node name="Nome" type="Label" parent="Raiz/Aba"]
-layout_mode = 0
-mouse_filter = 2
-vertical_alignment = 1
-
-[node name="Retrato" type="NinePatchRect" parent="Raiz"]
-layout_mode = 0
-mouse_filter = 2
-texture = ExtResource("2_moldura")
-patch_margin_left = 9
-patch_margin_top = 9
-patch_margin_right = 9
-patch_margin_bottom = 9
-
-[node name="Imagem" type="TextureRect" parent="Raiz/Retrato"]
+[node name="RetratoEsq" type="TextureRect" parent="Raiz"]
+modulate = Color(1, 1, 1, 0)
 layout_mode = 0
 mouse_filter = 2
 expand_mode = 1
 stretch_mode = 5
 
-[node name="Bip" type="AudioStreamPlayer" parent="."]
+[node name="RetratoDir" type="TextureRect" parent="Raiz"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Nome" type="Label" parent="Raiz"]
+layout_mode = 0
+mouse_filter = 2
+
+[node name="Texto" type="RichTextLabel" parent="Raiz"]
+layout_mode = 0
+mouse_filter = 2
+clip_contents = false
+bbcode_enabled = true
+scroll_active = false
+autowrap_mode = 0
+
+[node name="Avancar" type="TextureRect" parent="Raiz"]
+visible = false
+layout_mode = 0
+mouse_filter = 2
+
+[node name="Voz" type="AudioStreamPlayer" parent="."]

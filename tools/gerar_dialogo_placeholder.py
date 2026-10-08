@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """Gera a arte placeholder do sistema de dialogo em assets/dialogo/.
 
-UI (moldura, aba, rabicho, seta) ja sai "assada" em 3x: 1 pixel de arte = 3 px
-de tela, que e o P de UI/dialogo/dialogue_box.gd. Retratos 32x32 sao o sprite
+UI (ornamento, broto, vagalume do avancar) ja sai "assada" em 3x: 1 pixel de
+arte = 3 px de tela, que e o P de UI/dialogo/dialogue_box.gd. Retratos 32x32 sao o sprite
 do personagem ampliado 2x + uma marquinha por expressao -- e so substituir pelos
-PNGs de verdade (mesmo nome). Bips: onda quadrada curtinha.
+PNGs de verdade (mesmo nome). Vozes: 4 resmungos curtos por personagem.
 
 Uso:  python3 tools/gerar_dialogo_placeholder.py
 """
@@ -28,25 +28,18 @@ def salvar(linhas, path, escala=P):
     img.save(path)
 
 d = R + '/assets/dialogo/'
-# Moldura 9-patch 7x7 com cantos chanfrados (margem 3 px de arte = 9 px).
-salvar(["..BBB..", ".BFFFB.", "BFFFFFB", "BFFFFFB", "BFFFFFB", ".BFFFB.", "..BBB.."], d + 'moldura.png')
-# Aba de nome: 8 linhas visiveis + 3 que cobrem o canto de cima da caixa.
-esq = ["..B", ".BF"] + ["BFF"] * 9
-meio = ["B"] + ["F"] * 10
-dir_ = []
-for r in range(11):
-    if r < 8:
-        dir_.append(''.join('B' if c == r else ('F' if c < r else '.') for c in range(9)))
-    elif r == 8:
-        dir_.append("FFFFFFFFB")
-    else:
-        dir_.append("FFFFFFFFF")
-salvar([esq[r] + meio[r] + dir_[r] for r in range(11)], d + 'aba_nome.png')
-# Rabicho: a 1a linha cobre a borda de baixo da caixa.
-salvar(["BFFFFFB", ".BFFFB.", "..BFB..", "...B..."], d + 'rabicho.png')
-# Seta de "proxima pagina".
-C['B'] = BORDA
-salvar(["BBBBB", ".BBB.", "..B.."], d + 'seta.png')
+# Ornamento: linha fina pontilhada (repete na horizontal) + broto no meio.
+ORN = (0xc9, 0xc2, 0xa8, 255)
+C['o'] = ORN; C['g'] = (0x8f, 0xd1, 0x7a, 255); C['v'] = (0x5e, 0x9e, 0x4f, 255)
+salvar(["ooooo."], d + 'ornamento_linha.png')
+salvar(["....g.g....",
+        "...ggvgg...",
+        "....gvg....",
+        ".....v.....",
+        "oooo.v.oooo"], d + 'ornamento_broto.png')
+# Vagalume do "avancar": miolo azul + brilho em volta.
+C['a'] = (0x7e, 0xc8, 0xff, 255); C['l'] = (0x7e, 0xc8, 0xff, 110); C['w'] = (0xe6, 0xf6, 0xff, 255)
+salvar([".l.l.", "laaal", ".awa.", "laaal", ".l.l."], d + 'vagalume_avancar.png')
 # Indicador "!" no mundo (escala 1: pixel do mundo, igual ao resto da arte).
 C['L'] = BORDA; C['#'] = (0x10, 0x10, 0x1c, 255)
 salvar([".###.", ".#L#.", ".#L#.", ".#L#.", ".#L#.", ".###.", ".#L#.", ".###."], d + 'indicador.png', 1)
@@ -69,16 +62,22 @@ def retratos(nome, sheet, regiao):
 retratos('caracol', 'caracol.png', (64, 0, 80, 16))
 retratos('elisio', 'Eli.png', (0, 0, 16, 16))
 
-# Bips: onda quadrada curtinha com decaimento.
-def bip(path, freq, dur=0.045, sr=22050, vol=0.35):
+# Vozes (estilo Hollow Knight): resmungos curtos, cada um com uma curva de
+# pitch diferente. O jogo sorteia um a cada ~4-6 letras e varia o pitch.
+def resmungo(path, freq, glide, dur, sr=22050, vol=0.32):
     n = int(sr * dur)
+    fase = 0.0
     with wave.open(path, 'wb') as w:
         w.setnchannels(1); w.setsampwidth(2); w.setframerate(sr)
         fr = b''
         for i in range(n):
-            env = (1 - i / n) ** 2
-            s = vol * env * (1 if math.sin(2 * math.pi * freq * i / sr) >= 0 else -1)
-            fr += struct.pack('<h', int(s * 32767))
+            t = i / n
+            f = freq * (1 + glide * t) * (1 + 0.03 * math.sin(2 * math.pi * 28 * i / sr))
+            fase += 2 * math.pi * f / sr
+            env = min(1.0, t * 12) * (1 - t) ** 1.5
+            s = math.sin(fase) + 0.45 * math.sin(2 * fase) + 0.25 * math.sin(3 * fase + 0.5)
+            fr += struct.pack('<h', int(max(-1, min(1, vol * env * s / 1.4)) * 32767))
         w.writeframes(fr)
-bip(d + 'sons/bip_caracol.wav', 330)
-bip(d + 'sons/bip_elisio.wav', 620)
+for nome, base in (('caracol', 210), ('elisio', 300)):
+    for i, (mult, glide, dur) in enumerate([(1.0, 0.25, 0.09), (1.12, -0.2, 0.08), (0.92, 0.4, 0.11), (1.05, -0.35, 0.07)], 1):
+        resmungo(d + 'sons/voz_%s_%d.wav' % (nome, i), base * mult, glide, dur)

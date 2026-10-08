@@ -5,7 +5,10 @@
 [ext_resource type="Texture2D" path="res://assets/dialogo/retratos/elisio_feliz.png" id="3_feliz"]
 [ext_resource type="Texture2D" path="res://assets/dialogo/retratos/elisio_surpreso.png" id="4_surpreso"]
 [ext_resource type="Texture2D" path="res://assets/dialogo/retratos/elisio_triste.png" id="5_triste"]
-[ext_resource type="AudioStream" path="res://assets/dialogo/sons/bip_elisio.wav" id="6_bip"]
+[ext_resource type="AudioStream" path="res://assets/dialogo/sons/voz_elisio_1.wav" id="6_voz"]
+[ext_resource type="AudioStream" path="res://assets/dialogo/sons/voz_elisio_2.wav" id="7_voz"]
+[ext_resource type="AudioStream" path="res://assets/dialogo/sons/voz_elisio_3.wav" id="8_voz"]
+[ext_resource type="AudioStream" path="res://assets/dialogo/sons/voz_elisio_4.wav" id="9_voz"]
 
 [resource]
 script = ExtResource("1_char")
@@ -17,6 +20,7 @@ retratos = Dictionary[String, Texture2D]({
 "surpreso": ExtResource("4_surpreso"),
 "triste": ExtResource("5_triste")
 })
-bip = ExtResource("6_bip")
+lado_esquerdo = true
+vozes = Array[AudioStream]([ExtResource("6_voz"), ExtResource("7_voz"), ExtResource("8_voz"), ExtResource("9_voz")])
+voz_pitch = 1.0
 letras_por_segundo = 38.0
-altura_cabeca = 10.0

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dk6ycd0h6cwal"
-path="res://.godot/imported/seta.png-027ad4f6793ae5b3211c907f1c2697b8.ctex"
+uid="uid://dxvbfwudp4nsc"
+path="res://.godot/imported/vagalume_avancar.png-1f80dabfa51e6516cea24b11ecb96361.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/dialogo/seta.png"
-dest_files=["res://.godot/imported/seta.png-027ad4f6793ae5b3211c907f1c2697b8.ctex"]
+source_file="res://assets/dialogo/vagalume_avancar.png"
+dest_files=["res://.godot/imported/vagalume_avancar.png-1f80dabfa51e6516cea24b11ecb96361.ctex"]
 
 [params]
 

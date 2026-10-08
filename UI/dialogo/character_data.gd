@@ -7,28 +7,35 @@ extends Resource
 ## Identificador usado pra achar o nó de quem fala na cena (as chaves do
 ## `speakers` de DialogueManager.start). "elisio" acha o player sozinho.
 @export var id: String = ""
-## Nome que aparece na aba em cima da caixa.
+## Nome que aparece acima do texto.
 @export var nome: String = ""
+
+@export_group("Retrato")
 ## Retrato por expressão ("neutro", "feliz", "surpreso", "triste"...). Uma
-## expressão que faltar cai no "neutro". Arte de 32x32 (aparece 3x maior).
+## expressão que faltar cai no "neutro". Arte de 32x32 (aparece 4x maior).
 @export var retratos: Dictionary[String, Texture2D] = {}
+## Opcional: retratos animados (piscar, boca). Cada animação tem o nome da
+## expressão ("neutro", "feliz"...); "<expressão>_falando" é usada enquanto o
+## texto digita, se existir. Tem prioridade sobre `retratos`.
+@export var retratos_animados: SpriteFrames
+## Lado da tela do retrato: o Elísio fala da esquerda, os NPCs da direita.
+@export var lado_esquerdo: bool = false
+## Pra onde o desenho do retrato olha. O retrato é espelhado sozinho pra olhar
+## sempre pro centro da tela.
+@export var retrato_olha_para_direita: bool = true
 
 @export_group("Voz")
-## Bip curto tocado durante o typewriter (vazio = mudo).
-@export var bip: AudioStream
-@export var bip_volume_db: float = -12.0
-@export var bip_pitch: float = 1.0
-## Variação aleatória do pitch, pra cada bip soar um pouco diferente.
-@export_range(0.0, 0.5, 0.01) var bip_variacao: float = 0.08
-## Toca o bip a cada N letras (1 = toda letra).
-@export_range(1, 6) var bip_a_cada: int = 2
+## 3-5 resmungos curtos (estilo Hollow Knight). Um é sorteado a cada
+## `voz_a_cada_min`..`voz_a_cada_max` letras. Vazio = mudo.
+@export var vozes: Array[AudioStream] = []
+@export var voz_volume_db: float = -8.0
+@export var voz_pitch: float = 1.0
+## Variação aleatória do pitch (0.1 = ±10%).
+@export_range(0.0, 0.5, 0.01) var voz_variacao: float = 0.1
+@export_range(1, 12) var voz_a_cada_min: int = 4
+@export_range(1, 12) var voz_a_cada_max: int = 6
 ## Velocidade do typewriter desse personagem, em letras por segundo.
 @export var letras_por_segundo: float = 35.0
-
-@export_group("Posição")
-## Quanto acima da origem do nó (em px locais dele) fica a cabeça -- é ali que
-## o rabicho do balão aponta.
-@export var altura_cabeca: float = 10.0
 
 func retrato(expressao: String) -> Texture2D:
 	if retratos.has(expressao):

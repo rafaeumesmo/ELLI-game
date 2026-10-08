@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ch5fcivrhv8ya"
-path="res://.godot/imported/rabicho.png-2fa2259d081f9f943787e3ea5988bee0.ctex"
+uid="uid://dx8m8j0jlovb8"
+path="res://.godot/imported/ornamento_broto.png-9c94ff8bbd7ff5cf4f3aaa03dbdca560.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/dialogo/rabicho.png"
-dest_files=["res://.godot/imported/rabicho.png-2fa2259d081f9f943787e3ea5988bee0.ctex"]
+source_file="res://assets/dialogo/ornamento_broto.png"
+dest_files=["res://.godot/imported/ornamento_broto.png-9c94ff8bbd7ff5cf4f3aaa03dbdca560.ctex"]
 
 [params]
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bjk3q0ga1vw40"
-path="res://.godot/imported/aba_nome.png-4b13d3254637ad1c04b7bacc0268a0c5.ctex"
+uid="uid://blfummw5meuyh"
+path="res://.godot/imported/ornamento_linha.png-22eabf4da549a8e068ecea0e8f6e63f7.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/dialogo/aba_nome.png"
-dest_files=["res://.godot/imported/aba_nome.png-4b13d3254637ad1c04b7bacc0268a0c5.ctex"]
+source_file="res://assets/dialogo/ornamento_linha.png"
+dest_files=["res://.godot/imported/ornamento_linha.png-22eabf4da549a8e068ecea0e8f6e63f7.ctex"]
 
 [params]
 

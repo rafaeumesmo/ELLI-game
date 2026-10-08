@@ -1,44 +1,73 @@
 extends CanvasLayer
-## Caixa de diálogo "retrato + caixa" (instanciada pelo DialogueManager).
+## Caixa de diálogo estilo Celeste + Hollow Knight (instanciada pelo
+## DialogueManager).
 ##
-## Da esquerda pra direita: card do retrato, aba de nome em cima da caixa,
-## caixa de texto com 2 linhas por página, seta ▼ quicando quando a página
-## termina e rabicho embaixo apontando pra quem fala. Fica numa CanvasLayer e
-## acompanha o falante convertendo a posição dele com
-## get_global_transform_with_canvas() -- zoom da câmera e o scale 3.65 dos
-## mapas não interferem. Sempre clampeada dentro da tela.
+## Faixa fixa na tela (em cima, ou embaixo se o player estiver no topo), com
+## painel escuro translúcido que esmaece nas laterais, ornamento fino em cima e
+## embaixo do texto, retrato grande sem moldura colado na lateral (Elísio à
+## esquerda, NPCs à direita), nome pequeno em azul-vagalume e texto que entra
+## letra a letra com fade + subida. Aceita [shake], [wave] e [p=segundos] no
+## texto.
 ##
-## A arte (assets/dialogo/) já vem "assada" em 3x: 1 pixel de arte = P px de
-## tela. Todas as medidas são múltiplos de P pra nada sair do grid.
+## Texto e nome alinham do lado do retrato de quem fala (esquerda pro Elísio,
+## direita pros NPCs), pra fala ficar perto do rosto. Dá pra alinhar à direita
+## sem o texto "andar" no typewriter porque a página inteira já está no layout
+## desde o começo -- o [aparecer] só deixa as letras ainda não ditas invisíveis.
 
 signal pagina_completa
 
-## 1 pixel da arte = P pixels da UI.
+## 1 pixel da arte de UI = P pixels da tela.
 const P := 3
+const EFEITO_APARECER := preload("res://UI/dialogo/efeito_aparecer.gd")
 const PONTUACAO_FORTE := ".?!…"
 const PONTUACAO_FRACA := ",;:"
+
+enum Posicao { AUTO, TOPO, BAIXO }
+
+@export_group("Posição")
+## AUTO = em cima, mas vai pra baixo se o player estiver no terço de cima da tela.
+@export var posicao: Posicao = Posicao.AUTO
+## Largura do painel em fração da tela.
+@export_range(0.3, 1.0, 0.01) var largura_fracao: float = 0.85
+## Distância do painel até a borda de cima/baixo da tela.
+@export var margem_borda: int = 18
+
+@export_group("Cores")
+@export var cor_painel: Color = Color(0.051, 0.051, 0.102, 0.75)
+@export var cor_texto: Color = Color("f0ead6")
+@export var cor_nome: Color = Color("7ec8ff")
+@export var cor_ornamento: Color = Color(0.79, 0.76, 0.66, 0.55)
+## Fração da largura do painel que esmaece em cada lateral.
+@export_range(0.0, 0.5, 0.01) var fade_lateral: float = 0.1
 
 @export_group("Texto")
 ## Fonte do texto e do nome. Vazio = fonte padrão do Godot, sem suavização.
 ## Pra usar uma fonte pixel, arraste o .ttf/.otf aqui (precisa ter ã, ê, ç...).
 @export var fonte: Font
 @export var tamanho_fonte: int = 16
-@export var cor_texto: Color = Color("e8e8f0")
-@export var cor_nome: Color = Color("e8e8f0")
-## Espaço extra entre as linhas (px).
+@export var tamanho_nome: int = 13
 @export var espaco_linhas: int = 6
 @export var linhas_por_pagina: int = 2
 
-@export_group("Caixa")
-## Largura da caixa de texto (sem o retrato), em px de tela.
-@export var largura_caixa: int = 420
-## Margem interna da caixa (px). Arredondada pra múltiplo de P.
-@export var margem_x: int = 18
-@export var margem_y: int = 15
-## Distância mínima da caixa até a borda da tela.
-@export var margem_tela: int = 8
-## Duração da animação de abrir/fechar.
-@export var duracao_abrir: float = 0.1
+@export_group("Ornamento e retrato")
+## Detalhe no meio das linhas de ornamento (broto placeholder). A linha em si
+## é desenhada com `cor_ornamento`.
+@export var textura_ornamento: Texture2D = preload("res://assets/dialogo/ornamento_broto.png")
+@export var textura_avancar: Texture2D = preload("res://assets/dialogo/vagalume_avancar.png")
+## Lado do retrato em px de tela (arte 32x32 x4).
+@export var tamanho_retrato: int = 128
+## Quanto o retrato sai pra fora do painel, pro lado e pra cima/baixo.
+@export var retrato_para_fora: Vector2 = Vector2(18, 24)
+
+@export_group("Animação")
+## Abrir/fechar: o painel expande na vertical a partir do meio.
+@export var duracao_abrir: float = 0.15
+## Troca de quem fala: o retrato entra deslizando `deslize_retrato` px com fade.
+@export var duracao_retrato: float = 0.12
+@export var deslize_retrato: float = 8.0
+## Fade + subida de cada letra.
+@export var duracao_letra: float = 0.12
+@export var subida_letra: float = 4.0
 
 @export_group("Typewriter")
 ## Pausa depois de . ? ! …
@@ -46,39 +75,66 @@ const PONTUACAO_FRACA := ",;:"
 ## Pausa depois de , ; :
 @export var pausa_virgula: float = 0.1
 
+@export_group("Câmera")
+## Zoom-in leve enquadrando o Elísio e o NPC durante a conversa.
+@export var zoom_camera: bool = true
+@export var zoom_fator: float = 1.1
+@export var duracao_zoom: float = 0.35
+
 @onready var _raiz: Control = $Raiz
-@onready var _card: NinePatchRect = $Raiz/Retrato
-@onready var _retrato: TextureRect = $Raiz/Retrato/Imagem
-@onready var _caixa: NinePatchRect = $Raiz/Caixa
-@onready var _texto: Label = $Raiz/Caixa/Texto
-@onready var _seta: TextureRect = $Raiz/Caixa/Seta
-@onready var _aba: NinePatchRect = $Raiz/Aba
-@onready var _nome: Label = $Raiz/Aba/Nome
-@onready var _rabicho: TextureRect = $Raiz/Rabicho
-@onready var _bip: AudioStreamPlayer = $Bip
+@onready var _painel: ColorRect = $Raiz/Painel
+@onready var _retrato_esq: TextureRect = $Raiz/RetratoEsq
+@onready var _retrato_dir: TextureRect = $Raiz/RetratoDir
+@onready var _nome: Label = $Raiz/Nome
+@onready var _texto: RichTextLabel = $Raiz/Texto
+@onready var _avancar: TextureRect = $Raiz/Avancar
+@onready var _voz: AudioStreamPlayer = $Voz
 
 ## true enquanto a página atual ainda está sendo datilografada.
 var digitando: bool = false
+## Lidos pelo efeito [aparecer]: instante em que cada letra apareceu (-1 =
+## escondida) e o relógio da caixa.
+var tempos_letras := PackedFloat32Array()
+var relogio := 0.0
 
 var _fonte: Font
-var _alvo: Node2D
 var _personagem: CharacterData
-var _pagina := ""
-var _visiveis := 0
+var _expressao := "neutro"
+var _esquerda := false
+var _retrato_ativo: TextureRect
+var _pagina: Dictionary = {}
+var _revelados := 0
 var _acumulado := 0.0
 var _espera := 0.0
-var _letras_desde_bip := 0
-var _tempo := 0.0
+var _letras_ate_voz := 0
+var _embaixo := false
 var _tw: Tween
+var _tw_retrato: Tween
+var _ornamentos: Array[Control] = []
 
 func _ready() -> void:
+	# Roda com o jogo pausado só pra se esconder atrás do menu de pausa.
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	_fonte = fonte if fonte != null else _fonte_padrao_sem_suavizacao()
-	for label: Label in [_texto, _nome]:
-		label.add_theme_font_override("font", _fonte)
-		label.add_theme_font_size_override("font_size", tamanho_fonte)
-	_texto.add_theme_color_override("font_color", cor_texto)
-	_texto.add_theme_constant_override("line_spacing", espaco_linhas)
+
+	_painel.color = cor_painel
+	_painel.material = _material_fade(fade_lateral, fade_lateral)
+	_nome.add_theme_font_override("font", _fonte)
+	_nome.add_theme_font_size_override("font_size", tamanho_nome)
 	_nome.add_theme_color_override("font_color", cor_nome)
+	_texto.add_theme_font_override("normal_font", _fonte)
+	_texto.add_theme_font_size_override("normal_font_size", tamanho_fonte)
+	_texto.add_theme_color_override("default_color", cor_texto)
+	_texto.add_theme_constant_override("line_separation", espaco_linhas)
+	var efeito := EFEITO_APARECER.new()
+	efeito.caixa = self
+	_texto.install_effect(efeito)
+	_avancar.texture = textura_avancar
+	for i in 2:
+		var orn := _criar_ornamento()
+		_raiz.add_child(orn)
+		_raiz.move_child(orn, 1)
+		_ornamentos.append(orn)
 	_montar_layout()
 	_raiz.visible = false
 
@@ -94,166 +150,318 @@ func _fonte_padrao_sem_suavizacao() -> Font:
 		return f
 	return base
 
+func _material_fade(esq: float, dir: float) -> ShaderMaterial:
+	var m := ShaderMaterial.new()
+	m.shader = preload("res://UI/dialogo/fade_lateral.gdshader")
+	m.set_shader_parameter("fade_esq", esq)
+	m.set_shader_parameter("fade_dir", dir)
+	return m
+
+## Linha fina que some nas pontas + o detalhe (broto) no meio.
+func _criar_ornamento() -> Control:
+	var orn := Control.new()
+	orn.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	for lado in 2:
+		var linha := ColorRect.new()
+		linha.name = "LinhaEsq" if lado == 0 else "LinhaDir"
+		linha.color = cor_ornamento
+		linha.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		linha.material = _material_fade(0.7, 0.0) if lado == 0 else _material_fade(0.0, 0.7)
+		orn.add_child(linha)
+	var detalhe := TextureRect.new()
+	detalhe.name = "Detalhe"
+	detalhe.texture = textura_ornamento
+	detalhe.modulate = Color(1, 1, 1, cor_ornamento.a + 0.3)
+	detalhe.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	orn.add_child(detalhe)
+	return orn
+
 func _arredondar_p(valor: float) -> int:
 	return int(ceilf(valor / P)) * P
 
-## Monta as medidas fixas (tudo em múltiplos de P). A caixa e o card ficam
-## alinhados pela base; a aba de nome senta no topo da caixa, ao lado do card.
+## Medidas do painel pro tamanho de tela atual. Ordem vertical dentro do
+## painel: ornamento, nome, texto (2 linhas), ornamento.
 func _montar_layout() -> void:
-	var mx := _arredondar_p(margem_x)
-	var my := _arredondar_p(margem_y)
-	var altura_linha := _fonte.get_height(tamanho_fonte)
-	var altura_texto := altura_linha * linhas_por_pagina + espaco_linhas * (linhas_por_pagina - 1)
-	var altura_caixa := _arredondar_p(altura_texto + my * 2)
-	var largura := _arredondar_p(largura_caixa)
+	var tela := get_viewport().get_visible_rect().size
+	var largura := _arredondar_p(tela.x * largura_fracao)
+	var alt_orn := textura_ornamento.get_height() if textura_ornamento != null else P
+	var alt_nome := ceilf(_fonte.get_height(tamanho_nome))
+	var alt_linha := _fonte.get_height(tamanho_fonte)
+	var alt_texto := ceilf(alt_linha * linhas_por_pagina + espaco_linhas * (linhas_por_pagina - 1))
+	var folga := 3 * P
+	var altura := _arredondar_p(folga + alt_orn + 2 * P + alt_nome + P + alt_texto + 2 * P + alt_orn + folga)
 
-	# Card: 32 px de arte de retrato + 1 de borda e 1 de folga de cada lado.
-	var lado_card := (32 + 4) * P
-	var vao := 2 * P
-	var aba_visivel := 8 * P
-	var topo_caixa := maxf(aba_visivel, lado_card - altura_caixa)
-	var base := topo_caixa + altura_caixa
+	_raiz.size = Vector2(largura, altura)
+	_painel.size = _raiz.size
+	var x := roundf((tela.x - largura) * 0.5)
+	_raiz.position = Vector2(x, tela.y - margem_borda - altura if _embaixo else margem_borda)
+	_raiz.pivot_offset = _raiz.size * 0.5
 
-	_card.size = Vector2(lado_card, lado_card)
-	_card.position = Vector2(0, base - lado_card)
-	_retrato.position = Vector2(2 * P, 2 * P)
-	_retrato.size = Vector2(32 * P, 32 * P)
+	# Área do texto: a mesma pros dois lados, livre dos dois retratos.
+	var recuo := tamanho_retrato - retrato_para_fora.x + 6 * P
+	var texto_x := recuo
+	var texto_l := largura - recuo * 2
+	var y := folga
+	_posicionar_ornamento(_ornamentos[0], y, largura)
+	y += alt_orn + 2 * P
+	_nome.position = Vector2(texto_x, y)
+	_nome.size = Vector2(texto_l, alt_nome)
+	y += alt_nome + P
+	_avancar.size = _avancar.texture.get_size()
+	_texto.position = Vector2(texto_x, y)
+	_texto.size = Vector2(texto_l - _avancar.size.x - 2 * P, alt_texto + P)
+	y += alt_texto + 2 * P
+	_posicionar_ornamento(_ornamentos[1], y, largura)
 
-	_caixa.position = Vector2(lado_card + vao, topo_caixa)
-	_caixa.size = Vector2(largura, altura_caixa)
-	_texto.position = Vector2(mx, my)
-	_texto.size = Vector2(largura - mx * 2, altura_caixa - my * 2)
-	_seta.size = _seta.texture.get_size()
-	_seta.position = Vector2(largura - 3 * P - _seta.size.x, altura_caixa - 3 * P - _seta.size.y)
+	_avancar.position = Vector2(texto_x + texto_l - _avancar.size.x, _texto.position.y + alt_texto - _avancar.size.y)
 
-	# A aba tem 11 px de arte de altura: 8 visíveis + 3 que cobrem o canto
-	# chanfrado de cima da caixa (pra borda dela emendar na da caixa).
-	_aba.position = Vector2(_caixa.position.x, topo_caixa - aba_visivel)
-	_nome.position = Vector2(4 * P, P)
-	_nome.size.y = 7 * P
+	# Retratos: colados nas laterais, saindo um pouco pro lado e na direção do
+	# meio da tela (pra baixo quando o painel está no topo, e vice-versa).
+	var tam := Vector2(tamanho_retrato, tamanho_retrato)
+	var ry := altura - tam.y + retrato_para_fora.y if not _embaixo else -retrato_para_fora.y
+	for r: TextureRect in [_retrato_esq, _retrato_dir]:
+		r.size = tam
+		r.position.y = ry
+	_retrato_esq.position.x = -retrato_para_fora.x
+	_retrato_dir.position.x = largura - tam.x + retrato_para_fora.x
 
-	_rabicho.size = _rabicho.texture.get_size()
-	_rabicho.position.y = base - P
-
-	_raiz.size = Vector2(_caixa.position.x + largura, base - P + _rabicho.size.y)
+func _posicionar_ornamento(orn: Control, y: float, largura: float) -> void:
+	var detalhe := orn.get_node("Detalhe") as TextureRect
+	var tam := detalhe.texture.get_size() if detalhe.texture != null else Vector2.ZERO
+	var meio := roundf(largura * 0.5 / P) * P
+	var margem := roundf(largura * 0.18 / P) * P
+	orn.position = Vector2(0, y)
+	orn.size = Vector2(largura, tam.y)
+	detalhe.size = tam
+	detalhe.position = Vector2(meio - roundf(tam.x * 0.5 / P) * P, 0)
+	var linha_y := tam.y - P
+	var esq := orn.get_node("LinhaEsq") as ColorRect
+	var dir := orn.get_node("LinhaDir") as ColorRect
+	esq.position = Vector2(margem, linha_y)
+	esq.size = Vector2(detalhe.position.x - margem, P)
+	dir.position = Vector2(detalhe.position.x + tam.x, linha_y)
+	dir.size = Vector2(largura - margem - dir.position.x, P)
 
 func _process(delta: float) -> void:
-	_tempo += delta
-	if not _raiz.visible:
+	# Pausado: some atrás do menu de pausa e congela o typewriter.
+	visible = not get_tree().paused
+	if get_tree().paused or not _raiz.visible:
 		return
-	_atualizar_posicao()
+	relogio += delta
 	if digitando:
 		_digitar(delta)
-	elif _seta.visible:
-		# Quica 1 pixel de arte, em degrau (nada de subpixel).
-		_seta.position.y = _caixa.size.y - 3 * P - _seta.size.y - (P if fmod(_tempo, 0.6) < 0.3 else 0)
-
-# --- Falante / posição -------------------------------------------------------
-
-## Troca quem está falando: retrato, nome, voz e o nó que a caixa acompanha.
-func definir_falante(personagem: CharacterData, expressao: String, alvo: Node2D) -> void:
-	_personagem = personagem
-	_alvo = alvo
-	_retrato.texture = personagem.retrato(expressao) if personagem != null else null
-	_nome.text = personagem.nome if personagem != null else ""
-	_aba.visible = not _nome.text.is_empty()
-	_nome.size.x = _fonte.get_string_size(_nome.text, HORIZONTAL_ALIGNMENT_LEFT, -1, tamanho_fonte).x
-	# Aba: 4 px de arte à esquerda do nome + a ponta diagonal (9) à direita.
-	_aba.size = Vector2(_arredondar_p(_nome.size.x + 4 * P + 9 * P + P), _aba.texture.get_height())
-	_bip.stream = personagem.bip if personagem != null else null
-	if is_inside_tree() and _raiz.visible:
-		_atualizar_posicao()
-
-## Centraliza a caixa no falante, acima da cabeça, presa dentro da tela. O
-## rabicho corre por baixo da caixa pra continuar apontando pro falante mesmo
-## quando a caixa foi empurrada pela borda.
-func _atualizar_posicao() -> void:
-	var tela := get_viewport().get_visible_rect().size
-	var ponta := Vector2(tela.x * 0.5, tela.y - margem_tela)
-	var tem_alvo := _alvo != null and is_instance_valid(_alvo) and _alvo.is_inside_tree()
-	if tem_alvo:
-		var altura := _personagem.altura_cabeca if _personagem != null else 10.0
-		ponta = _alvo.get_global_transform_with_canvas() * Vector2(0, -altura)
-
-	var tam := _raiz.size
-	var pos := Vector2(ponta.x - tam.x * 0.5, ponta.y - tam.y)
-	pos.x = clampf(pos.x, margem_tela, maxf(margem_tela, tela.x - tam.x - margem_tela))
-	pos.y = clampf(pos.y, margem_tela, maxf(margem_tela, tela.y - tam.y - margem_tela))
-	_raiz.position = pos.round()
-
-	var min_x := _caixa.position.x + 3 * P
-	var max_x := _caixa.position.x + _caixa.size.x - 3 * P - _rabicho.size.x
-	var rx := clampf(ponta.x - _raiz.position.x - _rabicho.size.x * 0.5, min_x, max_x)
-	_rabicho.position.x = floorf(rx / P) * P
-	# Se a caixa foi empurrada pra longe da cabeça (falante colado no topo da
-	# tela, por ex.), o rabicho apontaria pro nada -- some.
-	_rabicho.visible = tem_alvo and absf(_raiz.position.y + tam.y - ponta.y) <= 2 * P
-	_raiz.pivot_offset = Vector2(_rabicho.position.x + _rabicho.size.x * 0.5, tam.y)
+	_atualizar_retrato_animado()
+	if _avancar.visible:
+		# Vagalume quicando suave (arredondado pro pixel) e piscando.
+		_avancar.position.y = _texto.position.y + _texto.size.y - P - _avancar.size.y - roundf(2.0 + 2.0 * sin(relogio * 4.0))
+		_avancar.modulate.a = 0.55 + 0.45 * absf(sin(relogio * 3.0))
 
 # --- Abrir / fechar ----------------------------------------------------------
 
-func abrir() -> void:
+## `player` decide se o painel vai pra cima ou pra baixo (modo AUTO).
+func abrir(player: Node2D) -> void:
+	match posicao:
+		Posicao.TOPO:
+			_embaixo = false
+		Posicao.BAIXO:
+			_embaixo = true
+		_:
+			var tela_y := get_viewport().get_visible_rect().size.y
+			_embaixo = player != null and player.get_global_transform_with_canvas().origin.y < tela_y / 3.0
+	_montar_layout()
 	_raiz.visible = true
-	_atualizar_posicao()
 	_raiz.scale = Vector2(1, 0)
-	_raiz.modulate.a = 0.0
-	_animar(1.0)
+	_raiz.modulate.a = 1.0
+	_animar(1.0, 1.0)
 
 func fechar() -> void:
 	digitando = false
-	_seta.visible = false
-	_animar(0.0).tween_callback(func() -> void: _raiz.visible = false)
+	_avancar.visible = false
+	_animar(0.0, 0.0).tween_callback(_ao_fechar)
 
-func _animar(alvo: float) -> Tween:
+func _ao_fechar() -> void:
+	_raiz.visible = false
+	_personagem = null
+	for r: TextureRect in [_retrato_esq, _retrato_dir]:
+		r.modulate.a = 0.0
+
+func _animar(escala_y: float, alfa: float) -> Tween:
 	if _tw != null and _tw.is_valid():
 		_tw.kill()
 	_tw = create_tween().set_parallel(true)
-	_tw.tween_property(_raiz, "scale:y", alvo, duracao_abrir)
-	_tw.tween_property(_raiz, "modulate:a", alvo, duracao_abrir)
+	_tw.tween_property(_raiz, "scale:y", escala_y, duracao_abrir).set_trans(Tween.TRANS_QUAD).set_ease(Tween.EASE_OUT)
+	_tw.tween_property(_raiz, "modulate:a", alfa, duracao_abrir)
 	_tw.chain()
 	return _tw
 
-# --- Páginas / typewriter ----------------------------------------------------
+# --- Falante / retrato -------------------------------------------------------
 
-## Quebra o texto em linhas que cabem na caixa (deixando espaço pra seta) e
-## agrupa em páginas de `linhas_por_pagina`. A quebra é feita aqui e não pelo
-## autowrap do Label pra a linha não "pular" de lugar no meio do typewriter.
-func paginar(texto: String) -> PackedStringArray:
-	var largura := _texto.size.x - _seta.size.x - P
-	var linhas := PackedStringArray()
-	for paragrafo in texto.split("\n"):
-		var atual := ""
-		for palavra in paragrafo.split(" ", false):
-			var tentativa := palavra if atual.is_empty() else atual + " " + palavra
-			if atual.is_empty() or _largura(tentativa) <= largura:
-				atual = tentativa
+## Troca quem está falando. Se mudou o personagem, o retrato dele entra
+## deslizando com fade do lado dele, e o do outro lado some.
+func definir_falante(personagem: CharacterData, expressao: String) -> void:
+	var mudou := personagem != _personagem
+	_personagem = personagem
+	_expressao = expressao
+	var esquerda := personagem != null and personagem.lado_esquerdo
+	_esquerda = esquerda
+	var ativo := _retrato_esq if esquerda else _retrato_dir
+	var outro := _retrato_dir if esquerda else _retrato_esq
+
+	_nome.text = personagem.nome if personagem != null else ""
+	_nome.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT if esquerda else HORIZONTAL_ALIGNMENT_RIGHT
+	ativo.flip_h = personagem != null and (personagem.retrato_olha_para_direita != esquerda)
+	_retrato_ativo = ativo
+	_atualizar_retrato_animado()
+	if personagem != null and not personagem.retratos_animados:
+		ativo.texture = personagem.retrato(expressao)
+
+	if not mudou:
+		return
+	if _tw_retrato != null and _tw_retrato.is_valid():
+		_tw_retrato.kill()
+	var base_x := -retrato_para_fora.x if esquerda else _raiz.size.x - tamanho_retrato + retrato_para_fora.x
+	ativo.position.x = base_x + (-deslize_retrato if esquerda else deslize_retrato)
+	ativo.modulate.a = 0.0
+	_tw_retrato = create_tween().set_parallel(true)
+	_tw_retrato.tween_property(ativo, "position:x", base_x, duracao_retrato).set_ease(Tween.EASE_OUT)
+	_tw_retrato.tween_property(ativo, "modulate:a", 1.0 if ativo.texture != null else 0.0, duracao_retrato)
+	_tw_retrato.tween_property(outro, "modulate:a", 0.0, duracao_retrato * 0.7)
+
+## Retrato animado (SpriteFrames): usa "<expressão>_falando" enquanto digita,
+## se existir, senão "<expressão>".
+func _atualizar_retrato_animado() -> void:
+	if _personagem == null or _retrato_ativo == null or _personagem.retratos_animados == null:
+		return
+	var frames := _personagem.retratos_animados
+	var anim := _expressao + "_falando"
+	if not (digitando and frames.has_animation(anim)):
+		anim = _expressao if frames.has_animation(_expressao) else "neutro"
+	if not frames.has_animation(anim) or frames.get_frame_count(anim) == 0:
+		return
+	var quadro := int(relogio * frames.get_animation_speed(anim)) % frames.get_frame_count(anim)
+	_retrato_ativo.texture = frames.get_frame_texture(anim, quadro)
+
+# --- Páginas -----------------------------------------------------------------
+
+## Quebra o texto (com tags) em páginas de `linhas_por_pagina` linhas. Cada
+## página é {"bbcode": String, "pausas": {letra: segundos}, "letras": int}.
+## A quebra de linha é feita aqui e não pelo autowrap pra a linha não "pular"
+## no meio do typewriter; tags que atravessam a página são fechadas e reabertas.
+func paginar(texto: String) -> Array[Dictionary]:
+	var itens := _tokenizar(texto)
+	var letras := ""
+	for item in itens:
+		if item.has("c"):
+			letras += item.c
+
+	# Onde cada linha começa (índices em `letras`) e quais espaços viram quebra.
+	var largura := _texto.size.x
+	var inicios: Array[int] = [0]
+	var separadores := {}
+	var inicio := 0
+	var ultimo_espaco := -1
+	for i in letras.length():
+		var c := letras[i]
+		if c == "\n":
+			separadores[i] = true
+			inicio = i + 1
+			inicios.append(inicio)
+			ultimo_espaco = -1
+			continue
+		if c == " ":
+			ultimo_espaco = i
+		if ultimo_espaco > inicio and _largura(letras.substr(inicio, i - inicio + 1)) > largura:
+			separadores[ultimo_espaco] = true
+			inicio = ultimo_espaco + 1
+			inicios.append(inicio)
+			ultimo_espaco = -1
+	var inicios_pagina := {}
+	for l in range(linhas_por_pagina, inicios.size(), linhas_por_pagina):
+		inicios_pagina[inicios[l]] = true
+
+	var paginas: Array[Dictionary] = []
+	var atual := {"bbcode": "", "pausas": {}, "letras": 0}
+	var abertas: Array[Dictionary] = []
+	var pos := 0
+	for item in itens:
+		if item.has("pausa"):
+			atual.pausas[atual.letras] = atual.pausas.get(atual.letras, 0.0) + item.pausa
+		elif item.has("tag"):
+			atual.bbcode += item.tag
+			if item.fecha:
+				for j in range(abertas.size() - 1, -1, -1):
+					if abertas[j].nome == item.nome:
+						abertas.remove_at(j)
+						break
 			else:
-				linhas.append(atual)
-				atual = palavra
-		linhas.append(atual)
-	var paginas := PackedStringArray()
-	for i in range(0, linhas.size(), linhas_por_pagina):
-		paginas.append("\n".join(linhas.slice(i, i + linhas_por_pagina)))
+				abertas.append(item)
+		else:
+			if inicios_pagina.has(pos) and atual.letras > 0:
+				paginas.append(_fechar_pagina(atual, abertas))
+				atual = {"bbcode": "", "pausas": {}, "letras": 0}
+				for t in abertas:
+					atual.bbcode += t.tag
+			if separadores.has(pos):
+				# Separador no fim da página some; no meio vira quebra de linha.
+				if not inicios_pagina.has(pos + 1):
+					atual.bbcode += "\n"
+					atual.letras += 1
+			else:
+				atual.bbcode += item.c
+				atual.letras += 1
+			pos += 1
+	paginas.append(_fechar_pagina(atual, abertas))
 	return paginas
+
+func _fechar_pagina(pagina: Dictionary, abertas: Array[Dictionary]) -> Dictionary:
+	for j in range(abertas.size() - 1, -1, -1):
+		pagina.bbcode += "[/%s]" % abertas[j].nome
+	pagina.bbcode = "[aparecer]" + pagina.bbcode + "[/aparecer]"
+	return pagina
+
+## Separa letras, tags ([wave], [/shake]...) e pausas ([p=0.5]).
+func _tokenizar(texto: String) -> Array[Dictionary]:
+	var re := RegEx.create_from_string("\\[(/?)([a-z_]+)(?:=([^\\]]*))?\\]")
+	var itens: Array[Dictionary] = []
+	var pos := 0
+	for m in re.search_all(texto):
+		for c in texto.substr(pos, m.get_start() - pos):
+			itens.append({"c": c})
+		var fecha := m.get_string(1) == "/"
+		var nome := m.get_string(2)
+		if nome == "p" and not fecha:
+			itens.append({"pausa": m.get_string(3).to_float()})
+		else:
+			itens.append({"tag": m.get_string(), "nome": nome, "fecha": fecha})
+		pos = m.get_end()
+	for c in texto.substr(pos):
+		itens.append({"c": c})
+	return itens
 
 func _largura(s: String) -> float:
 	return _fonte.get_string_size(s, HORIZONTAL_ALIGNMENT_LEFT, -1, tamanho_fonte).x
 
-func mostrar_pagina(pagina: String) -> void:
+# --- Typewriter --------------------------------------------------------------
+
+func mostrar_pagina(pagina: Dictionary) -> void:
 	_pagina = pagina
-	_visiveis = 0
+	_texto.text = pagina.bbcode if _esquerda else "[right]%s[/right]" % pagina.bbcode
+	tempos_letras = PackedFloat32Array()
+	tempos_letras.resize(pagina.letras)
+	tempos_letras.fill(-1.0)
+	_revelados = 0
 	_acumulado = 0.0
-	_espera = 0.0
-	_letras_desde_bip = 0
-	_texto.text = ""
-	_seta.visible = false
+	_espera = pagina.pausas.get(0, 0.0)
+	_letras_ate_voz = 0
+	_avancar.visible = false
 	digitando = true
 
 func completar() -> void:
-	_visiveis = _pagina.length()
-	_texto.text = _pagina
+	for i in range(_revelados, tempos_letras.size()):
+		tempos_letras[i] = relogio
+	_revelados = tempos_letras.size()
 	digitando = false
-	_seta.visible = true
+	_avancar.visible = true
 	pagina_completa.emit()
 
 func _digitar(delta: float) -> void:
@@ -262,33 +470,38 @@ func _digitar(delta: float) -> void:
 		return
 	var lps := _personagem.letras_por_segundo if _personagem != null else 35.0
 	_acumulado += delta * lps
+	var letras: String = _texto.get_parsed_text()
 	while _acumulado >= 1.0 and digitando:
 		_acumulado -= 1.0
-		_visiveis += 1
-		_texto.text = _pagina.substr(0, _visiveis)
-		if _visiveis >= _pagina.length():
+		tempos_letras[_revelados] = relogio
+		_revelados += 1
+		if _revelados >= tempos_letras.size():
 			completar()
 			return
-		var letra := _pagina[_visiveis - 1]
-		var proxima := _pagina[_visiveis]
-		_tocar_bip(letra)
+		var letra := letras[_revelados - 1] if _revelados - 1 < letras.length() else ""
+		var proxima := letras[_revelados] if _revelados < letras.length() else ""
+		_falar(letra)
+		if _pagina.pausas.has(_revelados):
+			_espera = _pagina.pausas[_revelados]
 		# Pausa só no fim de "..." / "?!" (a próxima já não é pontuação).
-		if not PONTUACAO_FORTE.contains(proxima) and not PONTUACAO_FRACA.contains(proxima):
+		elif not PONTUACAO_FORTE.contains(proxima) and not PONTUACAO_FRACA.contains(proxima):
 			if PONTUACAO_FORTE.contains(letra):
 				_espera = pausa_ponto
 			elif PONTUACAO_FRACA.contains(letra):
 				_espera = pausa_virgula
-			if _espera > 0.0:
-				_acumulado = 0.0
-				return
+		if _espera > 0.0:
+			_acumulado = 0.0
+			return
 
-func _tocar_bip(letra: String) -> void:
-	if _bip.stream == null or letra.strip_edges().is_empty():
+## Voz estilo Hollow Knight: um resmungo sorteado a cada 4-6 letras.
+func _falar(letra: String) -> void:
+	if _personagem == null or _personagem.vozes.is_empty() or letra.strip_edges().is_empty():
 		return
-	_letras_desde_bip += 1
-	if _letras_desde_bip < _personagem.bip_a_cada:
+	_letras_ate_voz -= 1
+	if _letras_ate_voz > 0:
 		return
-	_letras_desde_bip = 0
-	_bip.volume_db = _personagem.bip_volume_db
-	_bip.pitch_scale = _personagem.bip_pitch * randf_range(1.0 - _personagem.bip_variacao, 1.0 + _personagem.bip_variacao)
-	_bip.play()
+	_letras_ate_voz = randi_range(_personagem.voz_a_cada_min, maxi(_personagem.voz_a_cada_min, _personagem.voz_a_cada_max))
+	_voz.stream = _personagem.vozes.pick_random()
+	_voz.volume_db = _personagem.voz_volume_db
+	_voz.pitch_scale = _personagem.voz_pitch * randf_range(1.0 - _personagem.voz_variacao, 1.0 + _personagem.voz_variacao)
+	_voz.play()
