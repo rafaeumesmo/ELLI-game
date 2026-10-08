@@ -9,10 +9,10 @@ extends CanvasLayer
 ## letra a letra com fade + subida. Aceita [shake], [wave] e [p=segundos] no
 ## texto.
 ##
-## Texto e nome alinham do lado do retrato de quem fala (esquerda pro Elísio,
-## direita pros NPCs), pra fala ficar perto do rosto. Dá pra alinhar à direita
-## sem o texto "andar" no typewriter porque a página inteira já está no layout
-## desde o começo -- o [aparecer] só deixa as letras ainda não ditas invisíveis.
+## Texto e nome ficam centralizados no painel, pra leitura ficar no meio da
+## tela. O texto não "anda" no typewriter porque a página inteira já está no
+## layout desde o começo -- o [aparecer] só deixa as letras ainda não ditas
+## invisíveis.
 
 signal pagina_completa
 
@@ -100,7 +100,6 @@ var relogio := 0.0
 var _fonte: Font
 var _personagem: CharacterData
 var _expressao := "neutro"
-var _esquerda := false
 var _retrato_ativo: TextureRect
 var _pagina: Dictionary = {}
 var _revelados := 0
@@ -208,8 +207,10 @@ func _montar_layout() -> void:
 	_nome.size = Vector2(texto_l, alt_nome)
 	y += alt_nome + P
 	_avancar.size = _avancar.texture.get_size()
-	_texto.position = Vector2(texto_x, y)
-	_texto.size = Vector2(texto_l - _avancar.size.x - 2 * P, alt_texto + P)
+	# Recua dos dois lados o espaço do vagalume, pro texto centralizar no meio.
+	var recuo_avancar := _avancar.size.x + 2 * P
+	_texto.position = Vector2(texto_x + recuo_avancar, y)
+	_texto.size = Vector2(texto_l - recuo_avancar * 2, alt_texto + P)
 	y += alt_texto + 2 * P
 	_posicionar_ornamento(_ornamentos[1], y, largura)
 
@@ -303,12 +304,11 @@ func definir_falante(personagem: CharacterData, expressao: String) -> void:
 	_personagem = personagem
 	_expressao = expressao
 	var esquerda := personagem != null and personagem.lado_esquerdo
-	_esquerda = esquerda
 	var ativo := _retrato_esq if esquerda else _retrato_dir
 	var outro := _retrato_dir if esquerda else _retrato_esq
 
 	_nome.text = personagem.nome if personagem != null else ""
-	_nome.horizontal_alignment = HORIZONTAL_ALIGNMENT_LEFT if esquerda else HORIZONTAL_ALIGNMENT_RIGHT
+	_nome.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	ativo.flip_h = personagem != null and (personagem.retrato_olha_para_direita != esquerda)
 	_retrato_ativo = ativo
 	_atualizar_retrato_animado()
@@ -445,7 +445,7 @@ func _largura(s: String) -> float:
 
 func mostrar_pagina(pagina: Dictionary) -> void:
 	_pagina = pagina
-	_texto.text = pagina.bbcode if _esquerda else "[right]%s[/right]" % pagina.bbcode
+	_texto.text = "[center]%s[/center]" % pagina.bbcode
 	tempos_letras = PackedFloat32Array()
 	tempos_letras.resize(pagina.letras)
 	tempos_letras.fill(-1.0)
