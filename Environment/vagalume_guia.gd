@@ -14,7 +14,7 @@ extends Node2D
 ## curvas dos corredores/chaminés que tem que contornar.
 
 @export var pontos: PackedVector2Array = PackedVector2Array()
-@export var velocidade: float = 55.0
+@export var velocidade: float = 65.0
 ## Distância (do player até o vagalume) abaixo da qual ele considera que o
 ## player "chegou" e pode seguir pro próximo ponto.
 @export var raio_espera: float = 200.0
@@ -31,8 +31,13 @@ extends Node2D
 @export var cor_luz: Color = Color("#FFD023"):
 	set(v):
 		cor_luz = v
-		if _halo != null:
-			_halo.color = cor_luz
+		_aplicar_cor()
+## Nó do PortalFase que este vagalume vira ao chegar no ponto final -- em vez
+## de ficar flutuando do lado, ele some enquanto o portal (escondido até essa
+## hora) aparece no mesmo lugar. Deixa vazio pra manter o comportamento antigo
+## (fica flutuando por perto pra sempre).
+@export var portal_alvo: NodePath = NodePath("")
+@export var duracao_transformacao: float = 0.6
 
 @onready var _corpo: AnimatedSprite2D = $Corpo
 @onready var _halo: PointLight2D = $Halo
@@ -42,17 +47,27 @@ var _fase_pulso: float = 0.0
 var _flutuando := false
 var _origem_flutuacao := Vector2.ZERO
 var _tempo_flutuacao: float = 0.0
+var _transformando := false
 
 func _ready() -> void:
 	_corpo.play("voar")
-	_halo.color = cor_luz
+	_aplicar_cor()
 	modulate.a = 1.0
 	if pontos.size() >= 1:
 		position = pontos[0]
 	if pontos.size() >= 2:
 		_guiar()
 
+func _aplicar_cor() -> void:
+	if _halo == null:
+		return
+	_halo.color = cor_luz
+	_core.color = cor_luz.lightened(0.35)
+	_corpo.modulate = Color(cor_luz.r * 1.3, cor_luz.g * 1.3, cor_luz.b * 1.3, 1.0)
+
 func _process(delta: float) -> void:
+	if _transformando:
+		return
 	_fase_pulso += delta * 2.0
 	var pulso: float = 0.85 + 0.15 * sin(_fase_pulso)
 	_halo.energy = energia_halo * pulso
@@ -67,17 +82,44 @@ func _process(delta: float) -> void:
 func _guiar() -> void:
 	for i in range(1, pontos.size()):
 		await _voar_ate(pontos[i])
+		# Player morreu e a cena recarregou enquanto a gente esperava: este
+		# vagalume já saiu da árvore (get_tree() == null), só para.
+		if not is_inside_tree():
+			return
 		if i < pontos.size() - 1:
 			await _esperar_jogador()
+			if not is_inside_tree():
+				return
 			await get_tree().create_timer(pausa_antes_de_seguir).timeout
+			if not is_inside_tree():
+				return
+	if not portal_alvo.is_empty():
+		var portal := get_node_or_null(portal_alvo)
+		if portal != null:
+			await _transformar_em_portal(portal)
+			return
 	_origem_flutuacao = position
 	_flutuando = true
 
+func _transformar_em_portal(portal: Node) -> void:
+	_transformando = true
+	if portal.has_method("revelar"):
+		portal.revelar()
+	var tw := create_tween()
+	tw.set_parallel(true).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	tw.tween_property(_corpo, "modulate:a", 0.0, duracao_transformacao)
+	tw.tween_property(_halo, "energy", 0.0, duracao_transformacao)
+	tw.tween_property(_core, "energy", 0.0, duracao_transformacao)
+	await tw.finished
+	queue_free()
+
 func _esperar_jogador() -> void:
-	var jogador: Node2D = get_tree().get_first_node_in_group("player")
-	if jogador == null:
-		return
-	while is_inside_tree() and global_position.distance_to(jogador.global_position) > raio_espera:
+	while is_inside_tree():
+		var jogador := get_tree().get_first_node_in_group("player") as Node2D
+		if jogador == null or not is_instance_valid(jogador):
+			return
+		if global_position.distance_to(jogador.global_position) <= raio_espera:
+			return
 		await get_tree().process_frame
 
 func _voar_ate(alvo: Vector2) -> void:

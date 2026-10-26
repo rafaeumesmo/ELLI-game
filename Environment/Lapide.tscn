@@ -1,24 +1,20 @@
-[gd_scene load_steps=3 format=3]
+[gd_scene format=3 uid="uid://dcxqlc2vykhjv"]
 
-[ext_resource type="Script" path="res://Environment/lapide.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://c1dvnl8gckwa" path="res://Environment/lapide.gd" id="1_script"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_lapide"]
 size = Vector2(6, 8)
 
-[node name="Lapide" type="CharacterBody2D"]
+[node name="Lapide" type="CharacterBody2D" unique_id=1554626769]
+z_index = 1
 collision_layer = 0
 collision_mask = 2
 script = ExtResource("1_script")
-z_index = 1
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=271065944]
 position = Vector2(0, -4)
 shape = SubResource("RectangleShape2D_lapide")
 
-[node name="Monte" type="Polygon2D" parent="."]
-polygon = PackedVector2Array(-5, 0, 5, 0, 4, -1, -4, -1)
-color = Color(0.29, 0.22, 0.15, 1)
-
-[node name="Pedra" type="Polygon2D" parent="."]
-polygon = PackedVector2Array(-4, 0, -4, -6, -2.5, -8, 0, -9, 2.5, -8, 4, -6, 4, 0)
+[node name="Pedra" type="Polygon2D" parent="." unique_id=107458912]
 color = Color(0.55, 0.55, 0.58, 1)
+polygon = PackedVector2Array(-4, 0, -4, -6, -2.5, -8, 0, -9, 2.5, -8, 4, -6, 4, 0)

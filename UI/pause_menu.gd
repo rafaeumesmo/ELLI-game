@@ -4,11 +4,24 @@ extends CanvasLayer
 @onready var menu_button: Button = $VBoxContainer/MenuButton
 @onready var quit_button: Button = $VBoxContainer/SairButton
 
+var _buttons: Array[Button]
+
 func _ready() -> void:
 	hide()
+	_buttons = [resume_button, menu_button, quit_button]
+	_setup_focus_chain(_buttons)
 	resume_button.pressed.connect(_on_resume_pressed)
 	menu_button.pressed.connect(_on_menu_pressed)
 	quit_button.pressed.connect(_on_quit_pressed)
+
+## Liga vizinho de cima/baixo em cadeia (com volta no topo/fim) pra setinha +
+## Enter navegarem a lista de botões -- mesmo esquema do main_menu.gd.
+func _setup_focus_chain(buttons: Array[Button]) -> void:
+	for i in buttons.size():
+		var prev_button: Button = buttons[(i - 1 + buttons.size()) % buttons.size()]
+		var next_button: Button = buttons[(i + 1) % buttons.size()]
+		buttons[i].focus_neighbor_top = buttons[i].get_path_to(prev_button)
+		buttons[i].focus_neighbor_bottom = buttons[i].get_path_to(next_button)
 
 func _unhandled_input(event: InputEvent) -> void:
 	# ui_cancel = tecla Esc por padrão no Godot
@@ -26,6 +39,7 @@ func toggle_pause() -> void:
 	else:
 		get_tree().paused = true
 		show()
+		resume_button.grab_focus()
 
 func _on_resume_pressed() -> void:
 	get_tree().paused = false
@@ -37,4 +51,5 @@ func _on_menu_pressed() -> void:
 	get_tree().change_scene_to_file("res://UI/MainMenu.tscn")
 
 func _on_quit_pressed() -> void:
+	SaveManager.salvar_tempo()
 	get_tree().quit()

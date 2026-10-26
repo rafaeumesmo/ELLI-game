@@ -3,6 +3,10 @@
 [ext_resource type="Script" uid="uid://c4o1meggcyif6" path="res://Environment/granito.gd" id="1_granito"]
 [ext_resource type="Texture2D" uid="uid://c2ufd8gs3petl" path="res://assets/pedras/granito00.png" id="2_tex"]
 
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_granito_brilho"]
+light_mode = 1
+
 [node name="Granito" type="Sprite2D" unique_id=1176153955]
+material = SubResource("CanvasItemMaterial_granito_brilho")
 texture = ExtResource("2_tex")
 script = ExtResource("1_granito")

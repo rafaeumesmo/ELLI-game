@@ -1,14 +1,14 @@
-[gd_resource type="Resource" script_class="CharacterData" format=3]
+[gd_resource type="Resource" script_class="CharacterData" format=3 uid="uid://cnp44qvbe6g5b"]
 
-[ext_resource type="Script" path="res://UI/dialogo/character_data.gd" id="1_char"]
-[ext_resource type="Texture2D" path="res://assets/dialogo/retratos/caracol_neutro.png" id="2_neutro"]
-[ext_resource type="Texture2D" path="res://assets/dialogo/retratos/caracol_feliz.png" id="3_feliz"]
-[ext_resource type="Texture2D" path="res://assets/dialogo/retratos/caracol_surpreso.png" id="4_surpreso"]
-[ext_resource type="Texture2D" path="res://assets/dialogo/retratos/caracol_triste.png" id="5_triste"]
-[ext_resource type="AudioStream" path="res://assets/dialogo/sons/voz_caracol_1.wav" id="6_voz"]
-[ext_resource type="AudioStream" path="res://assets/dialogo/sons/voz_caracol_2.wav" id="7_voz"]
-[ext_resource type="AudioStream" path="res://assets/dialogo/sons/voz_caracol_3.wav" id="8_voz"]
-[ext_resource type="AudioStream" path="res://assets/dialogo/sons/voz_caracol_4.wav" id="9_voz"]
+[ext_resource type="Script" uid="uid://cpdwh8ougqt82" path="res://UI/dialogo/character_data.gd" id="1_char"]
+[ext_resource type="Texture2D" uid="uid://dxa68xdcb1rv0" path="res://assets/dialogo/retratos/caracol_neutro.png" id="2_neutro"]
+[ext_resource type="Texture2D" uid="uid://co78u23nww7iq" path="res://assets/dialogo/retratos/caracol_feliz.png" id="3_feliz"]
+[ext_resource type="Texture2D" uid="uid://cmcim0wiv67od" path="res://assets/dialogo/retratos/caracol_surpreso.png" id="4_surpreso"]
+[ext_resource type="Texture2D" uid="uid://dwdvway321clk" path="res://assets/dialogo/retratos/caracol_triste.png" id="5_triste"]
+[ext_resource type="AudioStream" uid="uid://d4bbt2aeh3jat" path="res://assets/dialogo/sons/voz_caracol_1.wav" id="6_voz"]
+[ext_resource type="AudioStream" uid="uid://dki1mcnuy5b6f" path="res://assets/dialogo/sons/voz_caracol_2.wav" id="7_voz"]
+[ext_resource type="AudioStream" uid="uid://dc3cls8hc8p8l" path="res://assets/dialogo/sons/voz_caracol_3.wav" id="8_voz"]
+[ext_resource type="AudioStream" uid="uid://bfirtsf80e38o" path="res://assets/dialogo/sons/voz_caracol_4.wav" id="9_voz"]
 
 [resource]
 script = ExtResource("1_char")
@@ -20,7 +20,6 @@ retratos = Dictionary[String, Texture2D]({
 "surpreso": ExtResource("4_surpreso"),
 "triste": ExtResource("5_triste")
 })
-lado_esquerdo = false
 escala_retrato = 0.6
 vozes = Array[AudioStream]([ExtResource("6_voz"), ExtResource("7_voz"), ExtResource("8_voz"), ExtResource("9_voz")])
 voz_pitch = 1.45

@@ -24,6 +24,10 @@ var bebe_morto: bool = false
 ## caracol.gd::_virar_lapide). So volta a false num jogo novo (clear_save).
 var bebe_lapide: bool = false
 
+## Tempo de jogo acumulado neste save, em segundos (o Cronometro soma aqui).
+## Vai pro arquivo em todo _write_save e ao sair pro menu / fechar o jogo.
+var tempo_total: float = 0.0
+
 ## Estado do mundo "congelado" no ultimo checkpoint: NAO volta ao renascer.
 ## Caracois: caminho do no dentro da cena. Blocos: "x,y" da celula.
 var _caracois_mortos: Dictionary = {}
@@ -140,6 +144,7 @@ func _write_save() -> void:
 		"tem_dash": tem_dash,
 		"bebe_morto": bebe_morto,
 		"bebe_lapide": bebe_lapide,
+		"tempo_total": tempo_total,
 		"caracois_mortos": _caracois_mortos.keys(),
 		"blocos_quebrados": _blocos_quebrados.keys(),
 		"checkpoints_ativados": _checkpoints_ativados.keys(),
@@ -163,6 +168,12 @@ func marcar_lapide_bebe() -> void:
 	bebe_lapide = true
 	_write_save()
 
+## Grava so o tempo atualizado (resto do estado igual ao ultimo save). Nao cria
+## save novo: sem arquivo, o tempo fica so na memoria ate o 1o checkpoint/portal.
+func salvar_tempo() -> void:
+	if has_save():
+		_write_save()
+
 func has_save() -> bool:
 	return FileAccess.file_exists(SAVE_PATH)
 
@@ -181,6 +192,7 @@ func load_progress() -> String:
 	tem_dash = parsed.get("tem_dash", false)
 	bebe_morto = parsed.get("bebe_morto", false)
 	bebe_lapide = parsed.get("bebe_lapide", false)
+	tempo_total = parsed.get("tempo_total", 0.0)
 	_caracois_mortos = _lista_para_set(parsed.get("caracois_mortos", []))
 	_blocos_quebrados = _lista_para_set(parsed.get("blocos_quebrados", []))
 	_checkpoints_ativados = _lista_para_set(parsed.get("checkpoints_ativados", []))
@@ -204,6 +216,7 @@ func clear_save() -> void:
 	tem_dash = false
 	bebe_morto = false
 	bebe_lapide = false
+	tempo_total = 0.0
 	_limpar_estado_mundo()
 	if has_save():
 		DirAccess.remove_absolute(SAVE_PATH)

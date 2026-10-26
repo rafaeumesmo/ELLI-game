@@ -12,6 +12,12 @@
 [ext_resource type="Texture2D" uid="uid://cmktjtnwwi6jd" path="res://assets/blocoss3.png" id="11_bloc11"]
 [ext_resource type="Texture2D" uid="uid://c8dt1g5ckeadi" path="res://assets/espinho.png" id="12_spikeup"]
 [ext_resource type="Texture2D" uid="uid://c8dt1g4tjawdj" path="res://assets/espinho_baixo.png" id="13_spikedown"]
+[ext_resource type="Texture2D" uid="uid://pwc7f3v8r7qj" path="res://assets/blocos9.png" id="14_bloc9"]
+[ext_resource type="Texture2D" uid="uid://csdtd16gk5dl3" path="res://assets/blocos10.png" id="15_bloc10b"]
+[ext_resource type="Texture2D" uid="uid://b4dnyfhjkiamj" path="res://assets/blocoss4.png" id="16_blocss4"]
+[ext_resource type="Texture2D" uid="uid://bhxhdxm6l5c6e" path="res://assets/blocos11.png" id="17_bloc11b"]
+[ext_resource type="Texture2D" uid="uid://blwighun37ubo" path="res://assets/blocos13.png" id="18_bloc13"]
+[ext_resource type="Texture2D" uid="uid://bqyak2deuojbj" path="res://assets/blocos14.png" id="19_fundo"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bloc1"]
 texture = ExtResource("1_bloc1")
@@ -35,6 +41,38 @@ texture = ExtResource("12_spikeup")
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_spikedown"]
 texture = ExtResource("13_spikedown")
 0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bloc9"]
+texture = ExtResource("14_bloc9")
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bloc10b"]
+texture = ExtResource("15_bloc10b")
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_blocss4"]
+texture = ExtResource("16_blocss4")
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bloc11b"]
+texture = ExtResource("17_bloc11b")
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bloc13"]
+texture = ExtResource("18_bloc13")
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, -4, -8, -4)
+0:0/0/physics_layer_0/polygon_0/one_way = true
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_fundo"]
+texture = ExtResource("19_fundo")
+0:0/0 = 0
+0:0/0/modulate = Color(0.45, 0.45, 0.5, 1)
+0:0/0/z_index = -1
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bloc3"]
 texture = ExtResource("3_bloc3")
@@ -86,3 +124,9 @@ sources/9 = SubResource("TileSetAtlasSource_bloc10")
 sources/10 = SubResource("TileSetAtlasSource_bloc11")
 sources/11 = SubResource("TileSetAtlasSource_spikeup")
 sources/12 = SubResource("TileSetAtlasSource_spikedown")
+sources/13 = SubResource("TileSetAtlasSource_bloc9")
+sources/14 = SubResource("TileSetAtlasSource_bloc10b")
+sources/15 = SubResource("TileSetAtlasSource_blocss4")
+sources/16 = SubResource("TileSetAtlasSource_bloc11b")
+sources/17 = SubResource("TileSetAtlasSource_bloc13")
+sources/18 = SubResource("TileSetAtlasSource_fundo")

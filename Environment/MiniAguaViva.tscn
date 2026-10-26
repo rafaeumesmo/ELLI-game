@@ -1,0 +1,24 @@
+[gd_scene format=3]
+
+[ext_resource type="PackedScene" path="res://Environment/AguaViva.tscn" id="1_agua"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_mini"]
+radius = 4.0
+height = 15.0
+
+[node name="MiniAguaViva" instance=ExtResource("1_agua")]
+cor_corpo = Color(1, 1, 1, 0.85)
+cor_brilho = Color(1, 0.7, 0.92, 1)
+largura = 8.0
+comprimento_tentaculo = 8.0
+periodo_pulso = 1.2
+impulso = 22.0
+quiques_max = 1
+
+[node name="Halo" parent="." index="0"]
+position = Vector2(0, -2)
+scale = Vector2(0.18, 0.18)
+
+[node name="CollisionShape2D" parent="Hitbox" index="0"]
+position = Vector2(0, 2)
+shape = SubResource("CapsuleShape2D_mini")

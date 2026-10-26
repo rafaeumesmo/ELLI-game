@@ -38,6 +38,7 @@ z_index = 6
 script = ExtResource("2_script")
 
 [node name="Halo" type="PointLight2D" parent="."]
+z_index = -1
 texture_filter = 1
 color = Color(1, 0.8156863, 0.13725491, 1)
 energy = 1.1
@@ -47,6 +48,7 @@ texture = ExtResource("3_luz")
 texture_scale = 1.6
 
 [node name="Core" type="PointLight2D" parent="."]
+z_index = -1
 texture_filter = 1
 color = Color(1, 0.9137255, 0.30980393, 1)
 energy = 2.4
@@ -56,6 +58,7 @@ texture = ExtResource("3_luz")
 texture_scale = 0.3
 
 [node name="Corpo" type="AnimatedSprite2D" parent="."]
+z_index = 1
 light_mask = 0
 modulate = Color(1.3, 1.05, 0.4, 1)
 sprite_frames = SubResource("SpriteFrames_guia")

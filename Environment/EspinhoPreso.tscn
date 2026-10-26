@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://fx4n2n5ndem0"]
+
+[ext_resource type="Texture2D" uid="uid://c8dt1g4tjawdj" path="res://assets/espinho_baixo.png" id="2_espinho"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_brilho"]
+light_mode = 1
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_espinho"]
+size = Vector2(14, 8)
+
+[node name="EspinhoPreso" type="Area2D" unique_id=1809514868]
+collision_layer = 0
+collision_mask = 5
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1716411797]
+material = SubResource("CanvasItemMaterial_brilho")
+texture = ExtResource("2_espinho")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=888651302]
+position = Vector2(0, -4)
+shape = SubResource("RectangleShape2D_espinho")
+
+[node name="DamageTimer" type="Timer" parent="." unique_id=1831844358]
+one_shot = true

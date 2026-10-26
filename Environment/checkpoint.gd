@@ -1,10 +1,13 @@
 extends Area2D
 
-const ENERGIA_LUZ := 1.3
+# Bandeirinha: começa cinza e baixa no mastro; ao ativar sobe e fica verde.
+const COR_APAGADA := Color(0.6, 0.6, 0.6)
+const COR_ATIVA := Color(0.2, 0.85, 0.3)
+const Y_BAIXA := 2.0
+const Y_ALTA := -22.0
 
-@onready var visual: Sprite2D = $Visual
+@onready var bandeira: Polygon2D = $Bandeira
 @onready var particles: CPUParticles2D = $Particles
-@onready var luz: PointLight2D = $Luz
 
 var activated: bool = false
 
@@ -14,11 +17,11 @@ func _ready() -> void:
 	# começa colorido e aceso, sem efeito.
 	if _ja_e_o_checkpoint_ativo():
 		activated = true
-		_set_saturacao(1.0)
-		luz.energy = ENERGIA_LUZ
+		bandeira.position.y = Y_ALTA
+		bandeira.color = COR_ATIVA
 	else:
-		_set_saturacao(0.0)
-		luz.energy = 0.0
+		bandeira.position.y = Y_BAIXA
+		bandeira.color = COR_APAGADA
 
 func _on_body_entered(body: Node) -> void:
 	if not body.is_in_group("player"):
@@ -56,8 +59,6 @@ func _ativar_visual() -> void:
 	particles.emitting = true
 	var tween := create_tween()
 	tween.set_parallel(true)
-	tween.tween_method(_set_saturacao, 0.0, 1.0, 0.3)
-	tween.tween_property(luz, "energy", ENERGIA_LUZ, 0.4)
-
-func _set_saturacao(valor: float) -> void:
-	visual.material.set_shader_parameter("saturation", valor)
+	tween.tween_property(bandeira, "position:y", Y_ALTA, 0.4) \
+		.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	tween.tween_property(bandeira, "color", COR_ATIVA, 0.3)

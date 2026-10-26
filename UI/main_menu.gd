@@ -1,6 +1,6 @@
 extends Control
 
-const FIRST_LEVEL_SCENE := "res://tutorial.tscn"
+const FIRST_LEVEL_SCENE := "res://queda_inicial.tscn"
 const SETTINGS_PATH := "user://settings.cfg"
 const FADE_DURATION := 0.3
 
@@ -12,6 +12,7 @@ const FADE_DURATION := 0.3
 @onready var options_panel: Panel = %OptionsPanel
 @onready var volume_slider: HSlider = %VolumeSlider
 @onready var fullscreen_toggle: CheckButton = %FullscreenToggle
+@onready var timer_toggle: CheckButton = %TimerToggle
 @onready var options_back_button: Button = %OptionsBackButton
 
 @onready var confirm_dialog: ConfirmationDialog = %ConfirmDialog
@@ -25,7 +26,7 @@ var _transitioning: bool = false
 
 func _ready() -> void:
 	_main_buttons = [continue_button, new_game_button, options_button, quit_button]
-	_options_controls = [volume_slider, fullscreen_toggle, options_back_button]
+	_options_controls = [volume_slider, fullscreen_toggle, timer_toggle, options_back_button]
 	_master_bus_index = AudioServer.get_bus_index("Master")
 
 	_load_settings()
@@ -42,6 +43,7 @@ func _ready() -> void:
 	options_back_button.pressed.connect(_close_options)
 	volume_slider.value_changed.connect(_on_volume_changed)
 	fullscreen_toggle.toggled.connect(_on_fullscreen_toggled)
+	timer_toggle.toggled.connect(_on_timer_toggled)
 
 	confirm_dialog.confirmed.connect(_on_new_game_confirmed)
 	confirm_dialog.get_cancel_button().text = "Cancel"
@@ -128,6 +130,10 @@ func _on_fullscreen_toggled(enabled: bool) -> void:
 	DisplayServer.window_set_mode(mode)
 	_save_settings()
 
+func _on_timer_toggled(enabled: bool) -> void:
+	Cronometro.visivel = enabled
+	_save_settings()
+
 func _load_settings() -> void:
 	var config := ConfigFile.new()
 	var volume: float = 1.0
@@ -145,11 +151,13 @@ func _load_settings() -> void:
 	if fullscreen:
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
 	fullscreen_toggle.button_pressed = fullscreen
+	timer_toggle.button_pressed = Cronometro.visivel
 
 func _save_settings() -> void:
 	var config := ConfigFile.new()
 	config.set_value("audio", "master_volume", volume_slider.value)
 	config.set_value("display", "fullscreen", fullscreen_toggle.button_pressed)
+	config.set_value("gameplay", "cronometro", timer_toggle.button_pressed)
 	config.save(SETTINGS_PATH)
 
 func _change_scene_with_fade(target_scene: String) -> void:

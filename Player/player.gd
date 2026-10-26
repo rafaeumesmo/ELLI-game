@@ -6,7 +6,11 @@ extends CharacterBody2D
 ## não influencia a física.
 signal landed(impact_speed: float)
 
-@export var speed: float = 200.0
+@export var speed: float = 260.0
+## Velocidade horizontal depois de grudar numa parede, até pisar no chão de
+## novo (descer os blocos "escada ao contrário", pulo de parede). Fica na
+## velocidade antiga pra mecânica de parede não mudar com a corrida mais rápida.
+@export var wall_move_speed: float = 200.0
 @export var jump_velocity: float = -400.0
 @export var wall_slide_speed: float = 50.0
 @export var wall_coyote_time: float = 0.15
@@ -29,8 +33,26 @@ signal landed(impact_speed: float)
 @export var dash_decay_speed: float = 1000.0
 ## Buffer de input do pulo: apertar um pouco antes do momento exato ainda conta.
 @export var jump_buffer_time: float = 0.1
+## Parede escalavel (blocos6): segurando pra cima (W / seta) grudado nela,
+## sobe a esta velocidade. Soltou o W -> fica parado grudado (nao escorrega).
+@export var climb_speed: float = 90.0
+## Impulso pra cima ao chegar no topo escalando -- pra passar da quina e
+## subir em cima do bloco em vez de cair de volta.
+@export var climb_ledge_boost: float = -220.0
 
 const BLOCOSS2_SOURCE_ID := 9
+## blocos6: parede escalavel (ver climb_speed).
+const CLIMB_SOURCE_ID := 5
+## Quao mais longe da borda do player o dash olha pra frente, a cada frame do
+## dash, procurando blocos3 pra quebrar -- maior que o quanto ele anda num
+## fisico frame no dash mais rapido configurado, pra nunca sobrar nem 1 frame
+## de colisao real contra o bloco (ve blocos_layer.gd::DASH_BREAK_SOURCE_ID).
+const DASH_BREAK_REACH := 14.0
+## Brilho normal do personagem (ignora o escurecimento do CanvasModulate, sem
+## vazar pra fora do sprite) -- mesmo material da camada Blocos. Deixa aqui pra
+## desligar fácil: já tentamos deixar o ELLI visível no escuro 3x antes (luz
+## nos pés, PointLight2D sutil, contorno por shader) e todas foram revertidas.
+@export var brilho_no_escuro: bool = true
 @export var max_health: int = 4
 @export var bullet_scene: PackedScene = preload("res://Weapons/Bullet.tscn")
 @export var fire_cooldown: float = 0.35
@@ -65,6 +87,11 @@ var attack_timer: float = 0.0
 ## outros nós (poeira de parede etc.) lerem o mesmo estado que já escolhe o
 ## sprite wall_A/wall_D. Não influencia a física.
 var is_wall_sliding: bool = false
+## Se no frame anterior estava subindo numa parede escalavel -- pra dar o
+## impulso do topo (climb_ledge_boost) quando a parede acaba.
+var _was_climbing: bool = false
+## Grudou numa parede e ainda não pisou no chão -> usa wall_move_speed.
+var _veio_da_parede: bool = false
 ## Duração da animação de golpe (3 quadros a 14 fps ≈ 0.21s + folga).
 const ATTACK_ANIM_TIME := 0.24
 
@@ -89,6 +116,11 @@ static var _death_particle_texture: ImageTexture
 
 func _ready() -> void:
 	add_to_group("player")
+	if brilho_no_escuro:
+		var material_brilho := CanvasItemMaterial.new()
+		material_brilho.light_mode = CanvasItemMaterial.LIGHT_MODE_UNSHADED
+		sprite.material = material_brilho
+		gun_sprite.material = material_brilho
 	# Espada já commitada num checkpoint (ou fase anterior): começa com ela, sem o pop.
 	if SaveManager.tem_espada:
 		equip_gun(false)
@@ -242,6 +274,7 @@ func _physics_process(delta: float) -> void:
 
 	var wall_side: int = sign(get_wall_normal().x) if is_on_wall() else 0
 	var wall_double_stick: bool = is_on_wall() and _wall_allows_double_stick()
+	var on_climb_wall: bool = is_on_wall() and _wall_source_is(CLIMB_SOURCE_ID)
 
 	if is_on_wall() and not is_on_floor():
 		wall_coyote_timer = wall_coyote_time
@@ -253,9 +286,20 @@ func _physics_process(delta: float) -> void:
 		is_on_wall()
 		and not is_on_floor()
 		and _is_pressing_into_wall(direction)
-		and (wall_side != last_wall_side or wall_double_stick)
+		and (wall_side != last_wall_side or wall_double_stick or on_climb_wall)
+	)
+	# Escalar vale ate saindo do chao: encostou na parede escalavel + W = sobe.
+	var climbing: bool = (
+		on_climb_wall
+		and _is_pressing_into_wall(direction)
+		and Input.is_action_pressed("move_up")
 	)
 	is_wall_sliding = sticking_to_wall  # exposto pra poeira de parede
+	if sticking_to_wall:
+		_veio_da_parede = true
+	elif is_on_floor():
+		_veio_da_parede = false
+	var run_speed: float = wall_move_speed if _veio_da_parede else speed
 	if sticking_to_wall:
 		can_dash_air = true  # recarrega o dash aéreo ao agarrar numa parede
 
@@ -285,11 +329,26 @@ func _physics_process(delta: float) -> void:
 		dash_timer -= delta
 		if dash_timer <= 0.0:
 			_end_dash()
+		else:
+			# Quebra blocos3 no caminho ANTES do move_and_slide -- assim o
+			# personagem nunca chega a encostar (colidir) na parede de
+			# verdade, nao precisa "grudar" nela pra quebrar.
+			_quebrar_blocos3_no_caminho()
 
 	if is_dashing:
 		velocity.y = 0.0
+	elif climbing:
+		velocity.y = -climb_speed
+	elif sticking_to_wall and on_climb_wall:
+		velocity.y = 0.0  # parede escalavel: parado grudado nao escorrega
 	elif sticking_to_wall:
 		velocity.y = min(velocity.y + gravity * delta, wall_slide_speed)
+	elif (
+		_was_climbing and not is_on_floor()
+		and Input.is_action_pressed("move_up") and direction != 0
+	):
+		# Acabou a parede subindo: impulso pra passar por cima da quina.
+		velocity.y = climb_ledge_boost
 	elif not is_on_floor():
 		velocity.y += gravity * delta
 
@@ -297,11 +356,11 @@ func _physics_process(delta: float) -> void:
 		pass  # velocity.x já foi travado acima
 	elif knockback_timer > 0.0:
 		knockback_timer -= delta
-	elif absf(velocity.x) > speed:
+	elif absf(velocity.x) > run_speed:
 		# Resíduo do dash (ou de um dash-jump) decaindo até a corrida normal.
-		velocity.x = move_toward(velocity.x, direction * speed, dash_decay_speed * delta)
+		velocity.x = move_toward(velocity.x, direction * run_speed, dash_decay_speed * delta)
 	else:
-		velocity.x = direction * speed
+		velocity.x = direction * run_speed
 
 	if jump_buffer_timer > 0.0 and (is_dashing or dash_grace_timer > 0.0):
 		# Dash-jump: cancela o dash e pula preservando a velocidade horizontal.
@@ -330,7 +389,8 @@ func _physics_process(delta: float) -> void:
 	if is_dashing and is_on_wall():
 		_end_dash()
 
-	_update_animation(direction, sticking_to_wall)
+	_was_climbing = climbing
+	_update_animation(direction, sticking_to_wall or climbing)
 	_update_weapon(delta)
 
 ## Começa o dash: trava a direção (a do input, ou a última encarada se nenhuma
@@ -495,19 +555,39 @@ func _shoot(aim_dir: Vector2) -> void:
 
 func _wall_allows_double_stick() -> bool:
 	for i in range(get_slide_collision_count()):
+		var collider: Object = get_slide_collision(i).get_collider()
+		if absf(get_slide_collision(i).get_normal().x) > 0.5 \
+				and collider is Node and collider.is_in_group("double_stick_wall"):
+			return true
+	return _wall_source_is(BLOCOSS2_SOURCE_ID)
+
+## Se a parede em que o player encostou (colisao lateral do ultimo
+## move_and_slide) e um tile da source dada.
+func _wall_source_is(source_id: int) -> bool:
+	for i in range(get_slide_collision_count()):
 		var collision := get_slide_collision(i)
 		var normal: Vector2 = collision.get_normal()
 		if absf(normal.x) <= 0.5:
 			continue
 		var collider: Object = collision.get_collider()
-		if collider is Node and collider.is_in_group("double_stick_wall"):
-			return true
 		if collider is TileMapLayer:
 			var local_pos: Vector2 = collider.to_local(collision.get_position() - normal * 4.0)
 			var cell: Vector2i = collider.local_to_map(local_pos)
-			if collider.get_cell_source_id(cell) == BLOCOSS2_SOURCE_ID:
+			if collider.get_cell_source_id(cell) == source_id:
 				return true
 	return false
+
+## Chamado a cada frame do dash, ANTES do move_and_slide: se tiver blocos3
+## logo na frente (dentro de DASH_BREAK_REACH), quebra a fileira toda ali
+## mesmo -- o player nunca chega a colidir com a parede de verdade, entao nao
+## precisa "grudar" nela pra quebrar.
+func _quebrar_blocos3_no_caminho() -> void:
+	var blocos := get_tree().get_first_node_in_group("blocos_layer")
+	if blocos == null or not blocos.has_method("quebrar_blocos3_no_caminho"):
+		return
+	var direcao_x := int(sign(dash_direction))
+	if blocos.quebrar_blocos3_no_caminho(global_position, direcao_x, DASH_BREAK_REACH):
+		_shake_camera()
 
 func _is_pressing_into_wall(direction: float) -> bool:
 	return direction != 0 and sign(direction) == -sign(get_wall_normal().x)

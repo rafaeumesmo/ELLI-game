@@ -43,6 +43,11 @@ extends CharacterBody2D
 ## IGNORADO se o no "AreaInteracao" existir na cena — ai o gatilho e a sobreposicao
 ## fisica dessa Area2D, que voce redimensiona arrastando o CircleShape2D no editor.
 @export var distancia_dica: float = 80.0
+## Altura (px, espaco do mundo) acima do caracol onde a bolha/prompt flutuam.
+@export var altura_balao: float = 26.0
+## Brilho no escuro, mesmo esquema do ELLI (player.gd::brilho_no_escuro): ignora
+## o escurecimento do CanvasModulate sem vazar pra fora do sprite.
+@export var brilho_no_escuro: bool = true
 
 ## --- Modo tutor -------------------------------------------------------------
 ## Falas da conversa OBRIGATORIA. Se vazio, o caracol nao e um tutor e mantem o
@@ -58,13 +63,16 @@ extends CharacterBody2D
 @export_range(0.0, 1.0, 0.01) var escurecimento_alpha: float = 0.35
 ## Duracao (s) do fade do texto e do escurecimento ao abrir/fechar o dialogo obrigatorio.
 @export var duracao_fade: float = 0.25
+## Ao terminar a conversa obrigatoria, libera o dash do player (ve
+## `player.desbloquear_dash()`). Usado pela caracol-mae que ensina o dash.
+@export var ativa_dash: bool = false
 
 ## Marca o caracol tutorial. Ao morrer, avisa os outros caracois (flag estatica).
 @export var eh_tutorial: bool = false
 ## Marca o caracol bebe. Se ele morrer E o player tambem morrer na fase depois
-## disso, ele vira uma lapide permanente onde estava em vez de renascer --
-## mesmo depois de um checkpoint. So volta ao normal com "Novo Jogo" (ver
-## SaveManager.bebe_morto / bebe_lapide).
+## disso, ele vira um vagalume pequeno flutuando onde estava em vez de
+## renascer -- mesmo depois de um checkpoint. So volta ao normal com "Novo
+## Jogo" (ver SaveManager.bebe_morto / bebe_lapide).
 @export var eh_bebe: bool = false
 ## Se preenchido, ao morrer o caracol solta uma destas frases (sorteada) no
 ## balao antes de sumir. Usado no caracol tutorial.
@@ -91,8 +99,10 @@ static var tutorial_dialogo_feito: bool = false
 
 @onready var sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var detector_chao: RayCast2D = $DetectorChao
-## Balao: CanvasLayer com o texto fixo no topo-centro da tela (nao escala com o
-## zoom da camera e nao acompanha mais o caracol -- estilo Silksong).
+## Balao: CanvasLayer com o texto flutuando em cima do caracol -- fica sempre
+## no mesmo tamanho na tela (nao escala com o zoom da camera nem com a escala
+## do proprio caracol, ja que CanvasLayer e' desenhado em espaco de tela), mas
+## a posicao e' recalculada todo frame a partir da posicao dele no mundo.
 @onready var balao: RichTextLabel = $Balao/Bolha/Texto
 @onready var _bolha: Control = $Balao/Bolha
 @onready var _seta: Label = $Balao/Bolha/Seta
@@ -106,7 +116,14 @@ static var tutorial_dialogo_feito: bool = false
 @onready var _zona_pisao: Area2D = get_node_or_null("ZonaPisao")
 
 static var _death_particle_texture: ImageTexture
-const LAPIDE_SCENE := preload("res://Environment/Lapide.tscn")
+const VAGALUME_MEMORIAL_SCENE := preload("res://Environment/Vagalume.tscn")
+## Escala do vagalume-memorial em relacao ao Vagalume.tscn normal (pequeno).
+const VAGALUME_MEMORIAL_ESCALA := 0.5
+## Flutua bem rente a onde o bebe morreu -- valores pequenos de proposito
+## porque o mapa em si roda numa escala grande (~3.65x), entao qualquer coisa
+## aqui ja aparece bem ampliada na tela.
+const VAGALUME_MEMORIAL_OFFSET_Y := -4.0
+const VAGALUME_MEMORIAL_RAIO_VOO := 3.0
 
 var gravity: float = ProjectSettings.get_setting("physics/2d/default_gravity")
 var _origem_x: float
@@ -138,10 +155,10 @@ var _graca: float = 0.45
 var _player_travado: Node = null
 
 func _ready() -> void:
-	# Bebe morto + player ja morreu depois disso: vira lapide de vez, ignorando
+	# Bebe morto + player ja morreu depois disso: vira vagalume de vez, ignorando
 	# checkpoint -- nunca mais volta a ser o caracol normal.
 	if eh_bebe and SaveManager.bebe_lapide:
-		_virar_lapide()
+		_virar_vagalume()
 		return
 
 	var scene_path := owner.scene_file_path if owner else ""
@@ -156,6 +173,11 @@ func _ready() -> void:
 		set_process(false)
 		queue_free()
 		return
+
+	if brilho_no_escuro:
+		var material_brilho := CanvasItemMaterial.new()
+		material_brilho.light_mode = CanvasItemMaterial.LIGHT_MODE_UNSHADED
+		sprite.material = material_brilho
 
 	add_to_group("enemy")
 	_origem_x = global_position.x
@@ -182,21 +204,25 @@ func _ready() -> void:
 		else:
 			_zona_pisao.monitoring = false
 
-## Substitui este caracol (o bebe) por uma lapide permanente na mesma posicao,
-## em vez do comportamento normal. Ver eh_bebe / SaveManager.bebe_lapide.
-func _virar_lapide() -> void:
-	var lapide := LAPIDE_SCENE.instantiate()
-	var pos := global_position
+## Substitui este caracol (o bebe) por um vagalume pequeno flutuando na mesma
+## posicao, em vez do comportamento normal. Ver eh_bebe / SaveManager.bebe_lapide.
+func _virar_vagalume() -> void:
+	var vagalume := VAGALUME_MEMORIAL_SCENE.instantiate()
+	var pos := global_position + Vector2(0, VAGALUME_MEMORIAL_OFFSET_Y)
 	var pai := get_parent()
 	# Adiado: isto roda dentro de _ready(), enquanto a arvore da cena ainda
 	# esta sendo montada -- add_child direto aqui e' rejeitado pelo Godot
-	# ("Parent node is busy setting up children"). A lapide mesma cuida de
-	# cair e assentar no chao que existir na hora (ver lapide.gd) -- nao da
-	# pra confiar numa posicao calculada, porque o bloco onde o bebe morreu
-	# pode ja ter sido destruido depois.
+	# ("Parent node is busy setting up children").
 	(func() -> void:
-		pai.add_child(lapide)
-		lapide.global_position = pos
+		vagalume.scale = Vector2.ONE * VAGALUME_MEMORIAL_ESCALA
+		vagalume.raio_voo = VAGALUME_MEMORIAL_RAIO_VOO
+		# A posicao TEM que ser setada antes do add_child: o vagalume.gd le a
+		# propria posicao dentro do seu _ready() (`_origem = position`) pra
+		# saber ao redor de onde flutuar, e o _ready roda na hora do
+		# add_child -- setar depois so faz ele "pular" de volta pra origem
+		# do mapa no proximo frame (foi o bug do vagalume nascendo la em cima).
+		vagalume.position = pai.to_local(pos)
+		pai.add_child(vagalume)
 	).call_deferred()
 	queue_free()
 
@@ -252,6 +278,7 @@ func _ultimas_palavras() -> void:
 func _process(delta: float) -> void:
 	_tempo_ui += delta
 	_atualizar_seta()
+	_atualizar_posicao_balao()
 	if not dialogo.is_empty() and not _morto:
 		_logica_dialogo(delta)
 
@@ -263,11 +290,40 @@ func _atualizar_seta() -> void:
 	if mostrar:
 		_seta.modulate.a = 0.35 + 0.65 * absf(sin(_tempo_ui * 6.0))
 
+## Converte a posicao do caracol no mundo pra espaco de tela (via o transform
+## da camera atual) e poe a bolha e o prompt centralizados ali em cima, com um
+## pouco de folga (`altura_balao`). Roda todo frame porque o caracol anda e a
+## camera pode se mover.
+##
+## Trava dentro da tela: em mapas com camera seguindo o player (nao uma camera
+## fixa de tela unica), o caracol pode estar numa plataforma mais alta que o
+## player e ficar perto ou fora da borda de cima -- sem isso a bolha calcularia
+## uma posicao fora da area visivel e o jogador nunca veria o texto aparecer.
+func _atualizar_posicao_balao() -> void:
+	var alvo := global_position + Vector2(0, -altura_balao)
+	var tela := get_viewport().get_canvas_transform() * alvo
+	var tela_tam := get_viewport().get_visible_rect().size
+	_prompt.size = _prompt.get_minimum_size()
+	# Ancora pelo canto de baixo-centro de cada caixa, pra elas crescerem pra
+	# cima a partir do mesmo ponto acima do caracol (em vez de crescer pros
+	# dois lados a partir do centro, o que empurraria o topo mais alto ainda).
+	_bolha.position = _travar_na_tela(Vector2(tela.x - _bolha.size.x * 0.5, tela.y - _bolha.size.y), _bolha.size, tela_tam)
+	_prompt.position = _travar_na_tela(Vector2(tela.x - _prompt.size.x * 0.5, tela.y - _prompt.size.y), _prompt.size, tela_tam)
+
+## Garante que a caixa (bolha ou prompt) fique inteira dentro da tela, com uma
+## pequena margem, mesmo quando o ponto-alvo em cima do caracol calcularia uma
+## posicao fora da area visivel.
+func _travar_na_tela(pos: Vector2, tamanho: Vector2, tela_tam: Vector2) -> Vector2:
+	const MARGEM := 8.0
+	pos.x = clampf(pos.x, MARGEM, maxf(MARGEM, tela_tam.x - tamanho.x - MARGEM))
+	pos.y = clampf(pos.y, MARGEM, maxf(MARGEM, tela_tam.y - tamanho.y - MARGEM))
+	return pos
+
 ## Redimensiona a caixa de texto pro tamanho do conteudo atual (o RichTextLabel
 ## com fit_content ja calcula sua propria altura minima) e centraliza -- so
 ## roda quando a linha muda, nao every frame.
 func _ajustar_layout_texto() -> void:
-	_bolha.size.y = _bolha.get_combined_minimum_size().y
+	_bolha.size = _bolha.get_combined_minimum_size()
 
 ## Mostra a linha e datilografa via Tween em `visible_ratio` (RichTextLabel).
 func _mostrar_linha(txt: String) -> void:
@@ -315,7 +371,10 @@ func _logica_dialogo(delta: float) -> void:
 		_iniciar_dialogo()
 		return
 
-	_prompt.visible = perto and _dialogo_feito and _bolha.modulate.a < 0.5
+	# Mostra o "E" sempre que perto e a conversa nao vai abrir sozinha -- ou
+	# porque ja abriu uma vez (_dialogo_feito), ou porque este caracol nunca
+	# abre sozinho (dialogo_auto_perto = false) e o E e' a unica forma de comecar.
+	_prompt.visible = perto and (_dialogo_feito or not dialogo_auto_perto) and _bolha.modulate.a < 0.5
 	if _prompt.visible:
 		_prompt.modulate.a = 0.45 + 0.4 * absf(sin(_tempo_ui * 3.0))
 
@@ -353,6 +412,8 @@ func _encerrar_dialogo() -> void:
 	_dialogo_feito = true
 	tutorial_dialogo_feito = true
 	_seta.visible = false
+	if ativa_dash and _player_travado != null and is_instance_valid(_player_travado) and _player_travado.has_method("desbloquear_dash"):
+		_player_travado.desbloquear_dash()
 	if _player_travado != null and is_instance_valid(_player_travado):
 		_player_travado.set_physics_process(true)
 	_player_travado = null

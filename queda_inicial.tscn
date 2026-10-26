@@ -1,0 +1,235 @@
+[gd_scene format=3 uid="uid://caciwgkygl14l"]
+
+[ext_resource type="Script" uid="uid://d3yoloaflu1oj" path="res://Environment/queda_inicial.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://bs5b8p1un8yuw" path="res://assets/queda_elisio.png" id="2_sheet"]
+[ext_resource type="Texture2D" uid="uid://bnb0ri5tdycy5" path="res://assets/vagalume.png" id="3_vagalume"]
+[ext_resource type="Texture2D" uid="uid://bensw4x2pc4b5" path="res://Environment/luz_vagalume.tres" id="4_luz"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_add"]
+blend_mode = 1
+light_mode = 1
+
+[sub_resource type="Animation" id="Animation_queda"]
+resource_name = "queda"
+length = 6.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Elisio:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.25, 0.5, 0.75, 1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 2.6, 3),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 4, 5, 6, 7, 8, 9]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Elisio:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 1, 1.6, 2.45, 2.6, 6.5),
+"transitions": PackedFloat32Array(1, 1, 0.4, 1, 2.5, 1),
+"update": 0,
+"values": [Vector2(-40, 0), Vector2(-40, 0), Vector2(-6, 0), Vector2(13, -18), Vector2(14, -18), Vector2(22, 300)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Vagalume:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 1.2, 2.3, 2.6, 4.5, 6.5),
+"transitions": PackedFloat32Array(-2, -2, 0.3, -2, -2, 1),
+"update": 0,
+"values": [Vector2(22, -30), Vector2(20, -32), Vector2(21, -30), Vector2(25, -46), Vector2(26, -50), Vector2(26, -50)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Camera2D:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 1, 2.6, 3, 6.5),
+"transitions": PackedFloat32Array(-2, -2, 1, -2, 1),
+"update": 0,
+"values": [Vector2(-10, -14), Vector2(-10, -14), Vector2(6, -20), Vector2(6, -20), Vector2(20, 120)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("Camera2D:zoom")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 3, 6.5),
+"transitions": PackedFloat32Array(1, -2, 1),
+"update": 0,
+"values": [Vector2(3.3, 3.3), Vector2(3.3, 3.3), Vector2(1.25, 1.25)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("Fundo:color")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 3, 6),
+"transitions": PackedFloat32Array(1, -2, 1),
+"update": 0,
+"values": [Color(0.07, 0.09, 0.17, 1), Color(0.07, 0.09, 0.17, 1), Color(0, 0, 0, 1)]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath("UI/Fade:color")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0, 0.5, 5.5, 6.4),
+"transitions": PackedFloat32Array(-2, 1, -2, 1),
+"update": 0,
+"values": [Color(0, 0, 0, 1), Color(0, 0, 0, 0), Color(0, 0, 0, 0), Color(0, 0, 0, 1)]
+}
+tracks/7/type = "method"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath(".")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(6.45),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"_terminar"
+}]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_queda"]
+_data = {
+&"queda": SubResource("Animation_queda")
+}
+
+[node name="QuedaInicial" type="Node2D" unique_id=1800421840]
+script = ExtResource("1_script")
+
+[node name="Fundo" type="Polygon2D" parent="." unique_id=591494722]
+z_index = -10
+color = Color(0.07, 0.09, 0.17, 1)
+polygon = PackedVector2Array(-3000, -3000, 3000, -3000, 3000, 3000, -3000, 3000)
+
+[node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=884386461]
+color = Color(0.3, 0.32, 0.42, 1)
+
+[node name="Buraco" type="Node2D" parent="." unique_id=200641863]
+
+[node name="BordaEsquerda" type="Polygon2D" parent="Buraco" unique_id=78452354]
+polygon = PackedVector2Array(-400, 0, 0, 0, 0, 600, -400, 600)
+vertex_colors = PackedColorArray(0.22, 0.24, 0.32, 1, 0.22, 0.24, 0.32, 1, 0.02, 0.022, 0.035, 1, 0.02, 0.022, 0.035, 1)
+
+[node name="BordaDireita" type="Polygon2D" parent="Buraco" unique_id=765518903]
+polygon = PackedVector2Array(48, 0, 448, 0, 448, 600, 48, 600)
+vertex_colors = PackedColorArray(0.22, 0.24, 0.32, 1, 0.22, 0.24, 0.32, 1, 0.02, 0.022, 0.035, 1, 0.02, 0.022, 0.035, 1)
+
+[node name="Elisio" type="Sprite2D" parent="." unique_id=331409428]
+position = Vector2(-10.533335, 0)
+texture = ExtResource("2_sheet")
+offset = Vector2(0, -8)
+hframes = 12
+frame = 7
+
+[node name="Vagalume" type="Node2D" parent="." unique_id=550274524]
+z_index = 5
+position = Vector2(20.169256, -31.661488)
+
+[node name="Halo" type="PointLight2D" parent="Vagalume" unique_id=797581622]
+color = Color(0.23921569, 0.6627451, 1, 1)
+energy = 1.5
+texture = ExtResource("4_luz")
+texture_scale = 1.6
+
+[node name="Core" type="PointLight2D" parent="Vagalume" unique_id=615917229]
+color = Color(0.6, 0.85, 1, 1)
+energy = 2.6
+texture = ExtResource("4_luz")
+texture_scale = 0.3
+
+[node name="Brilho" type="Sprite2D" parent="Vagalume" unique_id=1640077404]
+modulate = Color(0.8, 2.2, 3.4, 0.3)
+material = SubResource("CanvasItemMaterial_add")
+scale = Vector2(0.05, 0.05)
+texture = ExtResource("4_luz")
+
+[node name="Corpo" type="Sprite2D" parent="Vagalume" unique_id=999370215]
+modulate = Color(0.6, 0.85, 1.6, 1)
+texture = ExtResource("3_vagalume")
+offset = Vector2(2, -2)
+region_enabled = true
+region_rect = Rect2(16, 0, 16, 16)
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1208583193]
+position = Vector2(-6.62, -15.2675)
+zoom = Vector2(3.3, 3.3)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=914622174]
+libraries/ = SubResource("AnimationLibrary_queda")
+
+[node name="UI" type="CanvasLayer" parent="." unique_id=1840208682]
+layer = 10
+
+[node name="Fade" type="ColorRect" parent="UI" unique_id=1443284614]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0)
+
+[node name="Pular" type="Control" parent="UI" unique_id=405248405]
+layout_mode = 3
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -104.0
+offset_top = -28.0
+offset_right = -16.0
+offset_bottom = -16.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="Texto" type="Label" parent="UI/Pular" unique_id=1527452318]
+layout_mode = 0
+offset_right = 30.0
+offset_bottom = 12.0
+theme_override_colors/font_color = Color(0.6, 0.8, 1, 1)
+theme_override_font_sizes/font_size = 9
+text = "pular"
+
+[node name="Trilho" type="ColorRect" parent="UI/Pular" unique_id=2078056811]
+layout_mode = 0
+offset_left = 32.0
+offset_top = 5.0
+offset_right = 88.0
+offset_bottom = 7.0
+mouse_filter = 2
+color = Color(0.6, 0.8, 1, 0.3)
+
+[node name="Barra" type="ColorRect" parent="UI/Pular" unique_id=1499740585]
+layout_mode = 0
+offset_left = 32.0
+offset_top = 5.0
+offset_right = 88.0
+offset_bottom = 7.0
+scale = Vector2(1e-05, 1)
+mouse_filter = 2
+color = Color(0.6, 0.8, 1, 1)

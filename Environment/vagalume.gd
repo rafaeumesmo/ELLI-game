@@ -2,7 +2,8 @@ extends Node2D
 ## Vagalume decorativo: bate as asas, flutua num vaivém orgânico tipo
 ## lemniscata ao redor do ponto onde foi colocado, com luz quente pulsando
 ## (Halo suave e grande + Core pequeno e forte) e some/reaparece de vez em
-## quando. Sem colisão -- é só ambientação e iluminação de cena escura.
+## quando. O Halo e um Sprite2D aditivo e unshaded (nao uma luz), entao
+## brilha em cima de qualquer coisa -- fundo unshaded ou ate area vazia. Sem colisão -- é só ambientação e iluminação de cena escura.
 ##
 ## Uso: arraste `Vagalume.tscn` pro mapa. Ajusta `raio_voo`/`velocidade` pro
 ## jeito que ele voa e `cor_luz`/`energia_halo`/`energia_core` pro brilho.
@@ -11,7 +12,8 @@ extends Node2D
 @export var raio_voo: float = 24.0
 ## Velocidade angular da flutuação -- maior valor, voo mais agitado.
 @export var velocidade: float = 0.6
-## Energia base do halo (luz grande e suave).
+## Energia base do halo (brilho grande e suave). Vira a opacidade do sprite
+## aditivo multiplicada por HALO_ALPHA.
 @export var energia_halo: float = 0.9
 ## Energia base do núcleo (luz pequena e forte, tipo brasa).
 @export var energia_core: float = 2.0
@@ -20,7 +22,7 @@ extends Node2D
 	set(v):
 		cor_luz = v
 		if _halo != null:
-			_halo.color = cor_luz
+			_set_halo_cor(cor_luz)
 ## Quanto tempo (min/max, em segundos) ele fica visível antes de sumir.
 @export var tempo_visivel_min: float = 3.0
 @export var tempo_visivel_max: float = 6.0
@@ -28,9 +30,15 @@ extends Node2D
 @export var tempo_sumido_min: float = 0.8
 @export var tempo_sumido_max: float = 2.2
 
+## Converte energia_halo em opacidade do sprite aditivo -- o sprite soma cor
+## direto na tela, entao precisa ser mais fraco que a luz era.
+const HALO_ALPHA := 0.35
+## Mesmo esquema pro Core: brilho branco pequeno e forte em volta do corpo.
+const CORE_ALPHA := 0.4
+
 @onready var _corpo: AnimatedSprite2D = $Corpo
-@onready var _halo: PointLight2D = $Halo
-@onready var _core: PointLight2D = $Core
+@onready var _halo: Sprite2D = $Halo
+@onready var _core: Sprite2D = $Core
 
 ## RNG próprio por instância -- usar o global randomize() em cada _ready()
 ## faria vagalumes que nascem no mesmo frame sincronizarem a fase.
@@ -51,10 +59,10 @@ func _ready() -> void:
 	_fase_pulso = _rng.randf_range(0.0, TAU)
 	_freq_pulso = _rng.randf_range(1.6, 2.4)
 	_corpo.play("voar")
-	_halo.color = cor_luz
+	_set_halo_cor(cor_luz)
 	modulate.a = 0.0
-	_halo.energy = 0.0
-	_core.energy = 0.0
+	_halo.self_modulate.a = 0.0
+	_core.self_modulate.a = 0.0
 	_ciclo_de_vida()
 
 func _process(delta: float) -> void:
@@ -70,8 +78,8 @@ func _process(delta: float) -> void:
 		# sincronizar os dois movimentos
 		_tempo_pulso += delta * _freq_pulso
 		var pulso: float = 0.875 + 0.125 * sin(_tempo_pulso + _fase_pulso)
-		_halo.energy = energia_halo * pulso
-		_core.energy = energia_core * pulso
+		_halo.self_modulate.a = energia_halo * pulso * HALO_ALPHA
+		_core.self_modulate.a = minf(energia_core * pulso * CORE_ALPHA, 1.0)
 
 func _ciclo_de_vida() -> void:
 	while is_inside_tree():
@@ -90,6 +98,11 @@ func _sumir() -> void:
 	_visivel = false
 	var tw := create_tween()
 	tw.tween_property(self, "modulate:a", 0.0, 1.2)
-	tw.parallel().tween_property(_halo, "energy", 0.0, 1.2)
-	tw.parallel().tween_property(_core, "energy", 0.0, 1.2)
+	tw.parallel().tween_property(_halo, "self_modulate:a", 0.0, 1.2)
+	tw.parallel().tween_property(_core, "self_modulate:a", 0.0, 1.2)
 	await tw.finished
+
+## Troca a cor do halo mantendo a opacidade atual.
+func _set_halo_cor(cor: Color) -> void:
+	var a := _halo.self_modulate.a
+	_halo.self_modulate = Color(cor.r, cor.g, cor.b, a)

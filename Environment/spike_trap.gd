@@ -5,8 +5,6 @@ extends Node2D
 ## um instante e recolhe. O bloco e solido, entao empurra quem estiver em cima.
 ## Posicione o no com a origem na altura do topo do chao onde os blocos param.
 
-## Vida removida do player a cada acerto.
-@export var damage: int = 5
 ## Enquanto o player ficar parado em cima dos espinhos expostos, leva dano de novo
 ## a cada este intervalo (em segundos) — nao e so um hit unico na entrada.
 @export var damage_interval: float = 0.5
@@ -65,7 +63,7 @@ func _on_hitbox_body_entered(body: Node) -> void:
 func _hurt(body: Node) -> void:
 	if body.is_in_group("player"):
 		if body.has_method("take_damage"):
-			body.take_damage(damage)
+			body.take_damage(body.max_health)
 		# Reinicia a contagem: se o player continuar parado nos espinhos,
 		# o timeout abaixo bate nele de novo em vez de so uma vez.
 		damage_timer.start(damage_interval)
@@ -77,7 +75,7 @@ func _on_damage_timer_timeout() -> void:
 	var still_touching := false
 	for body in hitbox.get_overlapping_bodies():
 		if body.is_in_group("player") and body.has_method("take_damage"):
-			body.take_damage(damage)
+			body.take_damage(body.max_health)
 			still_touching = true
 	if still_touching:
 		damage_timer.start(damage_interval)

@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3]
+
+[ext_resource type="PackedScene" uid="uid://u5dx4rsb2is5" path="res://Environment/BlocoQueCai.tscn" id="1_base"]
+[ext_resource type="Texture2D" uid="uid://d2a228h7hhcfj" path="res://assets/blocos6.png" id="2_tex"]
+
+[node name="BlocoFragil" instance=ExtResource("1_base")]
+textura = ExtResource("2_tex")
+lado = 1
+cai_ao_pisar = true
+pisca_antes_de_cair = true
+quebra_ao_pousar = true

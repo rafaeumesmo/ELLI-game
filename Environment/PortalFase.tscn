@@ -40,31 +40,37 @@ colors = PackedColorArray(0.24, 0.66, 1, 0, 0.24, 0.66, 1, 0.5, 0.15, 0.5, 0.9, 
 [sub_resource type="CircleShape2D" id="CircleShape2D_portal"]
 radius = 16.0
 
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_halo"]
+blend_mode = 1
+light_mode = 1
+
 [node name="PortalFase" type="Area2D" unique_id=1422716085]
+z_index = 6
 collision_layer = 0
 script = ExtResource("1_portal")
 
-[node name="Halo" type="PointLight2D" parent="."]
+[node name="Halo" type="Sprite2D" parent="."]
+self_modulate = Color(0.23921569, 0.6627451, 1, 0)
+z_index = -1
+z_as_relative = false
 texture_filter = 1
-color = Color(0.23921569, 0.6627451, 1, 1)
-energy = 1.1
-blend_mode = 0
-shadow_enabled = false
+material = SubResource("CanvasItemMaterial_halo")
+scale = Vector2(1.6, 1.6)
 texture = ExtResource("3_luz")
-texture_scale = 1.6
 
-[node name="Core" type="PointLight2D" parent="."]
+[node name="Core" type="Sprite2D" parent="."]
+self_modulate = Color(1, 1, 1, 0)
+z_index = -1
+z_as_relative = false
 texture_filter = 1
-color = Color(0.6, 0.85, 1, 1)
-energy = 2.4
-blend_mode = 0
-shadow_enabled = false
+material = SubResource("CanvasItemMaterial_halo")
+scale = Vector2(0.3, 0.3)
 texture = ExtResource("3_luz")
-texture_scale = 0.3
 
 [node name="Corpo" type="AnimatedSprite2D" parent="."]
+z_index = 1
 light_mask = 0
-modulate = Color(0.7, 1.0, 1.4, 1)
+modulate = Color(0.85, 1.15, 1.6, 1)
 sprite_frames = SubResource("SpriteFrames_portal")
 animation = &"voar"
 

@@ -1,0 +1,101 @@
+[gd_scene format=4 uid="uid://dwfx7qit6mkcd"]
+
+[ext_resource type="Script" uid="uid://cxi6cdacistp5" path="res://Environment/cena_camera_fixa.gd" id="1_camfixa"]
+[ext_resource type="TileSet" uid="uid://bkjw6ewvpf5t0" path="res://assets/blocos_tileset.tres" id="2_blocos_ts"]
+[ext_resource type="Script" uid="uid://c50lndsehgvfj" path="res://Environment/blocos_layer.gd" id="3_blocos_scr"]
+[ext_resource type="TileSet" uid="uid://bksacx2vpm4t0" path="res://assets/cristais_tileset.tres" id="4_cristais_ts"]
+[ext_resource type="Script" uid="uid://du58ifk0orr2v" path="res://Environment/cristais_layer.gd" id="5_cristais_scr"]
+[ext_resource type="PackedScene" uid="uid://ck4l3vm43pipc" path="res://Player/Player.tscn" id="6_player"]
+[ext_resource type="PackedScene" uid="uid://de8utfkx51gq2" path="res://UI/DeathMenu.tscn" id="7_deathmenu"]
+[ext_resource type="PackedScene" path="res://UI/HealthBar.tscn" id="8_healthbar"]
+[ext_resource type="PackedScene" uid="uid://dqvpyfsmsranl" path="res://Environment/PortalFase.tscn" id="9_portal"]
+[ext_resource type="TileSet" uid="uid://l81nslbsm58o" path="res://assets/matos_tileset.tres" id="matos_ts"]
+[ext_resource type="Texture2D" uid="uid://x1vm53r2b5j7" path="res://assets/sol_desenho.png" id="sol_desenho"]
+
+[sub_resource type="Environment" id="Environment_escuro"]
+background_mode = 3
+glow_enabled = true
+glow_bloom = 0.1
+glow_hdr_threshold = 0.9
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_blocos_brilho"]
+light_mode = 1
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_brilho"]
+blend_mode = 1
+
+[sub_resource type="Gradient" id="Gradient_brilho"]
+colors = PackedColorArray(1, 1, 1, 0.9, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_brilho"]
+gradient = SubResource("Gradient_brilho")
+width = 256
+height = 256
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[node name="Mapa00" type="Node2D" unique_id=892161210]
+scale = Vector2(3.65, 3.65)
+script = ExtResource("1_camfixa")
+
+[node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=1506329024]
+color = Color(0.290196, 0.321569, 0.4, 1)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=454986342]
+environment = SubResource("Environment_escuro")
+
+[node name="Blocos" type="TileMapLayer" parent="." unique_id=266482728]
+material = SubResource("CanvasItemMaterial_blocos_brilho")
+tile_map_data = PackedByteArray("AAD/////BwAAAAAAAAD//wAABwAAAAAAAAD//wEABwAAAAAAAAD//wIABwAAAAAAAAD//wMABwAAAAAAAAD//wQABwAAAAAAAAD//wUABwAAAAAAAAD//wYABwAAAAAAAAD//wcABwAAAAAAAAD//wgABwAAAAAAAAD//wkABwAAAAAAAAD//woABwAAAAAAAAD//wsABwAAAAAAAAD//wwABwAAAAAAAAAAAAsABwAAAAAAAAAAAAwABwAAAAAAAAABAAsABwAAAAAAAAABAAwABwAAAAAAAAACAAsABwAAAAAAAAACAAwABwAAAAAAAAADAAsABwAAAAAAAAADAAwABwAAAAAAAAAEAAsABwAAAAAAAAAEAAwABwAAAAAAAAAFAAsABwAAAAAAAAAFAAwABwAAAAAAAAAGAAsABwAAAAAAAAAGAAwABwAAAAAAAAAHAAsABwAAAAAAAAAHAAwABwAAAAAAAAAIAAsABwAAAAAAAAAIAAwABwAAAAAAAAAJAAwABwAAAAAAAAAKAAwABwAAAAAAAAALAAsABwAAAAAAAAANAAwABwAAAAAAAAAOAAsABwAAAAAAAAAOAAwABwAAAAAAAAAPAAwABwAAAAAAAAAQAAsABwAAAAAAAAAQAAwABwAAAAAAAAACAAcABgAAAAAAAAAQAAIABwAAAAAAAAARAAIABwAAAAAAAAAQAAMABwAAAAAAAAAJAAsABwAAAAAAAAAKAAsABwAAAAAAAAAPAAsABwAAAAAAAAAFAAQABwAAAAAAAAAQAAQABwAAAAAAAAAQAAUABwAAAAAAAAAQAAYABwAAAAAAAAAQAAcABwAAAAAAAAAQAAgABwAAAAAAAAAFAAYABwAAAAAAAAAFAAcABwAAAAAAAAABAAcAAQAAAAAAAAAFAAMABwAAAAAAAAAPAAkABwAAAAAAAAAPAAgABwAAAAAAAAAPAAIABwAAAAAAAAAPAAMABwAAAAAAAAAPAAQABwAAAAAAAAAPAAUABwAAAAAAAAAPAAYABwAAAAAAAAAPAAcABwAAAAAAAAAMAAwABwAAAAAAAAALAAwABwAAAAAAAAAPAAoABwAAAAAAAAAMAAsABwAAAAAAAAANAAsABwAAAAAAAAAFAAUABgAAAAAAAAAEAAUAAQAAAAAAAAAFAAgABwAAAAAAAAAFAAkABwAAAAAAAAAFAAoABwAAAAAAAAAKAAQABAAAAAAAAAAGAAoABwAAAAAAAAAHAAoABwAAAAAAAAAIAAoABwAAAAAAAAAJAAoABwAAAAAAAAAKAAoABwAAAAAAAAALAAoABwAAAAAAAAAMAAoABwAAAAAAAAANAAoABwAAAAAAAAAOAAoABwAAAAAAAAAGAAkABwAAAAAAAAAGAAgABwAAAAAAAAAGAAcABwAAAAAAAAAGAAYACwAAAAAAAAAGAAUACwAAAAAAAFAQAAoABwAAAAAAAAAQAAkABwAAAAAAAAAHAAcABwAAAAAAAAAIAAcABwAAAAAAAAAJAAcABwAAAAAAAAAKAAcABwAAAAAAAAALAAcABwAAAAAAAAAMAAcABwAAAAAAAAANAAcABwAAAAAAAAAOAAcABwAAAAAAAAAOAAgABwAAAAAAAAAOAAkABwAAAAAAAAAHAAkABwAAAAAAAAAHAAgABwAAAAAAAAAIAAgABwAAAAAAAAAIAAkABwAAAAAAAAAJAAkABwAAAAAAAAAKAAkABwAAAAAAAAAKAAgABwAAAAAAAAAJAAgABwAAAAAAAAALAAgABwAAAAAAAAAMAAgABwAAAAAAAAANAAgABwAAAAAAAAAMAAkABwAAAAAAAAALAAkABwAAAAAAAAANAAkABwAAAAAAAAAEAAkABwAAAAAAAAAEAAoABwAAAAAAAAADAAoABwAAAAAAAAABAAoABwAAAAAAAAAAAAoABwAAAAAAAAACAAoABwAAAAAAAAAHAAYACwAAAAAAAAAIAAYACwAAAAAAAAAJAAYACwAAAAAAAAAKAAYACwAAAAAAAAALAAYABwAAAAAAAAAMAAYABwAAAAAAAAANAAYACwAAAAAAAAAOAAYACwAAAAAAAAAGAAQACwAAAAAAAFALAAIABwAAAAAAAAALAAMABwAAAAAAAAALAAQABwAAAAAAAAALAAUABwAAAAAAAAAMAAIABwAAAAAAAAAMAAMABwAAAAAAAAAMAAQABwAAAAAAAAAMAAUABwAAAAAAAAAYAP7/BwAAAAAAAAAYAP//BwAAAAAAAAAYAAAABwAAAAAAAAAYAAEABwAAAAAAAAAYAAIABwAAAAAAAAAYAAMABwAAAAAAAAAYAAQABwAAAAAAAAAYAAUABwAAAAAAAAAYAAYABwAAAAAAAAAYAAcABwAAAAAAAAAYAAgABwAAAAAAAAAYAAkABwAAAAAAAAAYAAoABwAAAAAAAAAYAAwABwAAAAAAAAAYAAsABwAAAAAAAAAYAA0ABwAAAAAAAAD///7/BwAAAAAAAAD///3/BwAAAAAAAAD///z/BwAAAAAAAAD///v/BwAAAAAAAAAYAPv/BwAAAAAAAAAYAPz/BwAAAAAAAAAYAP3/BwAAAAAAAAASABEABwAAAAAAAAARABEABwAAAAAAAAATABEABwAAAAAAAAAUABEABwAAAAAAAAAVABEABwAAAAAAAAAWABEABwAAAAAAAAAXABEABwAAAAAAAAAYABEABwAAAAAAAAAYABAABwAAAAAAAAAYAA8ABwAAAAAAAAAYAA4ABwAAAAAAAAASAAIABwAAAAAAAAAQAA0ABwAAAAAAAAAQAA4ABwAAAAAAAAAQABAABwAAAAAAAAAQAA8ABwAAAAAAAAAQABEABwAAAAAAAAA=")
+tile_set = ExtResource("2_blocos_ts")
+script = ExtResource("3_blocos_scr")
+
+[node name="Cristais" type="TileMapLayer" parent="." unique_id=1249570348]
+light_mask = 0
+z_index = 5
+tile_set = ExtResource("4_cristais_ts")
+script = ExtResource("5_cristais_scr")
+
+[node name="Matos" type="TileMapLayer" parent="." unique_id=677554734]
+z_index = -1
+material = SubResource("CanvasItemMaterial_blocos_brilho")
+tile_map_data = PackedByteArray("AAAEAAgABAAAAAAAAAAFAAIAAQAAAAAAAAACAAkAAgAAAAAAAAABAAkAAgAAAAAAAAALAAEAAAAAAAAAAAA=")
+tile_set = ExtResource("matos_ts")
+
+[node name="SolDesenho" type="Sprite2D" parent="." unique_id=1249432666]
+modulate = Color(1, 1, 1, 0.7)
+z_index = -2
+texture_filter = 1
+material = SubResource("CanvasItemMaterial_blocos_brilho")
+position = Vector2(138.35616, 36.164383)
+scale = Vector2(2, 2)
+texture = ExtResource("sol_desenho")
+
+[node name="Player" parent="." unique_id=2002249508 instance=ExtResource("6_player")]
+position = Vector2(24, 160)
+
+[node name="FixedCamera" type="Camera2D" parent="." unique_id=835913944]
+position = Vector2(160, 92)
+zoom = Vector2(0.9, 0.9)
+
+[node name="DeathMenu" parent="." unique_id=1566342340 instance=ExtResource("7_deathmenu")]
+visible = false
+
+[node name="HealthBar" parent="." unique_id=1232660977 instance=ExtResource("8_healthbar")]
+
+[node name="PortalFase" parent="." unique_id=1633064443 instance=ExtResource("9_portal")]
+position = Vector2(319.726, 8.767124)
+next_scene = "res://mapa_01.tscn"
+
+[node name="Cenario" type="Node2D" parent="." unique_id=349698582]
+z_index = -10
+z_as_relative = false
+
+[node name="BrilhoFundo" type="Sprite2D" parent="Cenario" unique_id=434403717]
+visible = false
+z_index = 1
+material = SubResource("CanvasItemMaterial_brilho")
+position = Vector2(174.24658, 77.80822)
+scale = Vector2(2.3844178, 1.627269)
+texture = SubResource("GradientTexture2D_brilho")

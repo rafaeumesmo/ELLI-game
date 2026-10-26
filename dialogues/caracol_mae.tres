@@ -1,13 +1,12 @@
-[gd_resource type="Resource" script_class="DialogueData" format=3]
+[gd_resource type="Resource" script_class="DialogueData" format=3 uid="uid://bso584wluck7d"]
 
-[ext_resource type="Script" path="res://UI/dialogo/dialogue_data.gd" id="1_data"]
-[ext_resource type="Script" path="res://UI/dialogo/dialogue_line.gd" id="2_line"]
+[ext_resource type="Script" uid="uid://cp8gahqvfm5mp" path="res://UI/dialogo/dialogue_data.gd" id="1_data"]
+[ext_resource type="Script" uid="uid://cym0wid4uvh12" path="res://UI/dialogo/dialogue_line.gd" id="2_line"]
 [ext_resource type="Resource" path="res://dialogues/personagens/caracol_mae.tres" id="3_mae"]
 
 [sub_resource type="Resource" id="Resource_fala1"]
 script = ExtResource("2_line")
 personagem = ExtResource("3_mae")
-expressao = "neutro"
 texto = "Meu filhote tá lá em cima."
 
 [sub_resource type="Resource" id="Resource_fala2"]
@@ -19,13 +18,11 @@ texto = "Se encontrar ele, dá um toque nele por mim."
 [sub_resource type="Resource" id="Resource_fala3"]
 script = ExtResource("2_line")
 personagem = ExtResource("3_mae")
-expressao = "neutro"
 texto = "E fica esperto com os amarelos."
 
 [sub_resource type="Resource" id="Resource_fala4"]
 script = ExtResource("2_line")
 personagem = ExtResource("3_mae")
-expressao = "neutro"
 texto = "Toca neles e eles mexem nos blocos."
 
 [resource]

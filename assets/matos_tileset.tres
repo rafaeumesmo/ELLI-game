@@ -1,7 +1,14 @@
-[gd_resource type="TileSet" format=3]
+[gd_resource type="TileSet" format=3 uid="uid://l81nslbsm58o"]
 
-[ext_resource type="Texture2D" path="res://assets/matos1.png" id="1_matos1"]
-[ext_resource type="Texture2D" path="res://assets/matos2.png" id="2_matos2"]
+[ext_resource type="Texture2D" uid="uid://dbpx2j3u5rch1" path="res://assets/matos1.png" id="1_matos1"]
+[ext_resource type="Texture2D" uid="uid://nyipiiiu2jt4" path="res://assets/matos2.png" id="2_matos2"]
+[ext_resource type="Texture2D" uid="uid://coenq8eti2e5x" path="res://assets/matos3.png" id="3_matos3"]
+[ext_resource type="Texture2D" uid="uid://cw82ebt2wck7i" path="res://assets/matos4.png" id="4_matos4"]
+[ext_resource type="Texture2D" uid="uid://dlsdu4fxroft7" path="res://assets/matos5.png" id="5_matos5"]
+[ext_resource type="Texture2D" uid="uid://bm01unekhnpb3" path="res://assets/matos6.png" id="6_matos6"]
+[ext_resource type="Texture2D" uid="uid://dy8w3ki3iigiw" path="res://assets/matos7.png" id="7_matos7"]
+[ext_resource type="Texture2D" uid="uid://e8dmdwhdimos" path="res://assets/matos8.png" id="8_matos8"]
+[ext_resource type="Texture2D" uid="uid://cppunh1e7ey8s" path="res://assets/matos9.png" id="9_matos9"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_matos1"]
 texture = ExtResource("1_matos1")
@@ -11,6 +18,41 @@ texture = ExtResource("1_matos1")
 texture = ExtResource("2_matos2")
 0:0/0 = 0
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_matos3"]
+texture = ExtResource("3_matos3")
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_matos4"]
+texture = ExtResource("4_matos4")
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_matos5"]
+texture = ExtResource("5_matos5")
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_matos6"]
+texture = ExtResource("6_matos6")
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_matos7"]
+texture = ExtResource("7_matos7")
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_matos8"]
+texture = ExtResource("8_matos8")
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_matos9"]
+texture = ExtResource("9_matos9")
+0:0/0 = 0
+
 [resource]
 sources/0 = SubResource("TileSetAtlasSource_matos1")
 sources/1 = SubResource("TileSetAtlasSource_matos2")
+sources/2 = SubResource("TileSetAtlasSource_matos3")
+sources/3 = SubResource("TileSetAtlasSource_matos4")
+sources/4 = SubResource("TileSetAtlasSource_matos5")
+sources/5 = SubResource("TileSetAtlasSource_matos6")
+sources/6 = SubResource("TileSetAtlasSource_matos7")
+sources/7 = SubResource("TileSetAtlasSource_matos8")
+sources/8 = SubResource("TileSetAtlasSource_matos9")

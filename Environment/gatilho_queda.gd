@@ -7,21 +7,34 @@ extends Area2D
 ## Se true, o gatilho para de valer depois do primeiro toque.
 @export var uma_vez_so: bool = true
 
-## Cor base das partículas (segue a cor da Marca).
-const COR := Color(0.22, 0.32, 0.45)
-## Energia máxima da luz que o gatilho projeta enquanto está armado.
-@export var energia_luz: float = 1.3
+## Cor base das partículas (segue o tom quente do vagalume).
+const COR := Color(0.9, 0.75, 0.25)
+## Energia máxima do halo (luz grande e suave) enquanto o gatilho está armado.
+@export var energia_halo: float = 1.1
+## Energia máxima do núcleo (luz pequena e forte) enquanto o gatilho está armado.
+@export var energia_core: float = 2.0
+## Amplitude da flutuação em lemniscata, em pixels -- mesmo voo parado do PortalFase.
+@export var raio_voo: float = 10.0
+## Velocidade angular da flutuação.
+@export var velocidade_voo: float = 0.5
+## Velocidade do voo até o bloco depois que o player encosta (px/s).
+@export var velocidade_voo_bloco: float = 130.0
 
-@onready var _marca: Polygon2D = $Marca
-@onready var _luz: PointLight2D = $Luz
+@onready var _corpo: AnimatedSprite2D = $Corpo
+@onready var _halo: PointLight2D = $Halo
+@onready var _core: PointLight2D = $Core
 
 var _usado := false
 var _t := 0.0
-## Fagulhas que sobem devagar da marca enquanto o gatilho está armado.
+var _origem := Vector2.ZERO
+var _offset := Vector2.ZERO
+## Fagulhas que sobem devagar do vagalume enquanto o gatilho está armado.
 var _brilho: CPUParticles2D
 
 func _ready() -> void:
 	body_entered.connect(_on_body_entered)
+	_origem = position
+	_corpo.play("voar")
 	_criar_brilho()
 
 func _criar_brilho() -> void:
@@ -55,24 +68,76 @@ func _process(delta: float) -> void:
 		return
 	_t += delta
 	var pulso := 0.5 + sin(_t * 3.0) * 0.35
-	_marca.modulate.a = pulso
-	_luz.energy = energia_luz * pulso
+	_halo.energy = energia_halo * pulso
+	_core.energy = energia_core * pulso
+
+	# Flutuação em lemniscata parada, igual o PortalFase -- ainda dentro do
+	# alcance do CollisionShape2D, entao continua tocavel o tempo todo.
+	var voo := _t * velocidade_voo
+	_offset.x = sin(voo) * raio_voo
+	_offset.y = sin(voo * 2.0) * raio_voo * 0.5
+	position = _origem + _offset
+	_corpo.flip_h = cos(voo) < 0.0
 
 func _on_body_entered(body: Node) -> void:
 	if _usado or not body.is_in_group("player"):
 		return
+	# Em vez de "coletar" que nem um vagalume comum, o gatilho voa ate o
+	# bloco e so ativa quando chega la.
+	_usado = true
+	set_deferred("monitoring", false)
+	_voar_ate_bloco()
+
+## Volta pra posicao original e reativa o toque (so quando `uma_vez_so` == false).
+func _rearmar() -> void:
+	var duracao := clampf(global_position.distance_to(_origem) / velocidade_voo_bloco, 0.6, 2.4)
+	var tw := create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tw.tween_method(_atualizar_voo.bind(global_position, _origem), 0.0, 1.0, duracao)
+	tw.tween_property(_corpo, "modulate:a", 1.0, 0.2)
+	tw.tween_callback(func() -> void:
+		_brilho.emitting = true
+		_offset = Vector2.ZERO
+		set_deferred("monitoring", true)
+		_usado = false
+	)
+
+## Posicao do primeiro bloco valido em `blocos` (destino do voo). Sem bloco
+## valido, fica onde esta -- so ativa no lugar, que nem antes.
+func _posicao_alvo() -> Vector2:
+	for caminho in blocos:
+		var bloco := get_node_or_null(caminho)
+		if bloco != null:
+			return bloco.global_position
+	return global_position
+
+func _voar_ate_bloco() -> void:
+	var origem := global_position
+	var alvo := _posicao_alvo()
+	var duracao := clampf(origem.distance_to(alvo) / velocidade_voo_bloco, 0.6, 2.4)
+	var tw := create_tween().set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN_OUT)
+	tw.tween_method(_atualizar_voo.bind(origem, alvo), 0.0, 1.0, duracao)
+	tw.tween_callback(_ativar_blocos)
+
+func _atualizar_voo(t: float, origem: Vector2, alvo: Vector2) -> void:
+	global_position = origem.lerp(alvo, t)
+	_corpo.flip_h = alvo.x < origem.x
+
+## Chamado quando o gatilho chega no bloco: estoura, derruba e apaga
+## (ou volta pra posicao original, se `uma_vez_so` == false).
+func _ativar_blocos() -> void:
 	_estourar()
-	if uma_vez_so:
-		_usado = true
-		set_deferred("monitoring", false)
-		_brilho.emitting = false
-		var tw := create_tween()
-		tw.tween_property(_marca, "modulate:a", 0.0, 0.25)
-		tw.parallel().tween_property(_luz, "energy", 0.0, 0.25)
 	for caminho in blocos:
 		var bloco := get_node_or_null(caminho)
 		if bloco != null and bloco.has_method("derrubar"):
 			bloco.derrubar()
+	_brilho.emitting = false
+	if not uma_vez_so:
+		_rearmar()
+		return
+	var tw := create_tween()
+	tw.tween_property(_corpo, "modulate:a", 0.0, 0.25)
+	tw.parallel().tween_property(_halo, "energy", 0.0, 0.25)
+	tw.parallel().tween_property(_core, "energy", 0.0, 0.25)
 
 ## Puff de partículas no momento em que o gatilho dispara.
 func _estourar() -> void:

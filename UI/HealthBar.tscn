@@ -4,6 +4,7 @@
 [ext_resource type="Script" path="res://UI/health_pips.gd" id="2_pips"]
 
 [node name="HealthBar" type="CanvasLayer"]
+visible = false
 script = ExtResource("1_health")
 
 [node name="Pips" type="Control" parent="."]

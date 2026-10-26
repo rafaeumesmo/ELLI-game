@@ -1,8 +1,8 @@
-[gd_resource type="Resource" script_class="DialogueData" format=3]
+[gd_resource type="Resource" script_class="DialogueData" format=3 uid="uid://b4h3nmyq0ub6h"]
 
-[ext_resource type="Script" path="res://UI/dialogo/dialogue_data.gd" id="1_data"]
-[ext_resource type="Script" path="res://UI/dialogo/dialogue_line.gd" id="2_line"]
-[ext_resource type="Resource" path="res://dialogues/personagens/caracol_bebe.tres" id="3_bebe"]
+[ext_resource type="Script" uid="uid://cp8gahqvfm5mp" path="res://UI/dialogo/dialogue_data.gd" id="1_data"]
+[ext_resource type="Script" uid="uid://cym0wid4uvh12" path="res://UI/dialogo/dialogue_line.gd" id="2_line"]
+[ext_resource type="Resource" uid="uid://cnp44qvbe6g5b" path="res://dialogues/personagens/caracol_bebe.tres" id="3_bebe"]
 [ext_resource type="Resource" path="res://dialogues/personagens/elisio.tres" id="4_elisio"]
 
 [sub_resource type="Resource" id="Resource_fala1"]
@@ -14,19 +14,16 @@ texto = "Ei! Você!"
 [sub_resource type="Resource" id="Resource_fala2"]
 script = ExtResource("2_line")
 personagem = ExtResource("4_elisio")
-expressao = "neutro"
 texto = "Oi."
 
 [sub_resource type="Resource" id="Resource_fala3"]
 script = ExtResource("2_line")
 personagem = ExtResource("3_bebe")
-expressao = "neutro"
 texto = "Você também tá seguindo os azuis?"
 
 [sub_resource type="Resource" id="Resource_fala4"]
 script = ExtResource("2_line")
 personagem = ExtResource("4_elisio")
-expressao = "neutro"
 texto = "Tô."
 
 [sub_resource type="Resource" id="Resource_fala5"]
