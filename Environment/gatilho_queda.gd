@@ -21,8 +21,12 @@ const COR := Color(0.9, 0.75, 0.25)
 @export var velocidade_voo_bloco: float = 130.0
 
 @onready var _corpo: AnimatedSprite2D = $Corpo
-@onready var _halo: PointLight2D = $Halo
-@onready var _core: PointLight2D = $Core
+const HALO_ALPHA := 0.35
+const CORE_ALPHA := 0.4
+const BRILHO_MATERIAL: Material = preload("res://Environment/vagalume_brilho.tres")
+
+@onready var _halo: Sprite2D = $Halo
+@onready var _core: Sprite2D = $Core
 
 var _usado := false
 var _t := 0.0
@@ -39,6 +43,9 @@ func _ready() -> void:
 
 func _criar_brilho() -> void:
 	_brilho = CPUParticles2D.new()
+	_brilho.material = BRILHO_MATERIAL
+	_brilho.z_index = -5
+	_brilho.z_as_relative = false
 	_brilho.amount = 16
 	_brilho.lifetime = 1.6
 	_brilho.emission_shape = CPUParticles2D.EMISSION_SHAPE_RECTANGLE
@@ -67,9 +74,9 @@ func _process(delta: float) -> void:
 	if _usado:
 		return
 	_t += delta
-	var pulso := 0.5 + sin(_t * 3.0) * 0.35
-	_halo.energy = energia_halo * pulso
-	_core.energy = energia_core * pulso
+	var pulso := 0.85 + sin(_t * 3.0) * 0.15
+	_halo.self_modulate.a = minf(energia_halo * pulso * HALO_ALPHA, 1.0)
+	_core.self_modulate.a = minf(energia_core * pulso * CORE_ALPHA, 1.0)
 
 	# Flutuação em lemniscata parada, igual o PortalFase -- ainda dentro do
 	# alcance do CollisionShape2D, entao continua tocavel o tempo todo.
@@ -136,12 +143,15 @@ func _ativar_blocos() -> void:
 		return
 	var tw := create_tween()
 	tw.tween_property(_corpo, "modulate:a", 0.0, 0.25)
-	tw.parallel().tween_property(_halo, "energy", 0.0, 0.25)
-	tw.parallel().tween_property(_core, "energy", 0.0, 0.25)
+	tw.parallel().tween_property(_halo, "self_modulate:a", 0.0, 0.25)
+	tw.parallel().tween_property(_core, "self_modulate:a", 0.0, 0.25)
 
 ## Puff de partículas no momento em que o gatilho dispara.
 func _estourar() -> void:
 	var po := CPUParticles2D.new()
+	po.material = BRILHO_MATERIAL
+	po.z_index = -5
+	po.z_as_relative = false
 	po.one_shot = true
 	po.explosiveness = 1.0
 	po.amount = 20

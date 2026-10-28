@@ -7,11 +7,13 @@
 [ext_resource type="TileSet" uid="uid://bksacx2vpm4t0" path="res://assets/cristais_tileset.tres" id="5_cristais_ts"]
 [ext_resource type="PackedScene" uid="uid://ck4l3vm43pipc" path="res://Player/Player.tscn" id="6_player"]
 [ext_resource type="PackedScene" uid="uid://de8utfkx51gq2" path="res://UI/DeathMenu.tscn" id="7_deathmenu"]
-[ext_resource type="PackedScene" path="res://UI/HealthBar.tscn" id="8_healthbar"]
 [ext_resource type="PackedScene" uid="uid://dqvpyfsmsranl" path="res://Environment/PortalFase.tscn" id="9_portal"]
 [ext_resource type="PackedScene" path="res://Environment/AguaViva.tscn" id="13_xunrh"]
 [ext_resource type="Script" uid="uid://bls02pu77wpa6" path="res://Environment/zona_camera.gd" id="20_zonacam"]
 [ext_resource type="PackedScene" path="res://Environment/RainhaMedusas.tscn" id="21_rainha"]
+[ext_resource type="PackedScene" path="res://Environment/Cachoeira.tscn" id="cachoeira_final"]
+[ext_resource type="Texture2D" uid="uid://d2f6cbdrchdjn" path="res://assets/backgrounds/mapas/mapa_10.svg" id="fundo_exclusivo"]
+[ext_resource type="PackedScene" path="res://Environment/Goteira.tscn" id="goteira"]
 [ext_resource type="TileSet" uid="uid://l81nslbsm58o" path="res://assets/matos_tileset.tres" id="matos_ts"]
 
 [sub_resource type="Environment" id="Environment_escuro"]
@@ -23,22 +25,11 @@ glow_hdr_threshold = 0.9
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_blocos_brilho"]
 light_mode = 1
 
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_brilho"]
-blend_mode = 1
-
-[sub_resource type="Gradient" id="Gradient_brilho"]
-colors = PackedColorArray(1, 1, 1, 0.9, 1, 1, 1, 0)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_brilho"]
-gradient = SubResource("Gradient_brilho")
-width = 256
-height = 256
-fill = 1
-fill_from = Vector2(0.5, 0.5)
-fill_to = Vector2(1, 0.5)
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tela"]
 size = Vector2(350.6849, 600)
+
+[sub_resource type="CanvasItemMaterial" id="Material_fundo_estatico"]
+light_mode = 1
 
 [node name="Mapa10" type="Node2D" unique_id=337134600]
 scale = Vector2(3.65, 3.65)
@@ -102,22 +93,15 @@ zoom = Vector2(0.9, 0.9)
 [node name="DeathMenu" parent="." unique_id=365627756 instance=ExtResource("7_deathmenu")]
 visible = false
 
-[node name="HealthBar" parent="." unique_id=752091156 instance=ExtResource("8_healthbar")]
-
 [node name="PortalFase" parent="." unique_id=1352042991 instance=ExtResource("9_portal")]
-position = Vector2(1912.3287, 52.60274)
+position = Vector2(1979.1781, 48.76712)
+next_scene = "res://UI/Creditos.tscn"
+encerrar_jogo = true
 
 [node name="Cenario" type="Node2D" parent="." unique_id=1765110801]
 visible = false
 z_index = -10
 z_as_relative = false
-
-[node name="BrilhoFundo" type="Sprite2D" parent="Cenario" unique_id=319016202]
-z_index = 1
-material = SubResource("CanvasItemMaterial_brilho")
-position = Vector2(163.01369, 82.19178)
-scale = Vector2(2, 1.6)
-texture = SubResource("GradientTexture2D_brilho")
 
 [node name="AguaViva" parent="." unique_id=1861596051 instance=ExtResource("13_xunrh")]
 position = Vector2(181.09589, 108.21918)
@@ -197,12 +181,6 @@ position = Vector2(334.24658, 92.60274)
 [node name="AguaViva4" parent="." unique_id=1645645269 instance=ExtResource("13_xunrh")]
 position = Vector2(464.65753, 102.46575)
 
-[node name="AguaViva5" parent="." unique_id=257577229 instance=ExtResource("13_xunrh")]
-position = Vector2(529.58905, 102.73972)
-
-[node name="AguaViva6" parent="." unique_id=636910097 instance=ExtResource("13_xunrh")]
-position = Vector2(618.6301, 123.83562)
-
 [node name="AguaViva7" parent="." unique_id=1633265582 instance=ExtResource("13_xunrh")]
 position = Vector2(253.69862, 110.68493)
 
@@ -268,3 +246,68 @@ position = Vector2(1591.5067, 127.397255)
 
 [node name="AguaViva28" parent="." unique_id=1343759890 instance=ExtResource("13_xunrh")]
 position = Vector2(1962.1918, 107.12329)
+
+[node name="FundoDaFase" type="Sprite2D" parent="." unique_id=1907191299]
+z_index = -100
+texture_filter = 1
+material = SubResource("Material_fundo_estatico")
+position = Vector2(-144, -224)
+texture = ExtResource("fundo_exclusivo")
+centered = false
+
+[node name="CachoeiraFinal" parent="." unique_id=1364007876 instance=ExtResource("cachoeira_final")]
+position = Vector2(85.47946, 15.616438)
+
+[node name="Goteira01" parent="." unique_id=1122444099 instance=ExtResource("goteira")]
+position = Vector2(632, 16)
+altura = 144.0
+intervalo = 2.47
+fase = 1.72
+
+[node name="Goteira02" parent="." unique_id=1091123556 instance=ExtResource("goteira")]
+position = Vector2(728, 48)
+altura = 80.0
+intervalo = 2.49
+fase = 0.82
+
+[node name="Goteira03" parent="." unique_id=962711402 instance=ExtResource("goteira")]
+position = Vector2(1000, 0)
+intervalo = 3.05
+fase = 3.29
+
+[node name="Goteira04" parent="." unique_id=245007422 instance=ExtResource("goteira")]
+position = Vector2(1096, 16)
+altura = 128.0
+intervalo = 2.67
+fase = 0.64
+
+[node name="Goteira05" parent="." unique_id=823464196 instance=ExtResource("goteira")]
+position = Vector2(1224, 0)
+altura = 176.0
+intervalo = 2.35
+fase = 1.31
+
+[node name="Goteira06" parent="." unique_id=432033365 instance=ExtResource("goteira")]
+position = Vector2(1320, 0)
+intervalo = 1.7
+fase = 3.81
+
+[node name="Goteira07" parent="." unique_id=1763975279 instance=ExtResource("goteira")]
+position = Vector2(1416, 0)
+altura = 128.0
+intervalo = 3.49
+fase = 0.18
+
+[node name="Goteira08" parent="." unique_id=796112500 instance=ExtResource("goteira")]
+position = Vector2(1672, 0)
+intervalo = 3.16
+fase = 2.41
+
+[node name="Goteira09" parent="." unique_id=412995435 instance=ExtResource("goteira")]
+position = Vector2(1768, 0)
+altura = 128.0
+intervalo = 2.02
+fase = 1.13
+
+[node name="Goteira" parent="." unique_id=617985760 instance=ExtResource("goteira")]
+position = Vector2(81.64384, 16.164383)

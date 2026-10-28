@@ -18,7 +18,7 @@ signal dialogue_finished(dialogue: DialogueData)
 
 const CENA_CAIXA := preload("res://UI/dialogo/DialogueBox.tscn")
 ## CanvasLayers de HUD que somem durante a conversa (além do grupo "hud").
-const NOMES_HUD := ["Cronometro", "HealthBar"]
+const NOMES_HUD := ["Cronometro"]
 const DURACAO_HUD := 0.2
 
 var is_active: bool = false

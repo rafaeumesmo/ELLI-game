@@ -7,14 +7,15 @@
 [ext_resource type="Script" uid="uid://du58ifk0orr2v" path="res://Environment/cristais_layer.gd" id="4_cristais_scr"]
 [ext_resource type="TileSet" uid="uid://bksacx2vpm4t0" path="res://assets/cristais_tileset.tres" id="4_cristais_ts"]
 [ext_resource type="PackedScene" uid="uid://de8utfkx51gq2" path="res://UI/DeathMenu.tscn" id="5_deathmenu"]
-[ext_resource type="PackedScene" path="res://UI/HealthBar.tscn" id="6_healthbar"]
 [ext_resource type="PackedScene" uid="uid://dqvpyfsmsranl" path="res://Environment/PortalFase.tscn" id="7_portal"]
 [ext_resource type="PackedScene" uid="uid://u5dx4rsb2is5" path="res://Environment/BlocoQueCai.tscn" id="8_x4bba"]
 [ext_resource type="PackedScene" uid="uid://q610mue5fiha" path="res://Environment/GatilhoQueda.tscn" id="9_whotf"]
 [ext_resource type="PackedScene" uid="uid://c8s7twn0saw02" path="res://Environment/StaticSaw.tscn" id="10_whotf"]
 [ext_resource type="PackedScene" uid="uid://dfcde777bahu8" path="res://Environment/SpikeTrap.tscn" id="11_bn38j"]
-[ext_resource type="Texture2D" uid="uid://bmcqsrt5bgbg4" path="res://assets/mapa 01.png" id="14_irw1k"]
+[ext_resource type="Texture2D" uid="uid://doit1jt4kk3p7" path="res://assets/backgrounds/mapas/mapa_03.svg" id="fundo_exclusivo"]
 [ext_resource type="TileSet" uid="uid://l81nslbsm58o" path="res://assets/matos_tileset.tres" id="matos_ts"]
+
+[ext_resource type="Script" path="res://Environment/goteiras_mapa.gd" id="goteiras_mapa"]
 
 [sub_resource type="Environment" id="Environment_escuro"]
 background_mode = 3
@@ -25,19 +26,8 @@ glow_hdr_threshold = 0.9
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_blocos_brilho"]
 light_mode = 1
 
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_brilho"]
-blend_mode = 1
-
-[sub_resource type="Gradient" id="Gradient_brilho"]
-colors = PackedColorArray(1, 1, 1, 0.9, 1, 1, 1, 0)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_brilho"]
-gradient = SubResource("Gradient_brilho")
-width = 256
-height = 256
-fill = 1
-fill_from = Vector2(0.5, 0.5)
-fill_to = Vector2(1, 0.5)
+[sub_resource type="CanvasItemMaterial" id="Material_fundo_estatico"]
+light_mode = 1
 
 [node name="Mapa03" type="Node2D" unique_id=1781797396]
 scale = Vector2(3.65, 3.65)
@@ -76,23 +66,25 @@ zoom = Vector2(0.9, 0.9)
 
 [node name="DeathMenu" parent="." unique_id=1458397885 instance=ExtResource("5_deathmenu")]
 
-[node name="HealthBar" parent="." unique_id=2015127992 instance=ExtResource("6_healthbar")]
-
 [node name="PortalFase" parent="." unique_id=1893502680 instance=ExtResource("7_portal")]
 position = Vector2(318.08218, 15.616438)
 next_scene = "res://mapa_04.tscn"
 
 [node name="BlocoQueCai" parent="." unique_id=338004227 instance=ExtResource("8_x4bba")]
 position = Vector2(15.61644, 16.712326)
+reaparece = false
 
 [node name="BlocoQueCai2" parent="." unique_id=338004228 instance=ExtResource("8_x4bba")]
 position = Vector2(143.0137, 143.83568)
+reaparece = false
 
 [node name="BlocoQueCai3" parent="." unique_id=338004229 instance=ExtResource("8_x4bba")]
 position = Vector2(304.10962, 127.945175)
+reaparece = false
 
 [node name="BlocoQueCai4" parent="." unique_id=338004230 instance=ExtResource("8_x4bba")]
 position = Vector2(272.05478, 16.438354)
+reaparece = false
 
 [node name="GatilhoQueda" parent="." unique_id=1958102051 instance=ExtResource("9_whotf")]
 position = Vector2(272.8767, 124.10959)
@@ -114,18 +106,6 @@ blocos = Array[NodePath]([NodePath("../BlocoQueCai4")])
 z_index = -10
 z_as_relative = false
 
-[node name="BrilhoFundo" type="Sprite2D" parent="Cenario" unique_id=986790109]
-z_index = 1
-material = SubResource("CanvasItemMaterial_brilho")
-position = Vector2(215.7534, 62.399986)
-scale = Vector2(2.5802655, 1.8359588)
-texture = SubResource("GradientTexture2D_brilho")
-
-[node name="Mapa01" type="Sprite2D" parent="Cenario" unique_id=2143499249]
-position = Vector2(165.47948, 99.45205)
-scale = Vector2(0.29623285, 0.32876715)
-texture = ExtResource("14_irw1k")
-
 [node name="StaticSaw2" parent="Cenario" unique_id=964309371 instance=ExtResource("10_whotf")]
 position = Vector2(303.56165, 190.68495)
 
@@ -134,3 +114,14 @@ position = Vector2(64.38356, 112.328766)
 
 [node name="SpikeTrap" parent="." unique_id=1893502678 instance=ExtResource("11_bn38j")]
 position = Vector2(215.8904, 40)
+
+[node name="FundoDaFase" type="Sprite2D" parent="." unique_id=268091748]
+z_index = -100
+texture_filter = 1
+material = SubResource("Material_fundo_estatico")
+position = Vector2(-176, -192)
+texture = ExtResource("fundo_exclusivo")
+centered = false
+
+[node name="GoteirasAmbiente" type="Node2D" parent="."]
+script = ExtResource("goteiras_mapa")

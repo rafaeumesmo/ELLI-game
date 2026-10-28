@@ -8,8 +8,10 @@
 [ext_resource type="Script" uid="uid://bfgb4w1di3l6g" path="res://Environment/fixed_camera_zone.gd" id="13_fixedcam"]
 [ext_resource type="PackedScene" uid="uid://ck4l3vm43pipc" path="res://Player/Player.tscn" id="20_player"]
 [ext_resource type="PackedScene" uid="uid://de8utfkx51gq2" path="res://UI/DeathMenu.tscn" id="21_deathmenu"]
-[ext_resource type="PackedScene" path="res://UI/HealthBar.tscn" id="22_healthbar"]
+[ext_resource type="Texture2D" uid="uid://cpuk0ml0uwp1y" path="res://assets/backgrounds/mapas/mapa_01.svg" id="fundo_exclusivo"]
 [ext_resource type="TileSet" uid="uid://l81nslbsm58o" path="res://assets/matos_tileset.tres" id="matos_ts"]
+
+[ext_resource type="Script" path="res://Environment/goteiras_mapa.gd" id="goteiras_mapa"]
 
 [sub_resource type="Environment" id="Environment_escuro"]
 background_mode = 3
@@ -23,19 +25,8 @@ light_mode = 1
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_tower_trigger"]
 size = Vector2(362.4658, 208.76712)
 
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_brilho"]
-blend_mode = 1
-
-[sub_resource type="Gradient" id="Gradient_brilho"]
-colors = PackedColorArray(1, 1, 1, 0.9, 1, 1, 1, 0)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_brilho"]
-gradient = SubResource("Gradient_brilho")
-width = 256
-height = 256
-fill = 1
-fill_from = Vector2(0.5, 0.5)
-fill_to = Vector2(1, 0.5)
+[sub_resource type="CanvasItemMaterial" id="Material_fundo_estatico"]
+light_mode = 1
 
 [node name="Mapa01" type="Sprite2D" unique_id=1681206707]
 position = Vector2(580, 326)
@@ -51,9 +42,6 @@ environment = SubResource("Environment_escuro")
 position = Vector2(-135.34245, 58.904106)
 
 [node name="DeathMenu" parent="." unique_id=411104660 instance=ExtResource("21_deathmenu")]
-
-[node name="HealthBar" parent="." unique_id=551189738 instance=ExtResource("22_healthbar")]
-visible = true
 
 [node name="IntroCamera" type="Camera2D" parent="." unique_id=473829105]
 position = Vector2(1.9178145, -1.9178042)
@@ -92,13 +80,17 @@ shape = SubResource("RectangleShape2D_tower_trigger")
 z_index = -10
 z_as_relative = false
 
-[node name="BrilhoFundo" type="Sprite2D" parent="Cenario" unique_id=1800000002]
-z_index = 1
-material = SubResource("CanvasItemMaterial_brilho")
-position = Vector2(-2.4657326, -24.865776)
-scale = Vector2(1.9691782, 1.8659245)
-texture = SubResource("GradientTexture2D_brilho")
-
 [node name="PortalFase" parent="." unique_id=1861570654 instance=ExtResource("13_c5hx6")]
 position = Vector2(31.78082, -89.58904)
 next_scene = "res://mapa_02.tscn"
+
+[node name="FundoDaFase" type="Sprite2D" parent="." unique_id=1466011453]
+z_index = -100
+texture_filter = 1
+material = SubResource("Material_fundo_estatico")
+position = Vector2(-336, -288)
+texture = ExtResource("fundo_exclusivo")
+centered = false
+
+[node name="GoteirasAmbiente" type="Node2D" parent="."]
+script = ExtResource("goteiras_mapa")

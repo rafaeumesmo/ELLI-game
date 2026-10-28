@@ -1,0 +1,12 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://Environment/goteira.gd" id="1_goteira"]
+
+[sub_resource type="CanvasItemMaterial" id="Material_agua"]
+light_mode = 1
+
+[node name="Goteira" type="Node2D"]
+z_index = -6
+z_as_relative = false
+material = SubResource("Material_agua")
+script = ExtResource("1_goteira")

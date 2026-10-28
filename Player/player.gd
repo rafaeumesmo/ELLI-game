@@ -111,6 +111,8 @@ var dash_desbloqueado: bool = false
 ## Guarda um "pular" apertado até ~jump_buffer_time atrás, pro dash-jump não
 ## exigir timing perfeito.
 var jump_buffer_timer: float = 0.0
+## Um pulo extra por quique em água-viva; não acumula cargas.
+var _pulo_agua_viva_disponivel: bool = false
 
 static var _death_particle_texture: ImageTexture
 
@@ -263,6 +265,11 @@ func _spawn_death_particles() -> void:
 	var timer := get_tree().create_timer(particles.lifetime + 0.2)
 	timer.timeout.connect(particles.queue_free)
 
+func recarregar_pulo_agua_viva() -> void:
+	_pulo_agua_viva_disponivel = true
+	# O botão que causou o quique não deve gastar o novo pulo automaticamente.
+	jump_buffer_timer = 0.0
+
 func _physics_process(delta: float) -> void:
 	var was_on_floor := is_on_floor()  # pra detectar pouso (transição ar -> chão)
 	var direction: float = Input.get_axis("move_left", "move_right")
@@ -271,6 +278,7 @@ func _physics_process(delta: float) -> void:
 		last_wall_side = 0
 		wall_coyote_timer = 0.0
 		can_dash_air = true  # recarrega o dash aéreo ao tocar o chão
+		_pulo_agua_viva_disponivel = false
 
 	var wall_side: int = sign(get_wall_normal().x) if is_on_wall() else 0
 	var wall_double_stick: bool = is_on_wall() and _wall_allows_double_stick()
@@ -377,6 +385,10 @@ func _physics_process(delta: float) -> void:
 			velocity.y = jump_velocity
 			last_wall_side = wall_coyote_side
 			wall_coyote_timer = 0.0
+		elif _pulo_agua_viva_disponivel:
+			velocity.y = jump_velocity
+			_pulo_agua_viva_disponivel = false
+			jump_buffer_timer = 0.0
 
 	var pre_slide_vy := velocity.y  # impacto do pouso é medido ANTES do slide
 	move_and_slide()

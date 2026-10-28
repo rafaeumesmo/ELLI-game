@@ -1,43 +1,58 @@
 [gd_resource type="Resource" script_class="DialogueData" format=3 uid="uid://b4h3nmyq0ub6h"]
 
-[ext_resource type="Script" uid="uid://cp8gahqvfm5mp" path="res://UI/dialogo/dialogue_data.gd" id="1_data"]
-[ext_resource type="Script" uid="uid://cym0wid4uvh12" path="res://UI/dialogo/dialogue_line.gd" id="2_line"]
-[ext_resource type="Resource" uid="uid://cnp44qvbe6g5b" path="res://dialogues/personagens/caracol_bebe.tres" id="3_bebe"]
-[ext_resource type="Resource" path="res://dialogues/personagens/elisio.tres" id="4_elisio"]
+[ext_resource type="Script" path="res://UI/dialogo/dialogue_data.gd" id="data"]
+[ext_resource type="Script" path="res://UI/dialogo/dialogue_line.gd" id="line"]
+[ext_resource type="Resource" path="res://dialogues/personagens/caracol_bebe.tres" id="bebe"]
+[ext_resource type="Resource" path="res://dialogues/personagens/elisio.tres" id="eli"]
 
-[sub_resource type="Resource" id="Resource_fala1"]
-script = ExtResource("2_line")
-personagem = ExtResource("3_bebe")
+[sub_resource type="Resource" id="fala_1"]
+script = ExtResource("line")
+personagem = ExtResource("bebe")
 expressao = "surpreso"
 texto = "Ei! Você!"
 
-[sub_resource type="Resource" id="Resource_fala2"]
-script = ExtResource("2_line")
-personagem = ExtResource("4_elisio")
-texto = "Oi."
+[sub_resource type="Resource" id="fala_2"]
+script = ExtResource("line")
+personagem = ExtResource("eli")
+expressao = "surpreso"
+texto = "Foi você que me chamou agora há pouco?"
 
-[sub_resource type="Resource" id="Resource_fala3"]
-script = ExtResource("2_line")
-personagem = ExtResource("3_bebe")
-texto = "Você também tá seguindo os azuis?"
+[sub_resource type="Resource" id="fala_3"]
+script = ExtResource("line")
+personagem = ExtResource("bebe")
+expressao = "neutro"
+texto = "Eu acabei de te ver."
 
-[sub_resource type="Resource" id="Resource_fala4"]
-script = ExtResource("2_line")
-personagem = ExtResource("4_elisio")
-texto = "Tô."
+[sub_resource type="Resource" id="fala_4"]
+script = ExtResource("line")
+personagem = ExtResource("eli")
+expressao = "neutro"
+texto = "Achei que tinha ouvido meu nome…"
 
-[sub_resource type="Resource" id="Resource_fala5"]
-script = ExtResource("2_line")
-personagem = ExtResource("3_bebe")
+[sub_resource type="Resource" id="fala_5"]
+script = ExtResource("line")
+personagem = ExtResource("bebe")
+expressao = "neutro"
+texto = "Aqui tem muito eco. Você também tá seguindo os azuis?"
+
+[sub_resource type="Resource" id="fala_6"]
+script = ExtResource("line")
+personagem = ExtResource("eli")
+expressao = "neutro"
+texto = "Tô. Parece que eu conheço essa luz."
+
+[sub_resource type="Resource" id="fala_7"]
+script = ExtResource("line")
+personagem = ExtResource("bebe")
 expressao = "feliz"
-texto = "Sabia! Eu também."
+texto = "Eu também tô seguindo!"
 
-[sub_resource type="Resource" id="Resource_fala6"]
-script = ExtResource("2_line")
-personagem = ExtResource("3_bebe")
+[sub_resource type="Resource" id="fala_8"]
+script = ExtResource("line")
+personagem = ExtResource("bebe")
 expressao = "triste"
 texto = "Só que eu sempre me perco."
 
 [resource]
-script = ExtResource("1_data")
-falas = Array[ExtResource("2_line")]([SubResource("Resource_fala1"), SubResource("Resource_fala2"), SubResource("Resource_fala3"), SubResource("Resource_fala4"), SubResource("Resource_fala5"), SubResource("Resource_fala6")])
+script = ExtResource("data")
+falas = Array[ExtResource("line")]([SubResource("fala_1"), SubResource("fala_2"), SubResource("fala_3"), SubResource("fala_4"), SubResource("fala_5"), SubResource("fala_6"), SubResource("fala_7"), SubResource("fala_8")])

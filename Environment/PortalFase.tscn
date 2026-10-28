@@ -4,6 +4,9 @@
 [ext_resource type="Texture2D" path="res://assets/vagalume.png" id="2_sheet"]
 [ext_resource type="Texture2D" path="res://Environment/luz_vagalume.tres" id="3_luz"]
 
+[ext_resource type="Material" path="res://Environment/vagalume_corpo.tres" id="corpo_emissivo"]
+[ext_resource type="Material" path="res://Environment/vagalume_brilho.tres" id="brilho_emissivo"]
+
 [sub_resource type="AtlasTexture" id="AtlasTexture_portal1"]
 atlas = ExtResource("2_sheet")
 region = Rect2(0, 0, 16, 16)
@@ -50,31 +53,36 @@ collision_layer = 0
 script = ExtResource("1_portal")
 
 [node name="Halo" type="Sprite2D" parent="."]
-self_modulate = Color(0.23921569, 0.6627451, 1, 0)
-z_index = -1
+z_index = -5
 z_as_relative = false
+material = ExtResource("brilho_emissivo")
+self_modulate = Color(0.23921569, 0.6627451, 1, 0)
 texture_filter = 1
-material = SubResource("CanvasItemMaterial_halo")
 scale = Vector2(1.6, 1.6)
 texture = ExtResource("3_luz")
 
 [node name="Core" type="Sprite2D" parent="."]
-self_modulate = Color(1, 1, 1, 0)
-z_index = -1
+z_index = -5
 z_as_relative = false
+material = ExtResource("brilho_emissivo")
+self_modulate = Color(1, 1, 1, 0)
 texture_filter = 1
-material = SubResource("CanvasItemMaterial_halo")
 scale = Vector2(0.3, 0.3)
 texture = ExtResource("3_luz")
 
 [node name="Corpo" type="AnimatedSprite2D" parent="."]
-z_index = 1
+z_index = 7
+z_as_relative = false
+material = ExtResource("corpo_emissivo")
 light_mask = 0
 modulate = Color(0.85, 1.15, 1.6, 1)
 sprite_frames = SubResource("SpriteFrames_portal")
 animation = &"voar"
 
 [node name="Particulas" type="CPUParticles2D" parent="." unique_id=807661752]
+z_index = -5
+z_as_relative = false
+material = ExtResource("brilho_emissivo")
 texture_filter = 1
 emitting = false
 amount = 10

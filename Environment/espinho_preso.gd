@@ -20,6 +20,10 @@ func _ready() -> void:
 func ativar() -> void:
 	monitoring = true
 
+func desativar() -> void:
+	monitoring = false
+	_timer.stop()
+
 func _on_body_entered(body: Node) -> void:
 	_machucar(body)
 

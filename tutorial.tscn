@@ -10,8 +10,10 @@
 [ext_resource type="Script" uid="uid://df617odw0ife8" path="res://Environment/dica_parede.gd" id="14_dicaparede_scr"]
 [ext_resource type="PackedScene" uid="uid://ck4l3vm43pipc" path="res://Player/Player.tscn" id="20_player"]
 [ext_resource type="PackedScene" uid="uid://de8utfkx51gq2" path="res://UI/DeathMenu.tscn" id="21_deathmenu"]
-[ext_resource type="PackedScene" path="res://UI/HealthBar.tscn" id="22_healthbar"]
 [ext_resource type="PackedScene" uid="uid://botlj2i8j1sc7" path="res://Environment/VagalumeGuia.tscn" id="23_vagalumeguia"]
+[ext_resource type="Script" uid="uid://cclsgwqqk5fse" path="res://Environment/dicas_pedra.gd" id="dicas_controles"]
+[ext_resource type="Texture2D" uid="uid://4e80ofqtq1l7" path="res://assets/backgrounds/mapas/tutorial.svg" id="fundo_exclusivo"]
+[ext_resource type="Script" uid="uid://cl2v3pnuk8qu2" path="res://Environment/goteiras_mapa.gd" id="goteiras_mapa"]
 [ext_resource type="TileSet" uid="uid://l81nslbsm58o" path="res://assets/matos_tileset.tres" id="matos_ts"]
 
 [sub_resource type="Environment" id="Environment_escuro"]
@@ -22,20 +24,6 @@ glow_hdr_threshold = 0.9
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_blocos_brilho"]
 light_mode = 1
-
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_brilho"]
-blend_mode = 1
-
-[sub_resource type="Gradient" id="Gradient_brilho"]
-colors = PackedColorArray(1, 1, 1, 0.9, 1, 1, 1, 0)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_brilho"]
-gradient = SubResource("Gradient_brilho")
-width = 256
-height = 256
-fill = 1
-fill_from = Vector2(0.5, 0.5)
-fill_to = Vector2(1, 0.5)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_dp0"]
 atlas = ExtResource("13_dicaparede")
@@ -104,6 +92,9 @@ animations = [{
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dica"]
 size = Vector2(88, 104)
 
+[sub_resource type="CanvasItemMaterial" id="Material_fundo_estatico"]
+light_mode = 1
+
 [node name="Tutorial" type="Node2D" unique_id=1681206707]
 position = Vector2(580, 326)
 scale = Vector2(3.65, 3.65)
@@ -118,13 +109,16 @@ environment = SubResource("Environment_escuro")
 [node name="Player" parent="." unique_id=805600248 instance=ExtResource("20_player")]
 position = Vector2(-145.75342, 42.465755)
 
+[node name="DicasControles" type="Node2D" parent="." unique_id=2142022147]
+modulate = Color(1, 1, 1, 0.7)
+z_index = 1
+script = ExtResource("dicas_controles")
+
 [node name="FixedCamera" type="Camera2D" parent="." unique_id=473829105]
 position = Vector2(1.9178145, -1.9178042)
 zoom = Vector2(0.9, 0.9)
 
 [node name="DeathMenu" parent="." unique_id=411104661 instance=ExtResource("21_deathmenu")]
-
-[node name="HealthBar" parent="." unique_id=551189739 instance=ExtResource("22_healthbar")]
 
 [node name="Blocos" type="TileMapLayer" parent="." unique_id=2049213877]
 material = SubResource("CanvasItemMaterial_blocos_brilho")
@@ -158,13 +152,6 @@ portal_alvo = NodePath("../PortalFase")
 z_index = -10
 z_as_relative = false
 
-[node name="BrilhoFundo" type="Sprite2D" parent="Cenario" unique_id=1027466392]
-z_index = 1
-material = SubResource("CanvasItemMaterial_brilho")
-position = Vector2(7.39727, -17.462994)
-scale = Vector2(2.3844178, 1.6272689)
-texture = SubResource("GradientTexture2D_brilho")
-
 [node name="DicaParede" type="AnimatedSprite2D" parent="." unique_id=43520110]
 light_mask = 0
 z_index = 1
@@ -180,3 +167,14 @@ monitorable = false
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DicaParede/AreaDica" unique_id=1035105389]
 position = Vector2(-6.0273905, 19.452055)
 shape = SubResource("RectangleShape2D_dica")
+
+[node name="FundoDaFase" type="Sprite2D" parent="." unique_id=1009442602]
+z_index = -100
+texture_filter = 1
+material = SubResource("Material_fundo_estatico")
+position = Vector2(-352, -240)
+texture = ExtResource("fundo_exclusivo")
+centered = false
+
+[node name="GoteirasAmbiente" type="Node2D" parent="." unique_id=1598285871]
+script = ExtResource("goteiras_mapa")

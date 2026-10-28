@@ -2,6 +2,8 @@
 
 [ext_resource type="Script" uid="uid://d34kirdt13s51" path="res://Environment/rotating_saw_trap.gd" id="1_saw"]
 
+[ext_resource type="Material" path="res://Environment/serra_metal.tres" id="metal_visivel"]
+
 [sub_resource type="CircleShape2D" id="CircleShape2D_floor"]
 radius = 12.0
 
@@ -17,7 +19,8 @@ collision_layer = 3
 collision_mask = 3
 
 [node name="Visual" type="Polygon2D" parent="Riser" unique_id=1255495919]
-color = Color(0.6, 0.6, 0.65, 1)
+material = ExtResource("metal_visivel")
+vertex_colors = PackedColorArray(0.86, 0.91, 0.94, 1, 0.48, 0.59, 0.65, 1, 0.86, 0.91, 0.94, 1, 0.48, 0.59, 0.65, 1, 0.86, 0.91, 0.94, 1, 0.48, 0.59, 0.65, 1, 0.86, 0.91, 0.94, 1, 0.48, 0.59, 0.65, 1, 0.86, 0.91, 0.94, 1, 0.48, 0.59, 0.65, 1, 0.86, 0.91, 0.94, 1, 0.48, 0.59, 0.65, 1)
 polygon = PackedVector2Array(16, 0, 8.32, 4.8, 8, 13.86, 0, 9.6, -8, 13.86, -8.32, 4.8, -16, 0, -8.32, -4.8, -8, -13.86, 0, -9.6, 8, -13.86, 8.32, -4.8)
 
 [node name="FloorCollision" type="CollisionShape2D" parent="Riser" unique_id=1395563526]
@@ -29,3 +32,8 @@ collision_mask = 5
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Riser/Hitbox" unique_id=2002102742]
 shape = SubResource("CircleShape2D_hitbox")
+
+[node name="Hub" type="Polygon2D" parent="Riser/Visual"]
+material = ExtResource("metal_visivel")
+color = Color(0.65, 0.37, 0.17, 1)
+polygon = PackedVector2Array(5, 0, 2.5, 4.33, -2.5, 4.33, -5, 0, -2.5, -4.33, 2.5, -4.33)

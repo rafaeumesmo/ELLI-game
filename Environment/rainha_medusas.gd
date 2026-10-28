@@ -164,11 +164,14 @@ func _ready() -> void:
 	# Escondida até a perseguição começar.
 	visible = false
 
+static var _material_fx: CanvasItemMaterial
+
 func _material_aditivo() -> CanvasItemMaterial:
-	var mat := CanvasItemMaterial.new()
-	mat.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
-	mat.light_mode = CanvasItemMaterial.LIGHT_MODE_UNSHADED
-	return mat
+	if _material_fx == null:
+		_material_fx = CanvasItemMaterial.new()
+		_material_fx.blend_mode = CanvasItemMaterial.BLEND_MODE_ADD
+		_material_fx.light_mode = CanvasItemMaterial.LIGHT_MODE_UNSHADED
+	return _material_fx
 
 # ---------------------------------------------------------------- loop
 
@@ -667,11 +670,15 @@ func _bate_parede(ponto: Vector2) -> bool:
 	return not get_world_2d().direct_space_state.intersect_point(q, 1).is_empty()
 
 ## Estalinho de faíscas azuis quando uma bola estoura.
+static var _textura_faisca: ImageTexture
+
 func _faisca(ponto: Vector2) -> void:
 	var particles := CPUParticles2D.new()
-	var img := Image.create(1, 1, false, Image.FORMAT_RGBA8)
-	img.fill(Color.WHITE)
-	particles.texture = ImageTexture.create_from_image(img)
+	if _textura_faisca == null:
+		var img := Image.create(1, 1, false, Image.FORMAT_RGBA8)
+		img.fill(Color.WHITE)
+		_textura_faisca = ImageTexture.create_from_image(img)
+	particles.texture = _textura_faisca
 	particles.material = _material_aditivo()
 	particles.one_shot = true
 	particles.amount = 10

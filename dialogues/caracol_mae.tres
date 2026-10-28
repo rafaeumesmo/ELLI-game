@@ -1,30 +1,64 @@
 [gd_resource type="Resource" script_class="DialogueData" format=3 uid="uid://bso584wluck7d"]
 
-[ext_resource type="Script" uid="uid://cp8gahqvfm5mp" path="res://UI/dialogo/dialogue_data.gd" id="1_data"]
-[ext_resource type="Script" uid="uid://cym0wid4uvh12" path="res://UI/dialogo/dialogue_line.gd" id="2_line"]
-[ext_resource type="Resource" path="res://dialogues/personagens/caracol_mae.tres" id="3_mae"]
+[ext_resource type="Script" path="res://UI/dialogo/dialogue_data.gd" id="data"]
+[ext_resource type="Script" path="res://UI/dialogo/dialogue_line.gd" id="line"]
+[ext_resource type="Resource" path="res://dialogues/personagens/caracol_mae.tres" id="mae"]
+[ext_resource type="Resource" path="res://dialogues/personagens/elisio.tres" id="eli"]
 
-[sub_resource type="Resource" id="Resource_fala1"]
-script = ExtResource("2_line")
-personagem = ExtResource("3_mae")
+[sub_resource type="Resource" id="fala_1"]
+script = ExtResource("line")
+personagem = ExtResource("mae")
+expressao = "neutro"
+texto = "Ah… você chegou."
+
+[sub_resource type="Resource" id="fala_2"]
+script = ExtResource("line")
+personagem = ExtResource("eli")
+expressao = "surpreso"
+texto = "Você me viu cair?"
+
+[sub_resource type="Resource" id="fala_3"]
+script = ExtResource("line")
+personagem = ExtResource("mae")
+expressao = "neutro"
+texto = "Quando olhei, você já estava aqui."
+
+[sub_resource type="Resource" id="fala_4"]
+script = ExtResource("line")
+personagem = ExtResource("eli")
+expressao = "neutro"
+texto = "Eu não lembro de chegar."
+
+[sub_resource type="Resource" id="fala_5"]
+script = ExtResource("line")
+personagem = ExtResource("mae")
+expressao = "neutro"
+texto = "Não precisa lembrar de tudo agora. Segue a luz azul."
+
+[sub_resource type="Resource" id="fala_6"]
+script = ExtResource("line")
+personagem = ExtResource("mae")
+expressao = "neutro"
 texto = "Meu filhote tá lá em cima."
 
-[sub_resource type="Resource" id="Resource_fala2"]
-script = ExtResource("2_line")
-personagem = ExtResource("3_mae")
+[sub_resource type="Resource" id="fala_7"]
+script = ExtResource("line")
+personagem = ExtResource("mae")
 expressao = "feliz"
 texto = "Se encontrar ele, dá um toque nele por mim."
 
-[sub_resource type="Resource" id="Resource_fala3"]
-script = ExtResource("2_line")
-personagem = ExtResource("3_mae")
+[sub_resource type="Resource" id="fala_8"]
+script = ExtResource("line")
+personagem = ExtResource("mae")
+expressao = "neutro"
 texto = "E fica esperto com os amarelos."
 
-[sub_resource type="Resource" id="Resource_fala4"]
-script = ExtResource("2_line")
-personagem = ExtResource("3_mae")
+[sub_resource type="Resource" id="fala_9"]
+script = ExtResource("line")
+personagem = ExtResource("mae")
+expressao = "neutro"
 texto = "Toca neles e eles mexem nos blocos."
 
 [resource]
-script = ExtResource("1_data")
-falas = Array[ExtResource("2_line")]([SubResource("Resource_fala1"), SubResource("Resource_fala2"), SubResource("Resource_fala3"), SubResource("Resource_fala4")])
+script = ExtResource("data")
+falas = Array[ExtResource("line")]([SubResource("fala_1"), SubResource("fala_2"), SubResource("fala_3"), SubResource("fala_4"), SubResource("fala_5"), SubResource("fala_6"), SubResource("fala_7"), SubResource("fala_8"), SubResource("fala_9")])

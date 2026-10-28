@@ -1,6 +1,7 @@
 extends TileMapLayer
 
 const CRUMBLE_SOURCE_ID := 4
+const CRUMBLE_SOURCE_IDS := [CRUMBLE_SOURCE_ID]
 const EXPLOSIVE_SOURCE_ID := 0
 ## Tile "blocos3" (blocos3.png): parede solida normal. Quebra em qualquer
 ## toque do player, independente da forca/velocidade -- checado no loop de
@@ -44,23 +45,54 @@ const CENTER_Y := 2.0
 const HALF_WIDTH := 5.0
 const HALF_HEIGHT := 6.0
 const TOUCH_MARGIN := 2.0
+const TOUCH_OFFSETS := [
+	Vector2(0, CENTER_Y + HALF_HEIGHT + TOUCH_MARGIN),
+	Vector2(0, CENTER_Y - HALF_HEIGHT - TOUCH_MARGIN),
+	Vector2(-(HALF_WIDTH + TOUCH_MARGIN), CENTER_Y),
+	Vector2(HALF_WIDTH + TOUCH_MARGIN, CENTER_Y),
+]
+const SPIKE_CHECKS := [
+	Vector2(0, CENTER_Y),
+	Vector2(0, CENTER_Y + HALF_HEIGHT),
+	Vector2(0, CENTER_Y - HALF_HEIGHT),
+	Vector2(-HALF_WIDTH, CENTER_Y),
+	Vector2(HALF_WIDTH, CENTER_Y),
+]
 
 @export var shake_strength: float = 6.0
 @export var shake_duration: float = 0.2
+## Bordas de pedra e musgo estáticos; pode desligar no Inspector.
+@export var acabamento_rochas: bool = true
 
 var _spike_cooldown: float = 0.0
 var _crumbling: Dictionary = {}
 var _exploding: Dictionary = {}
 var _dead_enemies: Dictionary = {}
+var _tem_espinhos: bool = false
 
 func _ready() -> void:
 	add_to_group("blocos_layer")
+	if acabamento_rochas:
+		var acabamento := Node2D.new()
+		acabamento.name = "AcabamentoRochas"
+		acabamento.use_parent_material = true
+		acabamento.set_script(preload("res://Environment/acabamento_blocos.gd"))
+		add_child(acabamento)
 	# Blocos quebrados antes do checkpoint atual comecam ja destruidos.
 	var scene_path := owner.scene_file_path if owner else ""
 	for cell in SaveManager.celulas_quebradas(scene_path):
+		# Blocos que caem são temporários, inclusive em saves anteriores.
+		if get_cell_source_id(cell) in CRUMBLE_SOURCE_IDS:
+			continue
 		set_cell(cell, -1)
 		_crumbling[cell] = true
 		_exploding[cell] = true
+	# O jogo só remove tiles durante a fase. Sem espinhos, não precisa
+	# percorrer todos os inimigos e amostrar seus cinco pontos a cada tick.
+	for source_id in SPIKE_SOURCE_IDS:
+		if not get_used_cells_by_id(source_id).is_empty():
+			_tem_espinhos = true
+			break
 
 func _physics_process(delta: float) -> void:
 	if _spike_cooldown > 0.0:
@@ -72,7 +104,7 @@ func _physics_process(delta: float) -> void:
 
 	var local_pos: Vector2 = to_local(player.global_position)
 
-	if _spike_cooldown <= 0.0 and _touching_spike(local_pos) and player.has_method("take_damage"):
+	if _tem_espinhos and _spike_cooldown <= 0.0 and _touching_spike(local_pos) and player.has_method("take_damage"):
 		player.take_damage(player.max_health)
 		_spike_cooldown = SPIKE_DAMAGE_INTERVAL
 
@@ -81,18 +113,13 @@ func _physics_process(delta: float) -> void:
 	if get_tree() == null:
 		return
 
-	_check_enemy_spikes()
+	if _tem_espinhos:
+		_check_enemy_spikes()
 
-	var touch_offsets := [
-		Vector2(0, CENTER_Y + HALF_HEIGHT + TOUCH_MARGIN), # baixo
-		Vector2(0, CENTER_Y - HALF_HEIGHT - TOUCH_MARGIN), # cima
-		Vector2(-(HALF_WIDTH + TOUCH_MARGIN), CENTER_Y), # esquerda
-		Vector2(HALF_WIDTH + TOUCH_MARGIN, CENTER_Y), # direita
-	]
-	for offset in touch_offsets:
+	for offset in TOUCH_OFFSETS:
 		var cell: Vector2i = local_to_map(local_pos + offset)
 		var cell_source_id := get_cell_source_id(cell)
-		if cell_source_id == CRUMBLE_SOURCE_ID and not _crumbling.get(cell, false):
+		if cell_source_id in CRUMBLE_SOURCE_IDS and not _crumbling.get(cell, false):
 			_crumbling[cell] = true
 			_start_crumble(cell)
 		elif cell_source_id == EXPLOSIVE_SOURCE_ID and not _exploding.get(cell, false):
@@ -103,14 +130,7 @@ func _physics_process(delta: float) -> void:
 			_shake_camera()
 
 func _touching_spike(local_pos: Vector2) -> bool:
-	var checks := [
-		Vector2(0, CENTER_Y),
-		Vector2(0, CENTER_Y + HALF_HEIGHT),
-		Vector2(0, CENTER_Y - HALF_HEIGHT),
-		Vector2(-HALF_WIDTH, CENTER_Y),
-		Vector2(HALF_WIDTH, CENTER_Y),
-	]
-	for offset in checks:
+	for offset in SPIKE_CHECKS:
 		if _is_spike_at(local_pos + offset):
 			return true
 	return false
@@ -166,12 +186,16 @@ func _quebrar_celula(cell: Vector2i) -> void:
 ## quebra ao pousar no chao -- igual ao BlocoFragil, so que nascendo de um tile.
 func _start_crumble(cell: Vector2i) -> void:
 	var pos := map_to_local(cell)
-	_quebrar_celula(cell)
+	var atlas := tile_set.get_source(get_cell_source_id(cell)) as TileSetAtlasSource
+	var textura_queda: Texture2D = atlas.texture if atlas != null else CRUMBLE_TEXTURA
+	# O corpo permanece responsável por cair e reaparecer; não salva destruição.
+	set_cell(cell, -1)
 	var bloco := CRUMBLE_QUEDA_SCENE.instantiate()
 	bloco.lado = 1
-	bloco.textura = CRUMBLE_TEXTURA
+	bloco.textura = textura_queda
 	bloco.pisca_antes_de_cair = true
 	bloco.quebra_ao_pousar = true
+	bloco.cai_ao_pisar = true
 	bloco.position = pos
 	add_child(bloco)
 	bloco.derrubar()

@@ -4,6 +4,9 @@
 [ext_resource type="Texture2D" path="res://assets/vagalume.png" id="2_sheet"]
 [ext_resource type="Texture2D" path="res://Environment/luz_vagalume.tres" id="3_luz"]
 
+[ext_resource type="Material" path="res://Environment/vagalume_corpo.tres" id="corpo_emissivo"]
+[ext_resource type="Material" path="res://Environment/vagalume_brilho.tres" id="brilho_emissivo"]
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_gat"]
 size = Vector2(18, 18)
 
@@ -41,28 +44,28 @@ collision_layer = 0
 collision_mask = 1
 script = ExtResource("1_gat")
 
-[node name="Halo" type="PointLight2D" parent="."]
-z_index = -1
+[node name="Halo" type="Sprite2D" parent="."]
+z_index = -5
+z_as_relative = false
+material = ExtResource("brilho_emissivo")
+self_modulate = Color(1, 0.8156863, 0.13725491, 0.0)
+scale = Vector2(1.2, 1.2)
 texture_filter = 1
-color = Color(1, 0.8156863, 0.13725491, 1)
-energy = 0.0
-blend_mode = 0
-shadow_enabled = false
 texture = ExtResource("3_luz")
-texture_scale = 1.2
 
-[node name="Core" type="PointLight2D" parent="."]
-z_index = -1
+[node name="Core" type="Sprite2D" parent="."]
+z_index = -5
+z_as_relative = false
+material = ExtResource("brilho_emissivo")
+self_modulate = Color(1, 0.9137255, 0.30980393, 0.0)
+scale = Vector2(0.25, 0.25)
 texture_filter = 1
-color = Color(1, 0.9137255, 0.30980393, 1)
-energy = 0.0
-blend_mode = 0
-shadow_enabled = false
 texture = ExtResource("3_luz")
-texture_scale = 0.25
 
 [node name="Corpo" type="AnimatedSprite2D" parent="."]
-z_index = 1
+z_index = 7
+z_as_relative = false
+material = ExtResource("corpo_emissivo")
 light_mask = 0
 modulate = Color(1.3, 1.05, 0.4, 1)
 sprite_frames = SubResource("SpriteFrames_gat")

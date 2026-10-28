@@ -7,11 +7,13 @@
 [ext_resource type="TileSet" uid="uid://bksacx2vpm4t0" path="res://assets/cristais_tileset.tres" id="5_cristais_ts"]
 [ext_resource type="PackedScene" uid="uid://ck4l3vm43pipc" path="res://Player/Player.tscn" id="6_player"]
 [ext_resource type="PackedScene" uid="uid://de8utfkx51gq2" path="res://UI/DeathMenu.tscn" id="7_deathmenu"]
-[ext_resource type="PackedScene" path="res://UI/HealthBar.tscn" id="8_healthbar"]
 [ext_resource type="PackedScene" uid="uid://dqvpyfsmsranl" path="res://Environment/PortalFase.tscn" id="9_portal"]
 [ext_resource type="PackedScene" path="res://Environment/Esmagador.tscn" id="10_nk4rb"]
 [ext_resource type="PackedScene" path="res://Environment/ZonaMortePortal.tscn" id="12_brufd"]
+[ext_resource type="Texture2D" uid="uid://b2742hmlsw2ew" path="res://assets/backgrounds/mapas/mapa_08.svg" id="fundo_exclusivo"]
 [ext_resource type="TileSet" uid="uid://l81nslbsm58o" path="res://assets/matos_tileset.tres" id="matos_ts"]
+
+[ext_resource type="Script" path="res://Environment/goteiras_mapa.gd" id="goteiras_mapa"]
 
 [sub_resource type="Environment" id="Environment_escuro"]
 background_mode = 3
@@ -22,19 +24,8 @@ glow_hdr_threshold = 0.9
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_blocos_brilho"]
 light_mode = 1
 
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_brilho"]
-blend_mode = 1
-
-[sub_resource type="Gradient" id="Gradient_brilho"]
-colors = PackedColorArray(1, 1, 1, 0.9, 1, 1, 1, 0)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_brilho"]
-gradient = SubResource("Gradient_brilho")
-width = 256
-height = 256
-fill = 1
-fill_from = Vector2(0.5, 0.5)
-fill_to = Vector2(1, 0.5)
+[sub_resource type="CanvasItemMaterial" id="Material_fundo_estatico"]
+light_mode = 1
 
 [node name="Mapa08" type="Node2D" unique_id=1987110410]
 scale = Vector2(3.65, 3.65)
@@ -72,9 +63,6 @@ zoom = Vector2(0.9, 0.9)
 
 [node name="DeathMenu" parent="." unique_id=955436059 instance=ExtResource("7_deathmenu")]
 
-[node name="HealthBar" parent="." unique_id=1700284235 instance=ExtResource("8_healthbar")]
-visible = true
-
 [node name="PortalFase" parent="." unique_id=675969124 instance=ExtResource("9_portal")]
 position = Vector2(313.6986, 162.46574)
 next_scene = "res://mapa_09.tscn"
@@ -83,15 +71,19 @@ next_scene = "res://mapa_09.tscn"
 z_index = -10
 z_as_relative = false
 
-[node name="BrilhoFundo" type="Sprite2D" parent="Cenario" unique_id=1959315678]
-z_index = 1
-material = SubResource("CanvasItemMaterial_brilho")
-position = Vector2(159.72601, 88.49315)
-scale = Vector2(2.2628825, 1.9189116)
-texture = SubResource("GradientTexture2D_brilho")
-
 [node name="Esmagador" parent="." unique_id=1774391481 instance=ExtResource("10_nk4rb")]
 position = Vector2(168.21918, 116.16441)
 
 [node name="ZonaMortePortal" parent="." unique_id=744503304 instance=ExtResource("12_brufd")]
 position = Vector2(323.56165, 223.56165)
+
+[node name="FundoDaFase" type="Sprite2D" parent="." unique_id=315637780]
+z_index = -100
+texture_filter = 1
+material = SubResource("Material_fundo_estatico")
+position = Vector2(-160, -224)
+texture = ExtResource("fundo_exclusivo")
+centered = false
+
+[node name="GoteirasAmbiente" type="Node2D" parent="."]
+script = ExtResource("goteiras_mapa")

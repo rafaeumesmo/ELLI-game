@@ -7,7 +7,6 @@
 [ext_resource type="TileSet" uid="uid://bksacx2vpm4t0" path="res://assets/cristais_tileset.tres" id="5_cristais_ts"]
 [ext_resource type="PackedScene" uid="uid://ck4l3vm43pipc" path="res://Player/Player.tscn" id="6_player"]
 [ext_resource type="PackedScene" uid="uid://de8utfkx51gq2" path="res://UI/DeathMenu.tscn" id="7_deathmenu"]
-[ext_resource type="PackedScene" path="res://UI/HealthBar.tscn" id="8_healthbar"]
 [ext_resource type="PackedScene" uid="uid://dqvpyfsmsranl" path="res://Environment/PortalFase.tscn" id="9_portal"]
 [ext_resource type="Script" uid="uid://c0yekaxi7w2us" path="res://Environment/fixed_camera_switch_zone.gd" id="10_camswitch"]
 [ext_resource type="PackedScene" uid="uid://c8s7twn0saw02" path="res://Environment/StaticSaw.tscn" id="11_gsotl"]
@@ -16,7 +15,10 @@
 [ext_resource type="PackedScene" path="res://Environment/MovingSaw.tscn" id="14_soscs"]
 [ext_resource type="PackedScene" uid="uid://dfcde777bahu8" path="res://Environment/SpikeTrap.tscn" id="17_bivck"]
 [ext_resource type="PackedScene" uid="uid://pf6yjet4dv4d" path="res://Environment/Checkpoint.tscn" id="18_wlv8e"]
+[ext_resource type="Texture2D" uid="uid://c1l3pdbr4pmrm" path="res://assets/backgrounds/mapas/mapa_06.svg" id="fundo_exclusivo"]
 [ext_resource type="TileSet" uid="uid://l81nslbsm58o" path="res://assets/matos_tileset.tres" id="matos_ts"]
+
+[ext_resource type="Script" path="res://Environment/goteiras_mapa.gd" id="goteiras_mapa"]
 
 [sub_resource type="Environment" id="Environment_escuro"]
 background_mode = 3
@@ -30,19 +32,8 @@ light_mode = 1
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_subida"]
 size = Vector2(343.8356, 206.68494)
 
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_brilho"]
-blend_mode = 1
-
-[sub_resource type="Gradient" id="Gradient_brilho"]
-colors = PackedColorArray(1, 1, 1, 0.9, 1, 1, 1, 0)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_brilho"]
-gradient = SubResource("Gradient_brilho")
-width = 256
-height = 256
-fill = 1
-fill_from = Vector2(0.5, 0.5)
-fill_to = Vector2(1, 0.5)
+[sub_resource type="CanvasItemMaterial" id="Material_fundo_estatico"]
+light_mode = 1
 
 [node name="Mapa06" type="Node2D" unique_id=4410952]
 scale = Vector2(3.65, 3.65)
@@ -91,8 +82,6 @@ shape = SubResource("RectangleShape2D_subida")
 
 [node name="DeathMenu" parent="." unique_id=593130094 instance=ExtResource("7_deathmenu")]
 
-[node name="HealthBar" parent="." unique_id=1089041759 instance=ExtResource("8_healthbar")]
-
 [node name="PortalFase" parent="." unique_id=22046399 instance=ExtResource("9_portal")]
 position = Vector2(785.4794, 371.23285)
 next_scene = "res://mapa_07.tscn"
@@ -107,16 +96,8 @@ position = Vector2(37.80822, 156.98628)
 [node name="MovingSaw" parent="Cenario" unique_id=838564480 instance=ExtResource("14_soscs")]
 position = Vector2(83.83562, 156.9863)
 
-[node name="BrilhoFundo" type="Sprite2D" parent="Cenario" unique_id=99610104]
-z_index = 1
-material = SubResource("CanvasItemMaterial_brilho")
-position = Vector2(479.726, 188.49313)
-scale = Vector2(6.211473, 6.415881)
-texture = SubResource("GradientTexture2D_brilho")
-
-[node name="SpikeTrap" parent="Cenario/BrilhoFundo" unique_id=1893502678 instance=ExtResource("17_bivck")]
-position = Vector2(-39.829082, -6.7469544)
-scale = Vector2(0.16099241, 0.15586324)
+[node name="SpikeTrap" parent="Cenario" unique_id=1893502678 instance=ExtResource("17_bivck")]
+position = Vector2(232.32875, 145.20547)
 
 [node name="RotatingSawTrap" parent="Cenario" unique_id=910410247 instance=ExtResource("12_k5e7y")]
 position = Vector2(95.34247, 14.520548)
@@ -140,3 +121,14 @@ fixed_camera_path = NodePath("../FixedCameraFinal")
 
 [node name="Checkpoint" parent="." unique_id=1618053948 instance=ExtResource("18_wlv8e")]
 position = Vector2(375.61642, 87.12328)
+
+[node name="FundoDaFase" type="Sprite2D" parent="." unique_id=333862934]
+z_index = -100
+texture_filter = 1
+material = SubResource("Material_fundo_estatico")
+position = Vector2(-160, -208)
+texture = ExtResource("fundo_exclusivo")
+centered = false
+
+[node name="GoteirasAmbiente" type="Node2D" parent="."]
+script = ExtResource("goteiras_mapa")

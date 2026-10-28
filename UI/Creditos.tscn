@@ -1,0 +1,7 @@
+[gd_scene format=3 uid="uid://c5loe53rghng4"]
+
+[ext_resource type="PackedScene" path="res://UI/VitoriaMenu.tscn" id="1_base"]
+[ext_resource type="Script" uid="uid://csh43oxdu0rt5" path="res://UI/creditos.gd" id="2_creditos"]
+
+[node name="Creditos" unique_id=2129978172 instance=ExtResource("1_base")]
+script = ExtResource("2_creditos")

@@ -300,6 +300,8 @@ func _atualizar_seta() -> void:
 ## player e ficar perto ou fora da borda de cima -- sem isso a bolha calcularia
 ## uma posicao fora da area visivel e o jogador nunca veria o texto aparecer.
 func _atualizar_posicao_balao() -> void:
+	if _bolha.modulate.a <= 0.0 and not _prompt.visible:
+		return
 	var alvo := global_position + Vector2(0, -altura_balao)
 	var tela := get_viewport().get_canvas_transform() * alvo
 	var tela_tam := get_viewport().get_visible_rect().size

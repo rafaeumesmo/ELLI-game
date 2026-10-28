@@ -40,8 +40,11 @@ extends Node2D
 @export var duracao_transformacao: float = 0.6
 
 @onready var _corpo: AnimatedSprite2D = $Corpo
-@onready var _halo: PointLight2D = $Halo
-@onready var _core: PointLight2D = $Core
+const HALO_ALPHA := 0.35
+const CORE_ALPHA := 0.4
+
+@onready var _halo: Sprite2D = $Halo
+@onready var _core: Sprite2D = $Core
 
 var _fase_pulso: float = 0.0
 var _flutuando := false
@@ -61,8 +64,10 @@ func _ready() -> void:
 func _aplicar_cor() -> void:
 	if _halo == null:
 		return
-	_halo.color = cor_luz
-	_core.color = cor_luz.lightened(0.35)
+	# Sprites aditivos e unshaded: a luz aparece mesmo sobre fundo escuro.
+	_halo.self_modulate = Color(cor_luz.r, cor_luz.g, cor_luz.b, _halo.self_modulate.a)
+	var cor_core := cor_luz.lightened(0.35)
+	_core.self_modulate = Color(cor_core.r, cor_core.g, cor_core.b, _core.self_modulate.a)
 	_corpo.modulate = Color(cor_luz.r * 1.3, cor_luz.g * 1.3, cor_luz.b * 1.3, 1.0)
 
 func _process(delta: float) -> void:
@@ -70,8 +75,8 @@ func _process(delta: float) -> void:
 		return
 	_fase_pulso += delta * 2.0
 	var pulso: float = 0.85 + 0.15 * sin(_fase_pulso)
-	_halo.energy = energia_halo * pulso
-	_core.energy = energia_core * pulso
+	_halo.self_modulate.a = minf(energia_halo * pulso * HALO_ALPHA, 1.0)
+	_core.self_modulate.a = minf(energia_core * pulso * CORE_ALPHA, 1.0)
 
 	if _flutuando:
 		_tempo_flutuacao += delta * velocidade_flutuacao
@@ -108,8 +113,8 @@ func _transformar_em_portal(portal: Node) -> void:
 	var tw := create_tween()
 	tw.set_parallel(true).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
 	tw.tween_property(_corpo, "modulate:a", 0.0, duracao_transformacao)
-	tw.tween_property(_halo, "energy", 0.0, duracao_transformacao)
-	tw.tween_property(_core, "energy", 0.0, duracao_transformacao)
+	tw.tween_property(_halo, "self_modulate:a", 0.0, duracao_transformacao)
+	tw.tween_property(_core, "self_modulate:a", 0.0, duracao_transformacao)
 	await tw.finished
 	queue_free()
 

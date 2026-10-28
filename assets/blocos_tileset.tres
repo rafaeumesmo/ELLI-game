@@ -18,6 +18,9 @@
 [ext_resource type="Texture2D" uid="uid://bhxhdxm6l5c6e" path="res://assets/blocos11.png" id="17_bloc11b"]
 [ext_resource type="Texture2D" uid="uid://blwighun37ubo" path="res://assets/blocos13.png" id="18_bloc13"]
 [ext_resource type="Texture2D" uid="uid://bqyak2deuojbj" path="res://assets/blocos14.png" id="19_fundo"]
+[ext_resource type="Texture2D" uid="uid://b5iaej71i4yir" path="res://assets/blocos_instaveis/ardosia.svg" id="instavel_ardosia"]
+[ext_resource type="Texture2D" uid="uid://dgvcqdsl4rbrb" path="res://assets/blocos_instaveis/terra.svg" id="instavel_terra"]
+[ext_resource type="Texture2D" uid="uid://b4ksm26xq6rbq" path="res://assets/blocos_instaveis/verde.svg" id="instavel_verde"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bloc1"]
 texture = ExtResource("1_bloc1")
@@ -74,8 +77,26 @@ texture = ExtResource("19_fundo")
 0:0/0/modulate = Color(0.45, 0.45, 0.5, 1)
 0:0/0/z_index = -1
 
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_instavel_ardosia"]
+resource_name = "Rocha fixa - Ardosia"
+texture = ExtResource("instavel_ardosia")
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_bloc3"]
 texture = ExtResource("3_bloc3")
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_instavel_verde"]
+resource_name = "Rocha fixa - Verde"
+texture = ExtResource("instavel_verde")
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_instavel_terra"]
+resource_name = "Rocha fixa - Terra"
+texture = ExtResource("instavel_terra")
 0:0/0 = 0
 0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 
@@ -130,3 +151,6 @@ sources/15 = SubResource("TileSetAtlasSource_blocss4")
 sources/16 = SubResource("TileSetAtlasSource_bloc11b")
 sources/17 = SubResource("TileSetAtlasSource_bloc13")
 sources/18 = SubResource("TileSetAtlasSource_fundo")
+sources/19 = SubResource("TileSetAtlasSource_instavel_ardosia")
+sources/20 = SubResource("TileSetAtlasSource_instavel_verde")
+sources/21 = SubResource("TileSetAtlasSource_instavel_terra")

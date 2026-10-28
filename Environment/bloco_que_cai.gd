@@ -24,6 +24,17 @@ const VEL_MAX := 1500.0
 @export var pisca_antes_de_cair: bool = false
 ## Ao pousar, quebra em particulas e some, em vez de ficar solido parado pra sempre.
 @export var quebra_ao_pousar: bool = false
+## Volta à posição inicial após cair, aguardando o personagem sair do espaço.
+@export var reaparece: bool = true
+@export_range(0.5, 15.0, 0.1) var tempo_reaparecer: float = 3.0
+
+var _origem: Transform2D
+var _layer_original: int
+var _mask_original: int
+var _preparando := false
+var _retornando := false
+var _espera := 0.0
+var _tempo_caindo := 0.0
 
 ## Brilho normal dos blocos (ignora o escurecimento do CanvasModulate), sem
 ## vazar pra fora do bloco -- mesmo material usado na camada Blocos da tilemap.
@@ -34,6 +45,9 @@ var _caindo := false
 var _parado := false
 
 func _ready() -> void:
+	_origem = transform
+	_layer_original = collision_layer
+	_mask_original = collision_mask
 	if textura == null:
 		textura = load("res://assets/blocos4.png")
 	if _material_brilho == null:
@@ -98,6 +112,12 @@ func _montar_visual() -> void:
 			s.material = _material_brilho
 			s.position = Vector2(canto + x * TILE, canto + y * TILE)
 			_visual.add_child(s)
+	var detalhes := Node2D.new()
+	detalhes.set_script(preload("res://Environment/detalhes_bloco.gd"))
+	detalhes.set("tamanho", Vector2.ONE * lado * TILE)
+	detalhes.set("textura", textura)
+	detalhes.material = _material_brilho
+	_visual.add_child(detalhes)
 
 ## Redimensiona a colisao (definida no .tscn pra caber o LADO=2 padrao) pro
 ## tamanho real deste bloco. Duplica o shape antes de mexer -- senao, como
@@ -110,7 +130,17 @@ func _ajustar_colisao() -> void:
 	col.shape = forma
 
 func _physics_process(delta: float) -> void:
+	if _retornando:
+		_espera -= delta
+		if _espera <= 0.0:
+			_tentar_reaparecer()
+		return
 	if not _caindo or _parado:
+		return
+	_tempo_caindo += delta
+	# Também recupera blocos que caíram num abismo sem chão.
+	if reaparece and _tempo_caindo > 5.0:
+		_iniciar_retorno()
 		return
 	velocity.y = min(velocity.y + GRAVIDADE * delta, VEL_MAX)
 	# move_and_slide desliza nas paredes laterais em vez de travar nelas.
@@ -122,12 +152,15 @@ func _physics_process(delta: float) -> void:
 		_poeira()
 		if quebra_ao_pousar:
 			_quebrar()
+		elif reaparece:
+			_iniciar_retorno()
 
 ## Solta o bloco. Chamado pelo GatilhoQueda, pela ZonaPisao (cai_ao_pisar) ou
 ## por qualquer outro script.
 func derrubar() -> void:
-	if _caindo:
+	if _caindo or _preparando or _retornando:
 		return
+	_preparando = true
 	_ativar_espinhos()
 	var tw := create_tween().set_trans(Tween.TRANS_SINE)
 	if pisca_antes_de_cair:
@@ -139,7 +172,10 @@ func derrubar() -> void:
 		tw.tween_property(_visual, "position:x", 1.5, 0.04)
 		tw.tween_property(_visual, "position:x", -1.5, 0.04)
 	tw.tween_property(_visual, "position:x", 0.0, 0.04)
-	tw.tween_callback(func() -> void: _caindo = true)
+	tw.tween_callback(func() -> void:
+		_preparando = false
+		_caindo = true
+	)
 
 ## Liga qualquer EspinhoPreso filho (ex.: BlocoFragilComEspinho) que tenha
 ## `comeca_ativo = false` -- ele só passa a machucar quando o bloco de fato
@@ -153,10 +189,47 @@ func _ativar_espinhos() -> void:
 ## colisao na hora (senao o player fica em cima de um bloco "fantasma" ate a
 ## poeira acabar) e espera a poeira acabar antes de sair da arvore de vez.
 func _quebrar() -> void:
+	if reaparece:
+		_iniciar_retorno()
+		return
 	collision_layer = 0
 	collision_mask = 0
 	_visual.visible = false
 	get_tree().create_timer(0.9).timeout.connect(queue_free)
+
+func _iniciar_retorno() -> void:
+	_retornando = true
+	_espera = tempo_reaparecer
+	velocity = Vector2.ZERO
+	collision_layer = 0
+	collision_mask = 0
+	hide()
+	for filho in get_children():
+		if filho.has_method("desativar"):
+			filho.desativar()
+
+func _tentar_reaparecer() -> void:
+	var consulta := PhysicsShapeQueryParameters2D.new()
+	consulta.shape = $CollisionShape2D.shape
+	consulta.transform = get_parent().global_transform * _origem * $CollisionShape2D.transform
+	consulta.collision_mask = 1
+	consulta.exclude = [get_rid()]
+	if not get_world_2d().direct_space_state.intersect_shape(consulta, 1).is_empty():
+		_espera = 0.1
+		return
+	transform = _origem
+	velocity = Vector2.ZERO
+	_visual.position = Vector2.ZERO
+	_visual.visible = true
+	modulate.a = 1.0
+	collision_layer = _layer_original
+	collision_mask = _mask_original
+	_caindo = false
+	_parado = false
+	_preparando = false
+	_retornando = false
+	_tempo_caindo = 0.0
+	show()
 
 func _poeira() -> void:
 	var po := CPUParticles2D.new()

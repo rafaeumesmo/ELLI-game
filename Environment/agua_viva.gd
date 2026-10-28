@@ -34,6 +34,9 @@ extends Node2D
 @export var quique: float = 460.0
 ## Quique segurando o botão de pulo.
 @export var quique_segurando_pulo: float = 580.0
+## Folga nas bordas superiores para pousos um pouco de lado (pixels locais).
+@export_range(0.0, 8.0, 1.0) var margem_quique_lateral: float = 4.0
+@export_range(0.0, 8.0, 1.0) var tolerancia_quique_vertical: float = 5.0
 ## Quantas vezes dá pra quicar nela antes de estourar. 0 = infinito.
 ## A MiniAguaViva usa 1: quica uma vez e ela estoura.
 @export var quiques_max: int = 0
@@ -47,6 +50,7 @@ const N_TENTACULOS := 4
 const SEGMENTOS := 6
 ## Metade de baixo da colisão do player (origem do corpo -> pés).
 const PES_PLAYER := 8.0
+const MEIA_LARGURA_PLAYER := 5.0
 const COOLDOWN_DANO := 1.0
 
 ## Modo travessia (setado por quem cria, ex. a RainhaMedusas): anda reto
@@ -80,6 +84,15 @@ var _pes_rel_anterior: float = INF
 var _fases: PackedFloat32Array = PackedFloat32Array()
 
 static var _particula_texture: ImageTexture
+static var _material_corpo: CanvasItemMaterial
+var _tempo_desenho: float = 0.0
+
+func _process(delta: float) -> void:
+	# Só a deformação do desenho roda a 30 Hz; a física continua independente.
+	_tempo_desenho += delta
+	if _tempo_desenho >= 1.0 / 30.0:
+		_tempo_desenho = fmod(_tempo_desenho, 1.0 / 30.0)
+		queue_redraw()
 
 func _ready() -> void:
 	add_to_group("enemy")
@@ -91,9 +104,10 @@ func _ready() -> void:
 		_fases.append(_rng.randf_range(0.0, TAU))
 	_halo.self_modulate = Color(cor_brilho, intensidade_brilho)
 	# Ignora o CanvasModulate escuro do mapa, senão o branco vira cinza.
-	var mat := CanvasItemMaterial.new()
-	mat.light_mode = CanvasItemMaterial.LIGHT_MODE_UNSHADED
-	material = mat
+	if _material_corpo == null:
+		_material_corpo = CanvasItemMaterial.new()
+		_material_corpo.light_mode = CanvasItemMaterial.LIGHT_MODE_UNSHADED
+	material = _material_corpo
 
 func _physics_process(delta: float) -> void:
 	if _morta:
@@ -142,7 +156,6 @@ func _physics_process(delta: float) -> void:
 	_halo.scale = Vector2.ONE * (0.32 + 0.05 * _contracao) * largura / 14.0
 
 	_checar_contato()
-	queue_redraw()
 
 ## Travessia: a origem anda reto e ela ondula em volta dela no ritmo da
 ## pulsada. No fim da vida apaga e some (sem faíscas -- não foi morta).
@@ -160,12 +173,22 @@ func _atravessar(delta: float) -> void:
 		tw.tween_callback(queue_free)
 		return
 	_checar_contato()
-	queue_redraw()
 
 func _checar_contato() -> void:
 	_lembrar_altura_player()
 	if _cooldown > 0.0:
 		return
+	# A zona de pouso é mais larga que a hitbox mortal. Resolve o quique
+	# antes de consultar os overlaps, inclusive na borda externa do sino.
+	var player := get_tree().get_first_node_in_group("player") as CharacterBody2D
+	if player != null and player.visible and player.is_physics_processing():
+		var rel := to_local(player.global_position)
+		var pes := rel.y + PES_PLAYER
+		var alcance := largura * 0.5 + MEIA_LARGURA_PLAYER + margem_quique_lateral
+		if absf(rel.x) <= alcance and pes >= -largura * 0.62 \
+				and pes <= tolerancia_quique_vertical and _caiu_por_cima(player):
+			_quicar(player)
+			return
 	for body in _hitbox.get_overlapping_bodies():
 		if not body.is_in_group("player"):
 			continue
@@ -203,13 +226,18 @@ func _caiu_por_cima(body: Node2D) -> bool:
 		return false
 	if (body as CharacterBody2D).velocity.y < -10.0:
 		return false
-	return _player_veio_de_cima
+	var pes := to_local(body.global_position).y + PES_PLAYER
+	# Pousos laterais na metade superior também contam. O histórico continua
+	# cobrindo quedas rápidas, que podem atravessar o topo entre dois ticks.
+	return _player_veio_de_cima or pes <= tolerancia_quique_vertical
 
-## Trampolim: joga o player pra cima, recarrega o dash aéreo e o sino
+## Trampolim: joga o player pra cima, libera outro pulo, recarrega o dash aéreo e o sino
 ## afunda e se espreme, voltando com uma mola.
 func _quicar(body: CharacterBody2D) -> void:
 	var forca: float = quique_segurando_pulo if Input.is_action_pressed("jump") else quique
 	body.velocity.y = -forca
+	if body.has_method("recarregar_pulo_agua_viva"):
+		body.recarregar_pulo_agua_viva()
 	if "can_dash_air" in body:
 		body.can_dash_air = true
 	_quiques += 1
@@ -225,6 +253,12 @@ func _quicar(body: CharacterBody2D) -> void:
 	tw.tween_property(self, "scale", Vector2.ONE, 0.35).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
 
 func _draw() -> void:
+	# O CanvasItem não conhece os limites do desenho procedural. Evita
+	# reconstruir polígonos e tentáculos das medusas fora da câmera.
+	# Mantém movimento e colisão ativos, inclusive durante a travessia.
+	var margem := (largura + comprimento_tentaculo) * get_global_transform_with_canvas().get_scale().abs().length()
+	if not get_viewport_rect().grow(margem).has_point(get_global_transform_with_canvas().origin):
+		return
 	var c: float = _contracao
 	var w: float = largura * (1.0 - 0.22 * c)
 	var h: float = largura * 0.62 * (1.0 + 0.25 * c)

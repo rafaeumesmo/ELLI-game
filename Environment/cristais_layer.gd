@@ -39,5 +39,10 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	_t += delta
 	var e := energia * (0.86 + 0.14 * sin(_t * 2.3))
+	var transformacao := get_global_transform_with_canvas()
+	# Inclui o halo inteiro mesmo quando o cristal está fora da tela.
+	var margem := _LUZ_TEX.get_size().length() * raio * transformacao.get_scale().abs().length()
+	var tela := get_viewport_rect().grow(margem)
 	for luz in _luzes:
-		luz.energy = e
+		if tela.has_point(transformacao * luz.position):
+			luz.energy = e

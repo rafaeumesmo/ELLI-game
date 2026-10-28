@@ -1,13 +1,14 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://byk2js7xadwr"]
 
 [ext_resource type="Script" path="res://UI/health_bar.gd" id="1_health"]
 [ext_resource type="Script" path="res://UI/health_pips.gd" id="2_pips"]
 
-[node name="HealthBar" type="CanvasLayer"]
-visible = false
+[node name="HealthBar" type="CanvasLayer" unique_id=636336332]
 script = ExtResource("1_health")
 
-[node name="Pips" type="Control" parent="."]
+[node name="Pips" type="Control" parent="." unique_id=2135646287]
+layout_mode = 3
+anchors_preset = 0
 offset_left = 16.0
 offset_top = 16.0
 offset_right = 112.0

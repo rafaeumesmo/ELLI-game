@@ -1,0 +1,41 @@
+[gd_scene format=3]
+
+[ext_resource type="Shader" path="res://shaders/cachoeira.gdshader" id="1_agua"]
+
+[sub_resource type="ShaderMaterial" id="Material_agua"]
+shader = ExtResource("1_agua")
+
+[sub_resource type="CanvasItemMaterial" id="Material_respingos"]
+light_mode = 1
+
+[sub_resource type="Gradient" id="Gradient_respingos"]
+offsets = PackedFloat32Array(0, 0.25, 1)
+colors = PackedColorArray(0.65, 0.8, 0.75, 0, 0.65, 0.8, 0.75, 0.5, 0.4, 0.65, 0.64, 0)
+
+[node name="Cachoeira" type="Node2D"]
+z_index = -6
+z_as_relative = false
+
+[node name="Agua" type="ColorRect" parent="."]
+material = SubResource("Material_agua")
+offset_right = 64.0
+offset_bottom = 160.0
+mouse_filter = 2
+
+[node name="Respingos" type="CPUParticles2D" parent="."]
+position = Vector2(32, 155)
+material = SubResource("Material_respingos")
+texture_filter = 1
+amount = 20
+lifetime = 0.65
+randomness = 0.6
+emission_shape = 3
+emission_rect_extents = Vector2(27, 1)
+direction = Vector2(0, -1)
+spread = 65.0
+gravity = Vector2(0, 45)
+initial_velocity_min = 10.0
+initial_velocity_max = 26.0
+scale_amount_min = 1.0
+scale_amount_max = 2.0
+color_ramp = SubResource("Gradient_respingos")

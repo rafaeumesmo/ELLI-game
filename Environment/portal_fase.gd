@@ -9,6 +9,8 @@ extends Area2D
 ## troca.
 
 @export_file("*.tscn") var next_scene: String = ""
+## Portal final: encerra o controle do personagem durante a ida aos créditos.
+@export var encerrar_jogo: bool = false
 ## Cor da luz do portal-vagalume (halo e núcleo).
 @export var cor: Color = Color("#3DA9FC")
 ## Energia base do halo (luz grande e suave). Mais alta que o vagalume comum
@@ -101,6 +103,10 @@ func _ativar() -> void:
 	# Foge pro lado oposto do player (se ele tá em cima, escolhe pelo flip atual).
 	var lado := -1.0 if _corpo.flip_h else 1.0
 	var player := get_tree().get_first_node_in_group("player") as Node2D
+	if encerrar_jogo and player != null:
+		if player is CharacterBody2D:
+			(player as CharacterBody2D).velocity = Vector2.ZERO
+		player.set_physics_process(false)
 	if player != null and absf(player.global_position.x - global_position.x) > 1.0:
 		lado = signf(global_position.x - player.global_position.x)
 	_corpo.flip_h = lado < 0.0

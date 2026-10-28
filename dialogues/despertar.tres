@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="DialogueData" format=3 uid="uid://bkt8t7re0k7o8"]
+
+[ext_resource type="Script" uid="uid://cp8gahqvfm5mp" path="res://UI/dialogo/dialogue_data.gd" id="data"]
+[ext_resource type="Resource" path="res://dialogues/personagens/elisio.tres" id="eli"]
+[ext_resource type="Script" uid="uid://cym0wid4uvh12" path="res://UI/dialogo/dialogue_line.gd" id="line"]
+
+[sub_resource type="Resource" id="fala_1"]
+script = ExtResource("line")
+personagem = ExtResource("eli")
+expressao = "surpreso"
+texto = "Eu estava caindo…"
+
+[sub_resource type="Resource" id="fala_2"]
+script = ExtResource("line")
+personagem = ExtResource("eli")
+texto = "Depois… só lembro do silêncio."
+
+[sub_resource type="Resource" id="fala_3"]
+script = ExtResource("line")
+personagem = ExtResource("eli")
+texto = "Aquela luz… será a mesma?"
+
+[resource]
+script = ExtResource("data")
+falas = Array[ExtResource("line")]([SubResource("fala_1"), SubResource("fala_2"), SubResource("fala_3")])
