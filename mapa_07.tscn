@@ -12,9 +12,8 @@
 [ext_resource type="PackedScene" uid="uid://dqvpyfsmsranl" path="res://Environment/PortalFase.tscn" id="12_portal"]
 [ext_resource type="PackedScene" uid="uid://pf6yjet4dv4d" path="res://Environment/Checkpoint.tscn" id="13_cqjvn"]
 [ext_resource type="Texture2D" uid="uid://dviuj7hv3nkjv" path="res://assets/backgrounds/mapas/mapa_07.svg" id="fundo_exclusivo"]
+[ext_resource type="Script" uid="uid://cl2v3pnuk8qu2" path="res://Environment/goteiras_mapa.gd" id="goteiras_mapa"]
 [ext_resource type="TileSet" uid="uid://l81nslbsm58o" path="res://assets/matos_tileset.tres" id="matos_ts"]
-
-[ext_resource type="Script" path="res://Environment/goteiras_mapa.gd" id="goteiras_mapa"]
 
 [sub_resource type="Environment" id="Environment_escuro"]
 background_mode = 3
@@ -107,5 +106,5 @@ position = Vector2(-464, -448)
 texture = ExtResource("fundo_exclusivo")
 centered = false
 
-[node name="GoteirasAmbiente" type="Node2D" parent="."]
+[node name="GoteirasAmbiente" type="Node2D" parent="." unique_id=1393673292]
 script = ExtResource("goteiras_mapa")
